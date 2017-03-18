@@ -15,6 +15,8 @@
 			<titleBeginRow>0</titleBeginRow>
 			<dataBeginRow>1</dataBeginRow>
 			<dataEndRow>59</dataEndRow>
+			<totalBeginRow>60</totalBeginRow>
+			<totalEndRow>61</totalEndRow>
 			<dataClass>org.hy.common.report.junit.ExcelBean</dataClass>
 		</template>
 		

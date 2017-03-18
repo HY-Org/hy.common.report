@@ -95,10 +95,13 @@ public class ReportHelp
         
         writeTitle(v_DataWorkbook ,v_DataSheet ,i_Datas ,i_RTemplate);
         
-        for (int v_DataIndex=1; v_DataIndex<=i_Datas.size(); v_DataIndex++)
+        int v_DataIndex = 1;
+        for (; v_DataIndex<=i_Datas.size(); v_DataIndex++)
         {
             writeData(v_DataWorkbook ,v_DataSheet ,v_DataIndex ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
         }
+        
+        writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataIndex ,i_Datas ,i_RTemplate);
         
         return v_DataWorkbook;
     }
@@ -138,7 +141,9 @@ public class ReportHelp
      */
     public final static void copyImagesData(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
-        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) + i_RTemplate.getRowCountData() * (i_Offset - 1);
+        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
+                        + i_RTemplate.getRowCountData() * (i_Offset - 1)
+                        - (i_Offset <= 1 ? 0 : 1);
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -159,7 +164,9 @@ public class ReportHelp
     public final static void copyImagesTotal(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
         // 通过数据计算合计
-        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) + i_RTemplate.getRowCountData() * i_Offset;
+        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
+                        + i_RTemplate.getRowCountData() * i_Offset
+                        - (i_Offset <= 1 ? 0 : 1);
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -210,7 +217,7 @@ public class ReportHelp
     
     
     /**
-     * 按报表模板格式写入一行数据
+     * 按报表模板格式写入数据
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-17
@@ -241,6 +248,51 @@ public class ReportHelp
             }
             
             int     v_DataRowNo = v_TemplateTitleCount + (i_DataIndex - 1) * v_TemplateRowCount + v_RowNo;
+            HSSFRow v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
+            if ( v_DataRow == null ) 
+            {
+                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
+            }
+            
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,v_DataRow ,i_Datas);
+        }
+    }
+    
+    
+    
+    /**
+     * 按报表模板格式写入合计
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-18
+     * @version     v1.0
+     *
+     * @param i_DataWorkbook  数据工作薄
+     * @param i_DataSheet     数据工作表
+     * @param i_DataIndex     数据索引号。下标从 1 开始
+     * @param i_Datas         数据
+     * @param i_RTemplate     报表模板对象
+     */
+    public final static void writeTotal(RWorkbook i_DataWorkbook ,HSSFSheet i_DataSheet ,int i_DataIndex, Object i_Datas ,RTemplate i_RTemplate) 
+    {
+        HSSFSheet v_TemplateSheet         = i_RTemplate.getTemplateSheet();
+        int       v_TemplateTitleCount    = i_RTemplate.getRowCountTitle();
+        int       v_TemplateRowCountData  = i_RTemplate.getRowCountData();
+        int       v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
+        
+        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板合并单元格
+        copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板复制图片
+        
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCountTotal; v_RowNo++) 
+        {
+            int     v_TemplateRowNo = i_RTemplate.getTotalBeginRow() + v_RowNo;
+            HSSFRow v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
+            if ( v_TemplateRow == null ) 
+            {
+                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
+            }
+            
+            int     v_DataRowNo = v_TemplateTitleCount + (i_DataIndex - 1) * v_TemplateRowCountData + v_RowNo;
             HSSFRow v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
@@ -286,7 +338,9 @@ public class ReportHelp
      */
     public final static void copyMergedRegionsData(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
-        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) + i_RTemplate.getRowCountData() * (i_Offset - 1);
+        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
+                        + i_RTemplate.getRowCountData() * (i_Offset - 1)
+                        - (i_Offset <= 1 ? 0 : 1);
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -307,7 +361,9 @@ public class ReportHelp
     public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
         // 通过数据计算合计
-        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) + i_RTemplate.getRowCountData() * i_Offset;
+        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
+                        + i_RTemplate.getRowCountData() * i_Offset
+                        - (i_Offset <= 1 ? 0 : 1);
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }

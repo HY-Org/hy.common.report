@@ -112,6 +112,8 @@ public class RWorkbook
             ExcelHelp.copyCellStyle(v_TemplateCellStyle ,v_DataCellStyle);
             
             v_DataCellStyle.setFont(this.getFont(i_RTemplate ,v_TemplateCellStyle.getFontIndex()));
+            
+            this.cellStyles.putRow(i_RTemplate ,String.valueOf(i_IDX) ,v_DataCellStyle);
         }
         
         return v_DataCellStyle;
