@@ -103,7 +103,7 @@ public class ReportHelp
             writeData(v_DataWorkbook ,v_DataSheet ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
         }
         
-        writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataIndex ,i_Datas ,i_RTemplate);
+        writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataCount ,i_Datas ,i_RTemplate);
         
         return v_DataWorkbook;
     }
@@ -167,7 +167,7 @@ public class ReportHelp
     {
         // 通过数据计算合计
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
-                        + i_RTemplate.getRowCountData() * i_Offset
+                        + i_RTemplate.getRowCountData() * (i_Offset - 1)
                         - (i_Offset <= 1 ? 0 : 1);
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
@@ -283,8 +283,8 @@ public class ReportHelp
         int       v_TemplateRowCountData  = i_RTemplate.getRowCountData();
         int       v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
         
-        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_DataCount + 1);  // 按模板合并单元格
-        copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_DataCount + 1);  // 按模板复制图片
+        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_DataCount);  // 按模板合并单元格
+        copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_DataCount);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCountTotal; v_RowNo++) 
         {
@@ -365,7 +365,7 @@ public class ReportHelp
     {
         // 通过数据计算合计
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
-                        + i_RTemplate.getRowCountData() * i_Offset
+                        + i_RTemplate.getRowCountData() * (i_Offset - 1)
                         - (i_Offset <= 1 ? 0 : 1);
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
