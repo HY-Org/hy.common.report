@@ -1,5 +1,6 @@
 package org.hy.common.report.bean;
 
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,14 @@ import org.hy.common.report.ExcelHelp;
  */
 public class RTemplate implements Comparable<RTemplate>
 {
+    
+    /** 系统固家变量名称：数据行号的变量名称。下标从1开始 */
+    public final static String         $ValueName_RowNo        = "RowNo__";
+    
+    /** 系统固家变量名称：数据总量的变量名称 */
+    public final static String         $ValueName_RowCount     = "RowCount__";
+    
+    
     
     /** 模板名称 */
     private String                     name;
@@ -60,11 +69,15 @@ public class RTemplate implements Comparable<RTemplate>
     private String                     valueSign;
     
     
+    
     /** 报表模板信息对应的工作表对象(一般只初始加载一次) */
     private HSSFSheet                  templateSheet; 
     
-    /** 解释的值的反射方法集合 */
+    /** 解释的值的反射方法集合(一般只初始加载一次) */
     private Map<String ,MethodReflect> valueMethods;
+    
+    /** 按 this.valueSign 生成的系统变量名称 */
+    private Map<String ,String>        valueNames;
     
     
     
@@ -73,8 +86,9 @@ public class RTemplate implements Comparable<RTemplate>
         this.sheetIndex    = 0;
         this.templateSheet = null;
         this.excelVersion  = "xls";
-        this.valueSign     = ":";
         this.valueMethods  = new LinkedHashMap<String ,MethodReflect>();
+        this.valueNames    = new Hashtable<String ,String>();
+        this.setValueSign(":");
     }
     
     
@@ -131,7 +145,11 @@ public class RTemplate implements Comparable<RTemplate>
             {
                 String v_Value = v_TempDatas.get(i);
                 
-                if ( this.valueSign.equals(v_Value.substring(0 ,this.valueSign.length())) && v_Value.length() >= this.valueSign.length() + 1 )
+                if ( this.valueNames.containsKey(v_Value) )
+                {
+                    // Nothing.
+                }
+                else if ( this.valueSign.equals(v_Value.substring(0 ,this.valueSign.length())) && v_Value.length() >= this.valueSign.length() + 1 )
                 {
                     String v_ValueName = v_Value.substring(this.valueSign.length());
                     
@@ -148,14 +166,37 @@ public class RTemplate implements Comparable<RTemplate>
     
     
     
+    /**
+     * 判定变量名称是否存在
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-18
+     * @version     v1.0
+     *
+     * @param i_ValueName  变量名称
+     * @return
+     */
     public boolean isExists(String i_ValueName)
     {
-        return this.valueMethods.containsKey(i_ValueName);
+        return this.valueMethods.containsKey(i_ValueName) || this.valueNames.containsKey(i_ValueName);
     }
     
     
     
-    public Object getValue(String i_ValueName ,Object i_Datas)
+    /**
+     * 通过变量名称反射出对应的数值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-18
+     * @version     v1.0
+     *
+     * @param i_ValueName  变量名称
+     * @param i_Datas      
+     * @param i_RowNo      数据行号。下标从 1 开始
+     * @param i_RowCount   数据总量
+     * @return
+     */
+    public Object getValue(String i_ValueName ,Object i_Datas ,int i_RowNo ,int i_RowCount)
     {
         MethodReflect v_MethodReflect = this.valueMethods.get(i_ValueName);
         Object        v_Ret           = "";
@@ -169,6 +210,19 @@ public class RTemplate implements Comparable<RTemplate>
             catch (Exception exce)
             {
                 exce.printStackTrace();
+            }
+        }
+        else
+        {
+            String v_ValueName = this.valueNames.get(i_ValueName);
+            
+            if ( $ValueName_RowNo.equals(v_ValueName) )
+            {
+                return String.valueOf(i_RowNo);
+            }
+            else if ( $ValueName_RowCount.equals(v_ValueName) )
+            {
+                return String.valueOf(i_RowCount);
             }
         }
         
@@ -491,9 +545,12 @@ public class RTemplate implements Comparable<RTemplate>
      * 
      * @param valueSign 
      */
-    public void setValueSign(String valueSign)
+    public synchronized void setValueSign(String valueSign)
     {
         this.valueSign = valueSign;
+        
+        this.valueNames.put(this.valueSign + $ValueName_RowNo    ,$ValueName_RowNo);
+        this.valueNames.put(this.valueSign + $ValueName_RowCount ,$ValueName_RowCount);
     }
 
 
