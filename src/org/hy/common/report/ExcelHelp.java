@@ -29,14 +29,13 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Date;
 import org.hy.common.Help;
-import org.hy.common.report.bean.RWorkbook;
 
 
 
 
 
 /**
- * TODO(请详细描述类型的作用。描述后请删除todo标签) 
+ * Excel操作的辅助类 
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-03-16
@@ -309,9 +308,9 @@ public class ExcelHelp
      * @param i_SheetName  工作表名称(当为空时，自动生成)
      * @return
      */
-    public final static HSSFSheet createSheet(RWorkbook i_Workbook ,String i_SheetName) 
+    public final static HSSFSheet createSheet(Workbook i_Workbook ,String i_SheetName) 
     {
-        int    v_SheetCount = i_Workbook.getWorkbook().getNumberOfSheets();
+        int    v_SheetCount = i_Workbook.getNumberOfSheets();
         String v_SheetName  = i_SheetName;
         
         if ( Help.isNull(v_SheetName) ) 
@@ -319,7 +318,7 @@ public class ExcelHelp
             v_SheetName = "sheet" + (v_SheetCount + 1);
         }
         
-        return (HSSFSheet)i_Workbook.getWorkbook().createSheet(v_SheetName);
+        return (HSSFSheet)i_Workbook.createSheet(v_SheetName);
     }
     
     

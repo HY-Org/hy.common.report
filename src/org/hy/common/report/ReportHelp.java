@@ -85,7 +85,7 @@ public class ReportHelp
             v_DataWorkbook = createWorkbook();
         }
         
-        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook ,i_SheetName);
+        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,i_SheetName);
         v_TemplateSheet = i_RTemplate.getTemplateSheet();
         
         // 数据工作表的整体(所有)列的列宽，复制于模板
