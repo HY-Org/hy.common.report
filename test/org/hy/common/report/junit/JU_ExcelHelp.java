@@ -7,6 +7,7 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.report.ExcelHelp;
+import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
@@ -91,7 +92,7 @@ public class JU_ExcelHelp
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTemplate");
         
-        ExcelHelp.save(ExcelHelp.write("测试" ,this.getDatas(1) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/测试.xls");
+        ExcelHelp.save(ReportHelp.write("测试" ,this.getDatas(1) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/测试.xls");
     }
     
 }
