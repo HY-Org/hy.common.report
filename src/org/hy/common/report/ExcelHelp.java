@@ -72,14 +72,14 @@ public class ExcelHelp
         
         try
         {
-            if ( i_ExcelFileName.startsWith(Help.getSysPathSeparator()) )
-            {
-                v_Input = new FileInputStream(i_ExcelFileName);
-            }
-            else
+            if ( i_ExcelFileName.startsWith("file:") )
             {
                 URL v_URL = new URL(i_ExcelFileName);
                 v_Input = new FileInputStream(v_URL.getFile());
+            }
+            else
+            {
+                v_Input = new FileInputStream(i_ExcelFileName);
             }
             
             HSSFWorkbook v_Workbook   = (HSSFWorkbook)WorkbookFactory.create(v_Input);

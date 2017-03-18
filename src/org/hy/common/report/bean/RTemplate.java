@@ -9,6 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.report.ExcelHelp;
+import org.hy.common.report.event.ValueListener;
 
 
 
@@ -67,6 +68,14 @@ public class RTemplate implements Comparable<RTemplate>
     
     /** 值的标记。默认为一个冒号：":" */
     private String                     valueSign;
+
+    
+    
+    /** 
+     * 变量自定义处理事件
+     * Map.key  为变量名称 
+     */
+    private Map<String ,ValueListener> valueListeners;
     
     
     
@@ -83,11 +92,12 @@ public class RTemplate implements Comparable<RTemplate>
     
     public RTemplate()
     {
-        this.sheetIndex    = 0;
-        this.templateSheet = null;
-        this.excelVersion  = "xls";
-        this.valueMethods  = new LinkedHashMap<String ,MethodReflect>();
-        this.valueNames    = new Hashtable<String ,String>();
+        this.sheetIndex     = 0;
+        this.templateSheet  = null;
+        this.excelVersion   = "xls";
+        this.valueMethods   = new LinkedHashMap<String ,MethodReflect>();
+        this.valueNames     = new Hashtable<String ,String>();
+        this.valueListeners = new Hashtable<String ,ValueListener>();
         this.setValueSign(":");
     }
     
@@ -166,6 +176,20 @@ public class RTemplate implements Comparable<RTemplate>
     
     
     
+//    public String getExcelType()
+//    {
+//        if ( "xls".equalsIgnoreCase(this.excelVersion) )
+//        {
+//            
+//        }
+//        else if ( "xlsx".equalsIgnoreCase(this.excelVersion) )
+//        {
+//            
+//        }
+//    }
+    
+    
+    
     /**
      * 判定变量名称是否存在
      * 
@@ -191,7 +215,7 @@ public class RTemplate implements Comparable<RTemplate>
      * @version     v1.0
      *
      * @param i_ValueName  变量名称
-     * @param i_Datas      
+     * @param i_Datas      数据
      * @param i_RowNo      数据行号。下标从 1 开始
      * @param i_RowCount   数据总量
      * @return
@@ -304,6 +328,49 @@ public class RTemplate implements Comparable<RTemplate>
         }
         
         return i_EndRow.intValue() - i_BeginRow.intValue() + 1;
+    }
+    
+    
+    
+    /**
+     * 添加自定义变量处理事件的监听者
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-18
+     * @version     v1.0
+     *
+     * @param i_Listener
+     */
+    public void addListener(ValueListener i_Listener)
+    {
+        if ( i_Listener == null )
+        {
+            throw new NullPointerException("ValueListener is null.");
+        }
+        
+        if ( Help.isNull(i_Listener.getValueName()) )
+        {
+            throw new NullPointerException("ValueListener.getValueName() is null.");
+        }
+        
+        this.valueListeners.put(i_Listener.getValueName() ,i_Listener);
+    }
+    
+    
+    
+    /**
+     * 获取自定义变量处理事件的监听者
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-18
+     * @version     v1.0
+     *
+     * @param i_ValueName  变量名称
+     * @return
+     */
+    public ValueListener getListener(String i_ValueName)
+    {
+        return this.valueListeners.get(i_ValueName);
     }
     
     

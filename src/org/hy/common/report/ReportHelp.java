@@ -10,8 +10,10 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Font;
+import org.hy.common.Help;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RWorkbook;
+import org.hy.common.report.event.ValueListener;
 
 
 
@@ -462,7 +464,14 @@ public class ReportHelp
             
             if ( i_RTemplate.isExists(v_ValueName) )
             {
-                Object v_Value = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_DataIndex ,i_DataCount);
+                Object        v_Value    = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_DataIndex ,i_DataCount);
+                ValueListener v_Listener = i_RTemplate.getListener(v_ValueName);
+                
+                if ( v_Listener != null )
+                {
+                    v_Value = Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_DataIndex ,i_Datas ,v_Value));
+                }
+                
                 i_DataCell.setCellValue(v_Value.toString());
             }
             else 
