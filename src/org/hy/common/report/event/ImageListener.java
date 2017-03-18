@@ -212,14 +212,17 @@ public class ImageListener implements ValueListener
         Drawing<?>   v_Drawing      = i_DataCell.getSheet().createDrawingPatriarch();
         ClientAnchor v_ClientAnchor = null;
         int          v_PictureType  = 0;
+        int          v_OffsetRow    = i_RTemplate.getRowCountTitle() * (i_DataIndex <= 1 ? 0 : 1) 
+                                    + i_RTemplate.getRowCountData() * (i_DataIndex - 1)
+                                    - (i_DataIndex <= 1 ? 0 : 1);
         
         if ( v_Drawing instanceof HSSFPatriarch )
         {
             v_ClientAnchor = new HSSFClientAnchor(0 , 0 , 255 ,255
                                                  ,this.beginColumn 
-                                                 ,this.beginRow
+                                                 ,this.beginRow + v_OffsetRow
                                                  ,this.endColumn
-                                                 ,this.endRow);
+                                                 ,this.endRow   + v_OffsetRow);
         }
         
         v_ClientAnchor.setAnchorType(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);

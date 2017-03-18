@@ -18,6 +18,16 @@
 			<totalBeginRow>60</totalBeginRow>
 			<totalEndRow>61</totalEndRow>
 			<dataClass>org.hy.common.report.junit.ExcelBean</dataClass>
+			
+			<call name="addListener">
+				<listener class="org.hy.common.report.event.ImageListener">
+					<valueName>:image</valueName>
+					<beginRow>29</beginRow>
+					<endRow>43</endRow>
+					<beginColumn>0</beginColumn>
+					<endColumn>8</endColumn>
+				</listener>
+			</call>
 		</template>
 		
 	</xconfig>

@@ -57,6 +57,7 @@ public class JU_ExcelHelp
             v_Bean.setAge(i);
             v_Bean.setName("Name " + i);
             v_Bean.setDate(new Date());
+            v_Bean.setImage("/Users/hy/WSS/WorkSpace_SearchDesktop/hy.common.report/images/" + i + ".jpg");
             
             v_Ret.add(v_Bean);
         }

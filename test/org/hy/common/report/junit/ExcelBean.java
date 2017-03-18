@@ -13,6 +13,8 @@ public class ExcelBean
     private Date    date;
     
     private Integer age;
+    
+    private String  image;
 
 
     
@@ -49,6 +51,18 @@ public class ExcelBean
     public void setAge(Integer age)
     {
         this.age = age;
+    }
+
+    
+    public String getImage()
+    {
+        return image;
+    }
+
+    
+    public void setImage(String image)
+    {
+        this.image = image;
     }
     
 }
