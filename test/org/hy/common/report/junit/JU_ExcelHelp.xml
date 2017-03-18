@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportTemplate">
+			<excelFileName>classpath:JU_ExcelHelp.xls</excelFileName>
+			<titleBeginRow>0</titleBeginRow>
+			<dataBeginRow>1</dataBeginRow>
+			<dataEndRow>59</dataEndRow>
+			<dataClass>org.hy.common.report.junit.ExcelBean</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>

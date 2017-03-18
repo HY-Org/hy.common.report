@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.file"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/curvesapi-1.04.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/poi-3.16-beta2.jar" sourcepath="/Users/hy/WSS/WorkSpace_SearchDesktop/poi-src-3.16-beta2-20170202.zip"/>
+	<classpathentry kind="lib" path="lib/poi-excelant-3.16-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-3.16-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.16-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/poi-scratchpad-3.16-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/xjava.jar" sourcepath="/SearchDesktop"/>
+	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
