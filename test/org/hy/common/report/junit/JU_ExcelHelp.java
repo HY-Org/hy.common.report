@@ -91,7 +91,7 @@ public class JU_ExcelHelp
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTemplate");
         
-        ExcelHelp.save(ExcelHelp.write("测试" ,this.getDatas(1) ,v_RTemplate) ,"/Users/hy/Downloads/测试.xls");
+        ExcelHelp.save(ExcelHelp.write("测试" ,this.getDatas(1) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/测试.xls");
     }
     
 }

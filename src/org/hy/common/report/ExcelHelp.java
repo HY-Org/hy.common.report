@@ -13,7 +13,6 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
 import org.apache.poi.hssf.usermodel.HSSFPictureData;
@@ -23,14 +22,17 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.bean.RWorkbook;
 
 
 
@@ -204,6 +206,20 @@ public class ExcelHelp
                         v_Ret.put(v_Value.trim() ,null);
                     }
                 }
+                else if ( v_Cell.getCellTypeEnum() == CellType.NUMERIC )
+                {
+                    if ( HSSFDateUtil.isCellDateFormatted(v_Cell) ) 
+                    {
+                        if ( v_Cell.getDateCellValue() != null )
+                        {
+                            v_Ret.put((new Date(v_Cell.getDateCellValue())).getFull() ,null);
+                        }
+                    } 
+                    else 
+                    {
+                        v_Ret.put(String.valueOf(v_Cell.getNumericCellValue()) ,null);
+                    }
+                }
             }
         }
         
@@ -294,9 +310,9 @@ public class ExcelHelp
      *
      * @return
      */
-    public final static HSSFWorkbook createWorkbook()
+    public final static RWorkbook createWorkbook()
     {
-        return new HSSFWorkbook();
+        return new RWorkbook(new HSSFWorkbook());
     }
     
     
@@ -312,9 +328,9 @@ public class ExcelHelp
      * @param i_SheetName  工作表名称(当为空时，自动生成)
      * @return
      */
-    public final static HSSFSheet createSheet(HSSFWorkbook i_Workbook ,String i_SheetName) 
+    public final static HSSFSheet createSheet(RWorkbook i_Workbook ,String i_SheetName) 
     {
-        int    v_SheetCount = i_Workbook.getNumberOfSheets();
+        int    v_SheetCount = i_Workbook.getWorkbook().getNumberOfSheets();
         String v_SheetName  = i_SheetName;
         
         if ( Help.isNull(v_SheetName) ) 
@@ -322,7 +338,7 @@ public class ExcelHelp
             v_SheetName = "sheet" + (v_SheetCount + 1);
         }
         
-        return i_Workbook.createSheet(v_SheetName);
+        return (HSSFSheet)i_Workbook.getWorkbook().createSheet(v_SheetName);
     }
     
     
@@ -339,7 +355,7 @@ public class ExcelHelp
      * @param i_RTemplate  模板信息对象
      * @return
      */
-    public final static HSSFWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
     {
         return write(null ,i_SheetName ,i_Datas ,i_RTemplate);
     }
@@ -359,34 +375,33 @@ public class ExcelHelp
      * @param i_RTemplate  模板信息对象
      * @return
      */
-    public final static HSSFWorkbook write(HSSFWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
     {
-        HSSFWorkbook v_Workbook      = i_Workbook;
-        HSSFSheet    v_DataSheet     = null;
-        HSSFSheet    v_TemplateSheet = null;
+        RWorkbook v_DataWorkbook  = i_Workbook;
+        HSSFSheet v_DataSheet     = null;
+        HSSFSheet v_TemplateSheet = null;
         
-        if ( null == v_Workbook )
+        if ( null == v_DataWorkbook )
         {
-            v_Workbook = createWorkbook();
+            v_DataWorkbook = createWorkbook();
         }
         
-        v_DataSheet     = createSheet(v_Workbook ,i_SheetName);
+        v_DataSheet     = createSheet(v_DataWorkbook ,i_SheetName);
         v_TemplateSheet = i_RTemplate.getTemplateSheet();
         
-        copyFonts(v_TemplateSheet.getWorkbook() ,v_Workbook);
         // 数据工作表的整体(所有)列的列宽，复制于模板
         copyColumnsWidth(v_TemplateSheet ,v_DataSheet);
         // 数据工作表的打印区域，复制于模板
         copyPrintSetup  (v_TemplateSheet ,v_DataSheet);
         
-        writeTitle(v_DataSheet ,i_Datas ,i_RTemplate);
+        writeTitle(v_DataWorkbook ,v_DataSheet ,i_Datas ,i_RTemplate);
         
         for (int v_DataIndex=1; v_DataIndex<=i_Datas.size(); v_DataIndex++)
         {
-            writeData(v_DataSheet ,v_DataIndex ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+            writeData(v_DataWorkbook ,v_DataSheet ,v_DataIndex ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
         }
         
-        return v_Workbook;
+        return v_DataWorkbook;
     }
     
     
@@ -456,12 +471,12 @@ public class ExcelHelp
         v_DataPrintSetup.setPaperSize(    v_TemplatePrintSetup.getPaperSize());  // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
         
         // 设置打印参数
-        i_TemplateSheet.setDisplayGridlines(false);
-        i_TemplateSheet.setPrintGridlines(  false);
-        i_TemplateSheet.setMargin(HSSFSheet.TopMargin    ,i_DataSheet.getMargin(HSSFSheet.TopMargin));    // 页边距（上）
-        i_TemplateSheet.setMargin(HSSFSheet.BottomMargin ,i_DataSheet.getMargin(HSSFSheet.BottomMargin)); // 页边距（下）
-        i_TemplateSheet.setMargin(HSSFSheet.LeftMargin   ,i_DataSheet.getMargin(HSSFSheet.LeftMargin));   // 页边距（左）
-        i_TemplateSheet.setMargin(HSSFSheet.RightMargin  ,i_DataSheet.getMargin(HSSFSheet.RightMargin));  // 页边距（右）
+        i_DataSheet.setDisplayGridlines(false);
+        i_DataSheet.setPrintGridlines(  false);
+        i_DataSheet.setMargin(HSSFSheet.TopMargin    ,i_DataSheet.getMargin(HSSFSheet.TopMargin));    // 页边距（上）
+        i_DataSheet.setMargin(HSSFSheet.BottomMargin ,i_DataSheet.getMargin(HSSFSheet.BottomMargin)); // 页边距（下）
+        i_DataSheet.setMargin(HSSFSheet.LeftMargin   ,i_DataSheet.getMargin(HSSFSheet.LeftMargin));   // 页边距（左）
+        i_DataSheet.setMargin(HSSFSheet.RightMargin  ,i_DataSheet.getMargin(HSSFSheet.RightMargin));  // 页边距（右）
     }
     
     
@@ -477,7 +492,7 @@ public class ExcelHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    protected final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
         
@@ -497,7 +512,7 @@ public class ExcelHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    protected final static void copyMergedRegionsData(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) + i_RTemplate.getRowCountData() * (i_Offset - 1);
         
@@ -517,7 +532,7 @@ public class ExcelHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    protected final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
         // 通过数据计算合计
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) + i_RTemplate.getRowCountData() * i_Offset;
@@ -586,7 +601,7 @@ public class ExcelHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyImagesTitle(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    protected final static void copyImagesTitle(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
         
@@ -606,7 +621,7 @@ public class ExcelHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyImagesData(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    protected final static void copyImagesData(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) + i_RTemplate.getRowCountData() * (i_Offset - 1);
         
@@ -626,7 +641,7 @@ public class ExcelHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyImagesTotal(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    protected final static void copyImagesTotal(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
     {
         // 通过数据计算合计
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) + i_RTemplate.getRowCountData() * i_Offset;
@@ -700,7 +715,7 @@ public class ExcelHelp
      * @param fromRow
      * @param toRow
      */
-    public final static void copyRow(RTemplate i_RTemplate ,HSSFRow i_TemplateRow ,HSSFRow i_DataRow ,Object i_Datas) 
+    protected final static void copyRow(RTemplate i_RTemplate ,HSSFRow i_TemplateRow ,RWorkbook i_DataWorkbook ,HSSFRow i_DataRow ,Object i_Datas) 
     {
         i_DataRow.setHeight(    i_TemplateRow.getHeight());
         i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
@@ -720,30 +735,33 @@ public class ExcelHelp
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
             
-            copyCell(i_RTemplate ,v_TemplateCell ,v_DataCell ,i_Datas);
+            copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,i_Datas);
         }
     }
     
     
     
     /**
-     * 复制单元格
+     * 复制单位格
      * 
-     * @param srcCell
-     * @param distCell
-     * @param copyValueFlag
-     *            true则连同cell的内容一起复制
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-18
+     * @version     v1.0
+     *
+     * @param i_RTemplate
+     * @param i_TemplateCell
+     * @param i_DataWorkbook
+     * @param i_DataCell
+     * @param i_Datas
      */
-    public final static void copyCell(RTemplate i_RTemplate ,HSSFCell i_TemplateCell ,HSSFCell i_DataCell ,Object i_Datas)
+    protected final static void copyCell(RTemplate i_RTemplate ,HSSFCell i_TemplateCell ,RWorkbook i_DataWorkbook ,HSSFCell i_DataCell ,Object i_Datas)
     {
         // 复制样式
-        HSSFCellStyle v_CellStyle = (HSSFCellStyle)i_DataCell.getSheet().getWorkbook().createCellStyle();
-        copyCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle() ,v_CellStyle);
-        i_DataCell.setCellStyle(v_CellStyle);
-        
+        i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
+
+        // 复制评论
         if ( i_TemplateCell.getCellComment() != null ) 
         {
-            // 复制评论
             i_DataCell.setCellComment(i_TemplateCell.getCellComment());
         }
         
@@ -774,7 +792,7 @@ public class ExcelHelp
             }
             else 
             {
-                copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataCell);
+                copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell);
             }
         } 
         else if ( v_CellType == CellType.BOOLEAN ) 
@@ -793,7 +811,7 @@ public class ExcelHelp
     
     
     
-    public final static void copyRichTextStyle(RTemplate i_RTemplate ,HSSFRichTextString i_TemplateRichText ,HSSFCell i_DataCell) 
+    protected final static void copyRichTextStyle(RTemplate i_RTemplate ,HSSFRichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,HSSFCell i_DataCell) 
     {
         HSSFWorkbook v_TemplateWorkbook = i_RTemplate.getTemplateSheet().getWorkbook();
         int          v_FontCount        = i_TemplateRichText.numFormattingRuns();
@@ -806,16 +824,9 @@ public class ExcelHelp
             
             for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
             {
-                int      v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
-                short    v_IDX          = i_TemplateRichText.getFontOfFormattingRun( v_FontIndex);
-                HSSFFont v_TemplateFont = v_TemplateWorkbook.getFontAt(v_IDX);
-                HSSFFont v_DataFont     = i_DataCell.getSheet().getWorkbook().getFontAt(v_IDX);
-                
-                if ( v_DataFont == null )
-                {
-                    v_DataFont = i_DataCell.getSheet().getWorkbook().createFont();
-                    copyFont(v_TemplateFont ,v_DataFont);
-                }
+                int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
+                short v_IDX        = i_TemplateRichText.getFontOfFormattingRun( v_FontIndex);
+                Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
                 
                 v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
                 v_TextLen = v_FirstIndex;
@@ -833,98 +844,71 @@ public class ExcelHelp
     
     
     /**
-     * 复制工作薄中的所有字体
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2017-03-18
-     * @version     v1.0
-     *
-     * @param i_TemplateWorkbook  模板工作薄
-     * @param i_DataWorkbook      数据工作薄
-     */
-    public final static void copyFonts(Workbook i_TemplateWorkbook ,Workbook i_DataWorkbook)
-    {
-        short v_FontCount = i_TemplateWorkbook.getNumberOfFonts();
-        
-        if ( i_DataWorkbook.getNumberOfFonts() >= v_FontCount ) 
-        {
-            return;
-        }
-        
-        for (short v_FontIndex=0; v_FontIndex<v_FontCount; v_FontIndex++)
-        {
-            Font v_TemplateFont = i_TemplateWorkbook.getFontAt(v_FontIndex);
-            Font v_DataFont     = i_DataWorkbook.createFont();
-            
-            copyFont(v_TemplateFont ,v_DataFont);
-        }
-    }
-    
-    
-    
-    /**
      * 复制字体
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-18
      * @version     v1.0
      *
-     * @param i_TemplateFont  模板字体
-     * @param i_DataFont      数据字体
+     * @param i_FormFont  源字体
+     * @param i_ToFont    目标字体
      */
-    public final static void copyFont(Font i_TemplateFont ,Font i_DataFont)
+    public final static void copyFont(Font i_FormFont ,Font i_ToFont)
     {
-        i_DataFont.setBold(              i_TemplateFont.getBold());
-        i_DataFont.setCharSet(           i_TemplateFont.getCharSet());
-        i_DataFont.setColor(             i_TemplateFont.getColor());
-        i_DataFont.setFontHeight(        i_TemplateFont.getFontHeight());
-        i_DataFont.setFontHeightInPoints(i_TemplateFont.getFontHeightInPoints());
-        i_DataFont.setFontName(          i_TemplateFont.getFontName());
-        i_DataFont.setItalic(            i_TemplateFont.getItalic());
-        i_DataFont.setStrikeout(         i_TemplateFont.getStrikeout());
-        i_DataFont.setTypeOffset(        i_TemplateFont.getTypeOffset());
-        i_DataFont.setUnderline(         i_TemplateFont.getUnderline());
+        i_ToFont.setBold(              i_FormFont.getBold());
+        i_ToFont.setCharSet(           i_FormFont.getCharSet());
+        i_ToFont.setColor(             i_FormFont.getColor());
+        i_ToFont.setFontHeight(        i_FormFont.getFontHeight());
+        i_ToFont.setFontHeightInPoints(i_FormFont.getFontHeightInPoints());
+        i_ToFont.setFontName(          i_FormFont.getFontName());
+        i_ToFont.setItalic(            i_FormFont.getItalic());
+        i_ToFont.setStrikeout(         i_FormFont.getStrikeout());
+        i_ToFont.setTypeOffset(        i_FormFont.getTypeOffset());
+        i_ToFont.setUnderline(         i_FormFont.getUnderline());
     }
     
     
     
     /**
-     * 复制一个单元格样式到目的单元格样式
+     * 复制单元格样式
      * 
-     * @param fromStyle
-     * @param toStyle
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-18
+     * @version     v1.0
+     *
+     * @param i_FormCellStyle  源单元格样式
+     * @param i_ToCellStyle    目标单元格样式
      */
-    public final static void copyCellStyle(RTemplate i_RTemplate ,HSSFCellStyle i_TemplateCellStyle ,HSSFCellStyle i_DataCellStyle)
+    public final static void copyCellStyle(CellStyle i_FormCellStyle ,CellStyle i_ToCellStyle)
     {
-        i_DataCellStyle.setAlignment(i_TemplateCellStyle.getAlignmentEnum());
+        i_ToCellStyle.setAlignment(          i_FormCellStyle.getAlignmentEnum());
         
         //边框和边框颜色
-        i_DataCellStyle.setBorderBottom(i_TemplateCellStyle.getBorderBottomEnum());
-        i_DataCellStyle.setBorderLeft(i_TemplateCellStyle.getBorderLeftEnum());
-        i_DataCellStyle.setBorderRight(i_TemplateCellStyle.getBorderRightEnum());
-        i_DataCellStyle.setBorderTop(i_TemplateCellStyle.getBorderTopEnum());
-        i_DataCellStyle.setBottomBorderColor(i_TemplateCellStyle.getBottomBorderColor());
-        i_DataCellStyle.setDataFormat(i_TemplateCellStyle.getDataFormat());
+        i_ToCellStyle.setBorderBottom(       i_FormCellStyle.getBorderBottomEnum());
+        i_ToCellStyle.setBorderLeft(         i_FormCellStyle.getBorderLeftEnum());
+        i_ToCellStyle.setBorderRight(        i_FormCellStyle.getBorderRightEnum());
+        i_ToCellStyle.setBorderTop(          i_FormCellStyle.getBorderTopEnum());
+        i_ToCellStyle.setBottomBorderColor(  i_FormCellStyle.getBottomBorderColor());
+        i_ToCellStyle.setDataFormat(         i_FormCellStyle.getDataFormat());
         
         //背景和前景
-        i_DataCellStyle.setFillBackgroundColor(i_TemplateCellStyle.getFillBackgroundColor());
-        i_DataCellStyle.setFillForegroundColor(i_TemplateCellStyle.getFillForegroundColor());
-        i_DataCellStyle.setFillPattern(i_TemplateCellStyle.getFillPatternEnum());
-        i_DataCellStyle.setFont(i_TemplateCellStyle.getFont(i_RTemplate.getTemplateSheet().getWorkbook()));
-        i_DataCellStyle.setHidden(i_TemplateCellStyle.getHidden());
+        i_ToCellStyle.setFillBackgroundColor(i_FormCellStyle.getFillBackgroundColor());
+        i_ToCellStyle.setFillForegroundColor(i_FormCellStyle.getFillForegroundColor());
+        i_ToCellStyle.setFillPattern(        i_FormCellStyle.getFillPatternEnum());
+        i_ToCellStyle.setHidden(             i_FormCellStyle.getHidden());
         
         //首行缩进
-        i_DataCellStyle.setIndention(i_TemplateCellStyle.getIndention());
-        i_DataCellStyle.setLeftBorderColor(i_TemplateCellStyle.getLeftBorderColor());
-        i_DataCellStyle.setLocked(i_TemplateCellStyle.getLocked());
-        i_DataCellStyle.setRightBorderColor(i_TemplateCellStyle.getRightBorderColor());
+        i_ToCellStyle.setIndention(          i_FormCellStyle.getIndention());
+        i_ToCellStyle.setLeftBorderColor(    i_FormCellStyle.getLeftBorderColor());
+        i_ToCellStyle.setLocked(             i_FormCellStyle.getLocked());
+        i_ToCellStyle.setRightBorderColor(   i_FormCellStyle.getRightBorderColor());
         
         //旋转
-        i_DataCellStyle.setShrinkToFit(i_TemplateCellStyle.getShrinkToFit());
-        i_DataCellStyle.setRotation(i_TemplateCellStyle.getRotation());
-        i_DataCellStyle.setTopBorderColor(i_TemplateCellStyle.getTopBorderColor());
-        i_DataCellStyle.setVerticalAlignment(i_TemplateCellStyle.getVerticalAlignmentEnum());
-        i_DataCellStyle.setWrapText(i_TemplateCellStyle.getWrapText());
+        i_ToCellStyle.setShrinkToFit(        i_FormCellStyle.getShrinkToFit());
+        i_ToCellStyle.setRotation(           i_FormCellStyle.getRotation());
+        i_ToCellStyle.setTopBorderColor(     i_FormCellStyle.getTopBorderColor());
+        i_ToCellStyle.setVerticalAlignment(  i_FormCellStyle.getVerticalAlignmentEnum());
+        i_ToCellStyle.setWrapText(           i_FormCellStyle.getWrapText());
     }
     
     
@@ -936,12 +920,13 @@ public class ExcelHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_DataSheet  数据工作表
-     * @param i_DataIndex  数据索引号。下标从 1 开始
-     * @param i_Datas      数据
-     * @param i_RTemplate  报表模板对象
+     * @param i_DataWorkbook  数据工作薄
+     * @param i_DataSheet     数据工作表
+     * @param i_DataIndex     数据索引号。下标从 1 开始
+     * @param i_Datas         数据
+     * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTitle(HSSFSheet i_DataSheet ,Object i_Datas ,RTemplate i_RTemplate) 
+    protected final static void writeTitle(RWorkbook i_DataWorkbook ,HSSFSheet i_DataSheet ,Object i_Datas ,RTemplate i_RTemplate) 
     {
         HSSFSheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int       v_TemplateRowCount = i_RTemplate.getRowCountTitle();
@@ -965,7 +950,7 @@ public class ExcelHelp
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            copyRow(i_RTemplate ,v_TemplateRow ,v_DataRow ,i_Datas);
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,v_DataRow ,i_Datas);
         }
     } 
     
@@ -978,12 +963,13 @@ public class ExcelHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_DataSheet  数据工作表
-     * @param i_DataIndex  数据索引号。下标从 1 开始
-     * @param i_Datas      数据
-     * @param i_RTemplate  报表模板对象
+     * @param i_DataWorkbook  数据工作薄
+     * @param i_DataSheet     数据工作表
+     * @param i_DataIndex     数据索引号。下标从 1 开始
+     * @param i_Datas         数据
+     * @param i_RTemplate     报表模板对象
      */
-    public final static void writeData(HSSFSheet i_DataSheet ,int i_DataIndex, Object i_Datas ,RTemplate i_RTemplate) 
+    protected final static void writeData(RWorkbook i_DataWorkbook ,HSSFSheet i_DataSheet ,int i_DataIndex, Object i_Datas ,RTemplate i_RTemplate) 
     {
         HSSFSheet v_TemplateSheet      = i_RTemplate.getTemplateSheet();
         int       v_TemplateTitleCount = i_RTemplate.getRowCountTitle();
@@ -1008,7 +994,7 @@ public class ExcelHelp
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            copyRow(i_RTemplate ,v_TemplateRow ,v_DataRow ,i_Datas);
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,v_DataRow ,i_Datas);
         }
     }
     
