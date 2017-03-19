@@ -9,7 +9,7 @@ __主导思想：__ 由Excel模板文件 + XML配置文件即可定义一张报�
   
   
   
-XML配置举例
+__XML配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -51,7 +51,7 @@ XML配置举例
   
   
   
-生成并保存报表文件的Java代码举例
+__报表生成及保存的Java代码举例__
 ```java
 // 获取报表模板对象
 RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTemplate");
