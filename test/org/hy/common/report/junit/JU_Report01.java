@@ -68,9 +68,11 @@ public class JU_Report01
     @Test
     public void test_Report01()
     {
-        RTemplate v_RTemplate = (RTemplate)XJava.getObject("Report01");
+        RTemplate v_RTemplate01 = (RTemplate)XJava.getObject("Report01");
+        RTemplate v_RTemplate02 = (RTemplate)XJava.getObject("Report02");
         
-        ExcelHelp.save(ReportHelp.write("Report01" ,this.getDatas(10) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/Report01");
+        ExcelHelp.save(ReportHelp.write("Report01" ,this.getDatas(10) ,v_RTemplate01).getWorkbook() ,"/Users/hy/Downloads/Report01");
+        ExcelHelp.save(ReportHelp.write("Report01" ,this.getDatas(10) ,v_RTemplate02).getWorkbook() ,"/Users/hy/Downloads/Report01");
     }
     
 }

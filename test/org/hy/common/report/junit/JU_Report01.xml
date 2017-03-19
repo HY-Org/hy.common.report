@@ -32,6 +32,30 @@
 			</call>
 		</template>
 		
+		
+		
+		<template id="Report02">
+			<name>模板名称02</name>
+			<excelFileName>classpath:JU_Report01.xlsx</excelFileName>
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>3</titleEndRow>
+			<dataBeginRow>4</dataBeginRow>
+			<dataEndRow>18</dataEndRow>
+			<totalBeginRow>19</totalBeginRow>
+			<totalEndRow>20</totalEndRow>
+			<dataClass>org.hy.common.report.junit.ExcelBean</dataClass>
+			
+			<call name="addListener">
+				<listener class="org.hy.common.report.event.ImageListener">
+					<valueName>:image</valueName>
+					<beginRow>4</beginRow>
+					<endRow>18</endRow>
+					<beginColumn>0</beginColumn>
+					<endColumn>3</endColumn>
+				</listener>
+			</call>
+		</template>
+		
 	</xconfig>
 	
 </config>

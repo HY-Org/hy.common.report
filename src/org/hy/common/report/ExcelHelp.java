@@ -349,11 +349,26 @@ public class ExcelHelp
         }
         
         short v_ColumnCount = v_Row.getLastCellNum();
-
-        for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+        
+        if ( i_FormSheet instanceof HSSFSheet )
         {
-            int v_Width = i_FormSheet.getColumnWidth(v_ColumnIndex);
-            i_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
+            HSSFSheet v_ToSheet = (HSSFSheet)i_ToSheet;
+            
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            {
+                int v_Width = i_FormSheet.getColumnWidth(v_ColumnIndex);
+                v_ToSheet.setColumnWidth(v_ColumnIndex ,(int)(v_Width * 1.0905));
+            }
+        }
+        else if ( i_FormSheet instanceof XSSFSheet )
+        {
+            XSSFSheet v_ToSheet = (XSSFSheet)i_ToSheet;
+            
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            {
+                int v_Width = i_FormSheet.getColumnWidth(v_ColumnIndex);
+                v_ToSheet.setColumnWidth(v_ColumnIndex ,(int)(v_Width * 1.0905));
+            }
         }
     }
     
@@ -494,9 +509,9 @@ public class ExcelHelp
                         }
                         
                         HSSFPatriarch    v_DataPatriarch = ((HSSFSheet)i_ToSheet).createDrawingPatriarch();
-                        HSSFClientAnchor v_DataAnchor    = new HSSFClientAnchor(v_Anchor.getDx1()
+                        HSSFClientAnchor v_DataAnchor    = new HSSFClientAnchor(Math.min(v_Anchor.getDx1() ,1023)
                                                                                ,Math.min(v_Anchor.getDy1() ,255)
-                                                                               ,v_Anchor.getDx2()
+                                                                               ,Math.min(v_Anchor.getDx2() ,1023)
                                                                                ,Math.min(v_Anchor.getDy2() ,255)
                                                                                ,v_Anchor.getCol1()
                                                                                ,v_Anchor.getRow1() + i_OffsetRow
@@ -536,9 +551,9 @@ public class ExcelHelp
                         }
                         
                         XSSFDrawing      v_DataPatriarch = ((XSSFSheet)i_ToSheet).createDrawingPatriarch();
-                        XSSFClientAnchor v_DataAnchor    = new XSSFClientAnchor(v_Anchor.getDx1()
+                        XSSFClientAnchor v_DataAnchor    = new XSSFClientAnchor(Math.min(v_Anchor.getDx1() ,1023)
                                                                                ,Math.min(v_Anchor.getDy1() ,255)
-                                                                               ,v_Anchor.getDx2()
+                                                                               ,Math.min(v_Anchor.getDx2() ,1023)
                                                                                ,Math.min(v_Anchor.getDy2() ,255)
                                                                                ,v_Anchor.getCol1()
                                                                                ,v_Anchor.getRow1() + i_OffsetRow
