@@ -6,9 +6,9 @@
 
 
 __主导思想：__ 由Excel模板文件 + XML配置文件即可定义一张报表。实现快速、高效、简单的开发报表。
-
-
-
+ 
+ 
+ 
 XML配置举例
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -47,4 +47,13 @@ XML配置举例
 	</xconfig>
 	
 </config>
+```
+
+
+生成并保存报表文件的Java代码举例
+```java
+	// 获取报表模板对象
+	RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTemplate");
+        
+	ExcelHelp.save(ReportHelp.write("Excel工作表名称" ,数据集合 ,v_RTemplate).getWorkbook() ,"Excel报表保存目录及名称");
 ```
