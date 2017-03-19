@@ -7,8 +7,10 @@ import org.apache.poi.hssf.usermodel.HSSFComment;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
@@ -20,6 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Help;
 import org.hy.common.report.bean.RTemplate;
@@ -116,6 +119,8 @@ public class ReportHelp
         ExcelHelp.copyColumnsWidth(v_TemplateSheet ,v_DataSheet);
         // 数据工作表的打印区域，复制于模板
         ExcelHelp.copyPrintSetup  (v_TemplateSheet ,v_DataSheet);
+        // 数据工作表的整体(所有)列的样式，复制于模板
+        copyColumnsStyle(i_RTemplate ,v_TemplateSheet ,v_DataWorkbook ,v_DataSheet);
         
         int v_DataIndex = 1;
         int v_DataCount = i_Datas.size();
@@ -445,6 +450,57 @@ public class ReportHelp
         i_DataCell.setCellComment(v_DataComment);
         
         copyRichTextStyleComment(i_RTemplate ,v_TemplateComment.getString() ,i_DataWorkbook ,i_DataCell);
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的整体(所有)列的列样式到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-19
+     * @version     v1.0
+     *
+     * @param i_RTemplate      模板对象
+     * @param i_TemplateSheet  源工作表
+     * @param i_DataSheet      目标工作表
+     */
+    public final static void copyColumnsStyle(RTemplate i_RTemplate ,Sheet i_TemplateSheet ,RWorkbook i_DataWorkbook ,Sheet i_DataSheet) 
+    {
+        Row v_Row = i_TemplateSheet.getRow(0);
+        if ( null == v_Row ) 
+        {
+            return;
+        }
+        
+        short v_ColumnCount = v_Row.getLastCellNum();
+        
+        if ( i_TemplateSheet instanceof HSSFSheet )
+        {
+            HSSFSheet v_DataSheet = (HSSFSheet)i_DataSheet;
+            
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            {
+                CellStyle v_ColumnStyle = i_TemplateSheet.getColumnStyle(v_ColumnIndex);
+                if ( v_ColumnStyle != null )
+                {
+                    v_DataSheet.setDefaultColumnStyle(v_ColumnIndex ,i_DataWorkbook.getCellStyle(i_RTemplate ,v_ColumnStyle.getIndex()));
+                }
+            }
+        }
+        else if ( i_TemplateSheet instanceof XSSFSheet )
+        {
+            XSSFSheet v_DataSheet = (XSSFSheet)i_DataSheet;
+            
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            {
+                CellStyle v_ColumnStyle = i_TemplateSheet.getColumnStyle(v_ColumnIndex);
+                if ( v_ColumnStyle != null )
+                {
+                    v_DataSheet.setDefaultColumnStyle(v_ColumnIndex ,i_DataWorkbook.getCellStyle(i_RTemplate ,v_ColumnStyle.getIndex()));
+                }
+            }
+        }
     }
     
     

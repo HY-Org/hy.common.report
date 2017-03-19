@@ -218,7 +218,7 @@ public class ImageListener implements ValueListener
         
         if ( v_Drawing instanceof HSSFPatriarch )
         {
-            v_ClientAnchor = new HSSFClientAnchor(0 , 0 , 255 ,255
+            v_ClientAnchor = new HSSFClientAnchor(0 ,0 ,0 ,0
                                                  ,this.beginColumn 
                                                  ,this.beginRow + v_OffsetRow
                                                  ,this.endColumn
@@ -226,14 +226,19 @@ public class ImageListener implements ValueListener
         }
         else if ( v_Drawing instanceof XSSFDrawing )
         {
-            v_ClientAnchor = new XSSFClientAnchor(0 , 0 , 255 ,255
+            v_ClientAnchor = new XSSFClientAnchor(0 ,0 ,0 ,0
                                                  ,this.beginColumn 
                                                  ,this.beginRow + v_OffsetRow
                                                  ,this.endColumn
-                                                 ,this.endRow   + v_OffsetRow);
+                                                 ,this.endRow    + v_OffsetRow);
+            
+//            ((XSSFClientAnchor)v_ClientAnchor).getFrom().setCol(this.beginColumn);
+//            ((XSSFClientAnchor)v_ClientAnchor).getFrom().setRow(this.beginRow + v_OffsetRow);
+//            ((XSSFClientAnchor)v_ClientAnchor).getTo()  .setCol(this.endColumn);
+//            ((XSSFClientAnchor)v_ClientAnchor).getTo()  .setRow(this.endRow   + v_OffsetRow);
         }
         
-        v_ClientAnchor.setAnchorType(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
+        v_ClientAnchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
         
         if ( "png".equals(v_ImageType) )
         {

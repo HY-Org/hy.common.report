@@ -36,6 +36,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
 
 
@@ -337,37 +338,39 @@ public class ExcelHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_FormSheet  源工作表
+     * @param i_FromSheet  源工作表
      * @param i_ToSheet    目标工作表
      */
-    public final static void copyColumnsWidth(Sheet i_FormSheet ,Sheet i_ToSheet) 
+    public final static void copyColumnsWidth(Sheet i_FromSheet ,Sheet i_ToSheet) 
     {
-        Row v_Row = i_FormSheet.getRow(0);
+        Row v_Row = i_FromSheet.getRow(0);
         if ( null == v_Row ) 
         {
             return;
         }
         
+        i_ToSheet.setDefaultColumnWidth(i_FromSheet.getDefaultColumnWidth());
+        
         short v_ColumnCount = v_Row.getLastCellNum();
         
-        if ( i_FormSheet instanceof HSSFSheet )
+        if ( i_FromSheet instanceof HSSFSheet )
         {
             HSSFSheet v_ToSheet = (HSSFSheet)i_ToSheet;
             
             for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
             {
-                int v_Width = i_FormSheet.getColumnWidth(v_ColumnIndex);
-                v_ToSheet.setColumnWidth(v_ColumnIndex ,(int)(v_Width * 1.0905));
+                int v_Width = i_FromSheet.getColumnWidth(v_ColumnIndex);
+                v_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
             }
         }
-        else if ( i_FormSheet instanceof XSSFSheet )
+        else if ( i_FromSheet instanceof XSSFSheet )
         {
             XSSFSheet v_ToSheet = (XSSFSheet)i_ToSheet;
             
             for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
             {
-                int v_Width = i_FormSheet.getColumnWidth(v_ColumnIndex);
-                v_ToSheet.setColumnWidth(v_ColumnIndex ,(int)(v_Width * 1.0905));
+                int v_Width = i_FromSheet.getColumnWidth(v_ColumnIndex);
+                v_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
             }
         }
     }
@@ -381,33 +384,33 @@ public class ExcelHelp
      * @createDate  2017-03-17
      * @version     v1.0
      * 
-     * @param i_FormSheet  源工作表
+     * @param i_FromSheet  源工作表
      * @param i_ToSheet    目标工作表
      */
-    public final static void copyPrintSetup(Sheet i_FormSheet ,Sheet i_ToSheet) 
+    public final static void copyPrintSetup(Sheet i_FromSheet ,Sheet i_ToSheet) 
     {
-        PrintSetup v_FormPrintSetup = i_FormSheet.getPrintSetup();
+        PrintSetup v_FromPrintSetup = i_FromSheet.getPrintSetup();
         PrintSetup v_ToPrintSetup   = i_ToSheet    .getPrintSetup();
         
-        v_ToPrintSetup.setCopies(       v_FormPrintSetup.getCopies());
-        v_ToPrintSetup.setDraft(        v_FormPrintSetup.getDraft());
-        v_ToPrintSetup.setFitHeight(    v_FormPrintSetup.getFitHeight());
-        v_ToPrintSetup.setFitWidth(     v_FormPrintSetup.getFitWidth());
-        v_ToPrintSetup.setFooterMargin( v_FormPrintSetup.getFooterMargin());
-        v_ToPrintSetup.setHeaderMargin( v_FormPrintSetup.getHeaderMargin());
-        v_ToPrintSetup.setHResolution(  v_FormPrintSetup.getHResolution());
-        v_ToPrintSetup.setLandscape(    v_FormPrintSetup.getLandscape());
-        v_ToPrintSetup.setLeftToRight(  v_FormPrintSetup.getLeftToRight());
-        v_ToPrintSetup.setNoColor(      v_FormPrintSetup.getNoColor());
-        v_ToPrintSetup.setNoOrientation(v_FormPrintSetup.getNoOrientation());
-        v_ToPrintSetup.setNotes(        v_FormPrintSetup.getNotes());
-        v_ToPrintSetup.setPageStart(    v_FormPrintSetup.getPageStart());
-        v_ToPrintSetup.setPaperSize(    v_FormPrintSetup.getPaperSize());
-        v_ToPrintSetup.setScale(        v_FormPrintSetup.getScale());
-        v_ToPrintSetup.setUsePage(      v_FormPrintSetup.getUsePage());
-        v_ToPrintSetup.setValidSettings(v_FormPrintSetup.getValidSettings());
-        v_ToPrintSetup.setVResolution(  v_FormPrintSetup.getVResolution());
-        v_ToPrintSetup.setPaperSize(    v_FormPrintSetup.getPaperSize());  // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
+        v_ToPrintSetup.setCopies(       v_FromPrintSetup.getCopies());
+        v_ToPrintSetup.setDraft(        v_FromPrintSetup.getDraft());
+        v_ToPrintSetup.setFitHeight(    v_FromPrintSetup.getFitHeight());
+        v_ToPrintSetup.setFitWidth(     v_FromPrintSetup.getFitWidth());
+        v_ToPrintSetup.setFooterMargin( v_FromPrintSetup.getFooterMargin());
+        v_ToPrintSetup.setHeaderMargin( v_FromPrintSetup.getHeaderMargin());
+        v_ToPrintSetup.setHResolution(  v_FromPrintSetup.getHResolution());
+        v_ToPrintSetup.setLandscape(    v_FromPrintSetup.getLandscape());
+        v_ToPrintSetup.setLeftToRight(  v_FromPrintSetup.getLeftToRight());
+        v_ToPrintSetup.setNoColor(      v_FromPrintSetup.getNoColor());
+        v_ToPrintSetup.setNoOrientation(v_FromPrintSetup.getNoOrientation());
+        v_ToPrintSetup.setNotes(        v_FromPrintSetup.getNotes());
+        v_ToPrintSetup.setPageStart(    v_FromPrintSetup.getPageStart());
+        v_ToPrintSetup.setPaperSize(    v_FromPrintSetup.getPaperSize());
+        v_ToPrintSetup.setScale(        v_FromPrintSetup.getScale());
+        v_ToPrintSetup.setUsePage(      v_FromPrintSetup.getUsePage());
+        v_ToPrintSetup.setValidSettings(v_FromPrintSetup.getValidSettings());
+        v_ToPrintSetup.setVResolution(  v_FromPrintSetup.getVResolution());
+        v_ToPrintSetup.setPaperSize(    v_FromPrintSetup.getPaperSize());  // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
         
         // 设置打印参数
         i_ToSheet.setDisplayGridlines(false);
@@ -427,19 +430,19 @@ public class ExcelHelp
      * @createDate  2017-03-17
      * @version     v1.0
      * 
-     * @param i_FormSheet     模板工作表
+     * @param i_FromSheet     模板工作表
      * @param i_AreaBeginRow  定指区域内的开始行号。包含此行。
      * @param i_AreaEndRow    定指区域内的结束行号。包含此行。
      * @param i_ToSheet       数据工作表
      * @param i_OffsetRow     偏移行号
      */
-    public final static void copyMergedRegions(Sheet i_FormSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet ,int i_OffsetRow) 
+    public final static void copyMergedRegions(Sheet i_FromSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet ,int i_OffsetRow) 
     {
-        int v_MergedRegionsCount = i_FormSheet.getNumMergedRegions();
+        int v_MergedRegionsCount = i_FromSheet.getNumMergedRegions();
         
         for (int i=0; i<v_MergedRegionsCount; i++) 
         {
-            CellRangeAddress v_CellRangeAddress = i_FormSheet.getMergedRegion(i);
+            CellRangeAddress v_CellRangeAddress = i_FromSheet.getMergedRegion(i);
             
             int v_FirstRow    = v_CellRangeAddress.getFirstRow();
             int v_LastRow     = v_CellRangeAddress.getLastRow();
@@ -475,27 +478,27 @@ public class ExcelHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_FormSheet     模板工作表
+     * @param i_FromSheet     模板工作表
      * @param i_AreaBeginRow  定指区域内的开始行号。包含此行。
      * @param i_AreaEndRow    定指区域内的结束行号。包含此行。
      * @param i_ToSheet       数据工作表
      * @param i_OffsetRow     偏移行号
      */
-    public final static void copyImages(Sheet i_FormSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet, int i_OffsetRow)
+    public final static void copyImages(Sheet i_FromSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet, int i_OffsetRow)
     {
-        if ( i_FormSheet instanceof HSSFSheet )
+        if ( i_FromSheet instanceof HSSFSheet )
         {
-            HSSFSheet             v_FormSheet = (HSSFSheet) i_FormSheet;
-            List<HSSFPictureData> v_Pictures  = v_FormSheet.getWorkbook().getAllPictures();
+            HSSFSheet             v_FromSheet = (HSSFSheet) i_FromSheet;
+            List<HSSFPictureData> v_Pictures  = v_FromSheet.getWorkbook().getAllPictures();
             
-            if ( i_FormSheet.getDrawingPatriarch() != null ) 
+            if ( i_FromSheet.getDrawingPatriarch() != null ) 
             {
-                for (HSSFShape v_Shape : v_FormSheet.getDrawingPatriarch().getChildren()) 
+                for (HSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getChildren()) 
                 {
                     if ( v_Shape instanceof HSSFPicture) 
                     {
-                        HSSFPicture      v_Picture       = (HSSFPicture)      v_Shape;
-                        HSSFClientAnchor v_Anchor        = (HSSFClientAnchor) v_Shape.getAnchor();
+                        HSSFPicture      v_Picture       = (HSSFPicture) v_Shape;
+                        HSSFClientAnchor v_Anchor        = v_Picture.getClientAnchor();
                         HSSFPictureData  v_PictureData   = v_Pictures.get(v_Picture.getPictureIndex() - 1);
                         
                         if ( i_AreaBeginRow <= v_Anchor.getRow1() 
@@ -508,36 +511,36 @@ public class ExcelHelp
                             continue;
                         }
                         
-                        HSSFPatriarch    v_DataPatriarch = ((HSSFSheet)i_ToSheet).createDrawingPatriarch();
-                        HSSFClientAnchor v_DataAnchor    = new HSSFClientAnchor(Math.min(v_Anchor.getDx1() ,1023)
-                                                                               ,Math.min(v_Anchor.getDy1() ,255)
-                                                                               ,Math.min(v_Anchor.getDx2() ,1023)
-                                                                               ,Math.min(v_Anchor.getDy2() ,255)
-                                                                               ,v_Anchor.getCol1()
-                                                                               ,v_Anchor.getRow1() + i_OffsetRow
-                                                                               ,v_Anchor.getCol2()
-                                                                               ,v_Anchor.getRow2() + i_OffsetRow);
+                        HSSFPatriarch    v_ToPatriarch = ((HSSFSheet)i_ToSheet).createDrawingPatriarch();
+                        HSSFClientAnchor v_ToAnchor    = new HSSFClientAnchor(Math.min(v_Anchor.getDx1() ,1023)
+                                                                             ,Math.min(v_Anchor.getDy1() ,255)
+                                                                             ,Math.min(v_Anchor.getDx2() ,1023)
+                                                                             ,Math.min(v_Anchor.getDy2() ,255)
+                                                                             ,v_Anchor.getCol1()
+                                                                             ,v_Anchor.getRow1() + i_OffsetRow
+                                                                             ,v_Anchor.getCol2()
+                                                                             ,v_Anchor.getRow2() + i_OffsetRow);
                         
-                        v_DataAnchor.setAnchorType(v_Anchor.getAnchorType());
+                        v_ToAnchor.setAnchorType(v_Anchor.getAnchorType());
                         
-                        v_DataPatriarch.createPicture(v_DataAnchor
-                                                     ,i_ToSheet.getWorkbook().addPicture(v_PictureData.getData() ,v_PictureData.getPictureType()));
+                        v_ToPatriarch.createPicture(v_ToAnchor
+                                                   ,i_ToSheet.getWorkbook().addPicture(v_PictureData.getData() ,v_PictureData.getPictureType()));
                     }
                 }
             }
         }
-        else if ( i_FormSheet instanceof XSSFSheet )
+        else if ( i_FromSheet instanceof XSSFSheet )
         {
-            XSSFSheet v_FormSheet = (XSSFSheet) i_FormSheet;
+            XSSFSheet v_FromSheet = (XSSFSheet) i_FromSheet;
             
-            if ( i_FormSheet.getDrawingPatriarch() != null ) 
+            if ( i_FromSheet.getDrawingPatriarch() != null ) 
             {
-                for (XSSFShape v_Shape : v_FormSheet.getDrawingPatriarch().getShapes()) 
+                for (XSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getShapes()) 
                 {
                     if ( v_Shape instanceof XSSFPicture) 
                     {
-                        XSSFPicture      v_Picture       = (XSSFPicture)      v_Shape;
-                        XSSFClientAnchor v_Anchor        = (XSSFClientAnchor) v_Shape.getAnchor();
+                        XSSFPicture      v_Picture       = (XSSFPicture) v_Shape;
+                        XSSFClientAnchor v_Anchor        = v_Picture.getClientAnchor();
                         XSSFPictureData  v_PictureData   = v_Picture.getPictureData();
                         
                         if ( i_AreaBeginRow <= v_Anchor.getRow1() 
@@ -550,24 +553,67 @@ public class ExcelHelp
                             continue;
                         }
                         
-                        XSSFDrawing      v_DataPatriarch = ((XSSFSheet)i_ToSheet).createDrawingPatriarch();
-                        XSSFClientAnchor v_DataAnchor    = new XSSFClientAnchor(Math.min(v_Anchor.getDx1() ,1023)
-                                                                               ,Math.min(v_Anchor.getDy1() ,255)
-                                                                               ,Math.min(v_Anchor.getDx2() ,1023)
-                                                                               ,Math.min(v_Anchor.getDy2() ,255)
-                                                                               ,v_Anchor.getCol1()
-                                                                               ,v_Anchor.getRow1() + i_OffsetRow
-                                                                               ,v_Anchor.getCol2()
-                                                                               ,v_Anchor.getRow2() + i_OffsetRow);
+                        XSSFDrawing      v_ToPatriarch = ((XSSFSheet)i_ToSheet).createDrawingPatriarch();
+                        XSSFClientAnchor v_ToAnchor    = new XSSFClientAnchor(v_Anchor.getDx1()
+                                                                             ,v_Anchor.getDy1()
+                                                                             ,v_Anchor.getDx2()
+                                                                             ,v_Anchor.getDy2()
+                                                                             ,v_Anchor.getCol1()
+                                                                             ,v_Anchor.getRow1() + i_OffsetRow
+                                                                             ,v_Anchor.getCol2()
+                                                                             ,v_Anchor.getRow2() + i_OffsetRow);
                         
-                        v_DataAnchor.setAnchorType(v_Anchor.getAnchorType());
+                        v_ToAnchor.setAnchorType(v_Anchor.getAnchorType());
                         
-                        v_DataPatriarch.createPicture(v_DataAnchor
-                                                     ,i_ToSheet.getWorkbook().addPicture(v_PictureData.getData() ,v_PictureData.getPictureType()));
+                        copyClientAnchor(v_Anchor ,v_ToAnchor ,i_OffsetRow);
+                        
+                        v_ToPatriarch.createPicture(v_ToAnchor
+                                                   ,i_ToSheet.getWorkbook().addPicture(v_PictureData.getData() ,v_PictureData.getPictureType()));
+                        
                     }
                 }
             }
         }
+    }
+    
+    
+    
+    /**
+     * 复制锚。用于2007的Excel文件
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-19
+     * @version     v1.0
+     *
+     * @param i_FromAnchor
+     * @param i_ToAnchor
+     * @param i_OffsetRow     偏移行号
+     */
+    public final static void copyClientAnchor(XSSFClientAnchor i_FromAnchor ,XSSFClientAnchor i_ToAnchor ,int i_OffsetRow)
+    {
+        copyCTMarker(i_FromAnchor.getFrom() ,i_ToAnchor.getFrom() ,i_OffsetRow);
+        copyCTMarker(i_FromAnchor.getTo()   ,i_ToAnchor.getTo()   ,i_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制标记。用于2007的Excel文件
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-19
+     * @version     v1.0
+     *
+     * @param i_FromCTMarker
+     * @param i_ToCTMarker
+     * @param i_OffsetRow     偏移行号
+     */
+    public final static void copyCTMarker(CTMarker i_FromCTMarker ,CTMarker i_ToCTMarker ,int i_OffsetRow)
+    {
+        i_ToCTMarker.setRow(   i_FromCTMarker.getRow() + i_OffsetRow);
+        i_ToCTMarker.setRowOff(i_FromCTMarker.getRowOff());
+        i_ToCTMarker.setCol(   i_FromCTMarker.getCol());
+        i_ToCTMarker.setColOff(i_FromCTMarker.getColOff());
     }
     
     
@@ -579,21 +625,21 @@ public class ExcelHelp
      * @createDate  2017-03-18
      * @version     v1.0
      *
-     * @param i_FormFont  源字体
+     * @param i_FromFont  源字体
      * @param i_ToFont    目标字体
      */
-    public final static void copyFont(Font i_FormFont ,Font i_ToFont)
+    public final static void copyFont(Font i_FromFont ,Font i_ToFont)
     {
-        i_ToFont.setBold(              i_FormFont.getBold());
-        i_ToFont.setCharSet(           i_FormFont.getCharSet());
-        i_ToFont.setColor(             i_FormFont.getColor());
-        i_ToFont.setFontHeight(        i_FormFont.getFontHeight());
-        i_ToFont.setFontHeightInPoints(i_FormFont.getFontHeightInPoints());
-        i_ToFont.setFontName(          i_FormFont.getFontName());
-        i_ToFont.setItalic(            i_FormFont.getItalic());
-        i_ToFont.setStrikeout(         i_FormFont.getStrikeout());
-        i_ToFont.setTypeOffset(        i_FormFont.getTypeOffset());
-        i_ToFont.setUnderline(         i_FormFont.getUnderline());
+        i_ToFont.setBold(              i_FromFont.getBold());
+        i_ToFont.setCharSet(           i_FromFont.getCharSet());
+        i_ToFont.setColor(             i_FromFont.getColor());
+        i_ToFont.setFontHeight(        i_FromFont.getFontHeight());
+        i_ToFont.setFontHeightInPoints(i_FromFont.getFontHeightInPoints());
+        i_ToFont.setFontName(          i_FromFont.getFontName());
+        i_ToFont.setItalic(            i_FromFont.getItalic());
+        i_ToFont.setStrikeout(         i_FromFont.getStrikeout());
+        i_ToFont.setTypeOffset(        i_FromFont.getTypeOffset());
+        i_ToFont.setUnderline(         i_FromFont.getUnderline());
     }
     
     
@@ -605,39 +651,39 @@ public class ExcelHelp
      * @createDate  2017-03-18
      * @version     v1.0
      *
-     * @param i_FormCellStyle  源单元格样式
+     * @param i_FromCellStyle  源单元格样式
      * @param i_ToCellStyle    目标单元格样式
      */
-    public final static void copyCellStyle(CellStyle i_FormCellStyle ,CellStyle i_ToCellStyle)
+    public final static void copyCellStyle(CellStyle i_FromCellStyle ,CellStyle i_ToCellStyle)
     {
-        i_ToCellStyle.setAlignment(          i_FormCellStyle.getAlignmentEnum());
+        i_ToCellStyle.setAlignment(          i_FromCellStyle.getAlignmentEnum());
         
         //边框和边框颜色
-        i_ToCellStyle.setBorderBottom(       i_FormCellStyle.getBorderBottomEnum());
-        i_ToCellStyle.setBorderLeft(         i_FormCellStyle.getBorderLeftEnum());
-        i_ToCellStyle.setBorderRight(        i_FormCellStyle.getBorderRightEnum());
-        i_ToCellStyle.setBorderTop(          i_FormCellStyle.getBorderTopEnum());
-        i_ToCellStyle.setBottomBorderColor(  i_FormCellStyle.getBottomBorderColor());
-        i_ToCellStyle.setDataFormat(         i_FormCellStyle.getDataFormat());
+        i_ToCellStyle.setBorderBottom(       i_FromCellStyle.getBorderBottomEnum());
+        i_ToCellStyle.setBorderLeft(         i_FromCellStyle.getBorderLeftEnum());
+        i_ToCellStyle.setBorderRight(        i_FromCellStyle.getBorderRightEnum());
+        i_ToCellStyle.setBorderTop(          i_FromCellStyle.getBorderTopEnum());
+        i_ToCellStyle.setBottomBorderColor(  i_FromCellStyle.getBottomBorderColor());
+        i_ToCellStyle.setDataFormat(         i_FromCellStyle.getDataFormat());
         
         //背景和前景
-        i_ToCellStyle.setFillBackgroundColor(i_FormCellStyle.getFillBackgroundColor());
-        i_ToCellStyle.setFillForegroundColor(i_FormCellStyle.getFillForegroundColor());
-        i_ToCellStyle.setFillPattern(        i_FormCellStyle.getFillPatternEnum());
-        i_ToCellStyle.setHidden(             i_FormCellStyle.getHidden());
+        i_ToCellStyle.setFillBackgroundColor(i_FromCellStyle.getFillBackgroundColor());
+        i_ToCellStyle.setFillForegroundColor(i_FromCellStyle.getFillForegroundColor());
+        i_ToCellStyle.setFillPattern(        i_FromCellStyle.getFillPatternEnum());
+        i_ToCellStyle.setHidden(             i_FromCellStyle.getHidden());
         
         //首行缩进
-        i_ToCellStyle.setIndention(          i_FormCellStyle.getIndention());
-        i_ToCellStyle.setLeftBorderColor(    i_FormCellStyle.getLeftBorderColor());
-        i_ToCellStyle.setLocked(             i_FormCellStyle.getLocked());
-        i_ToCellStyle.setRightBorderColor(   i_FormCellStyle.getRightBorderColor());
+        i_ToCellStyle.setIndention(          i_FromCellStyle.getIndention());
+        i_ToCellStyle.setLeftBorderColor(    i_FromCellStyle.getLeftBorderColor());
+        i_ToCellStyle.setLocked(             i_FromCellStyle.getLocked());
+        i_ToCellStyle.setRightBorderColor(   i_FromCellStyle.getRightBorderColor());
         
         //旋转
-        i_ToCellStyle.setShrinkToFit(        i_FormCellStyle.getShrinkToFit());
-        i_ToCellStyle.setRotation(           i_FormCellStyle.getRotation());
-        i_ToCellStyle.setTopBorderColor(     i_FormCellStyle.getTopBorderColor());
-        i_ToCellStyle.setVerticalAlignment(  i_FormCellStyle.getVerticalAlignmentEnum());
-        i_ToCellStyle.setWrapText(           i_FormCellStyle.getWrapText());
+        i_ToCellStyle.setShrinkToFit(        i_FromCellStyle.getShrinkToFit());
+        i_ToCellStyle.setRotation(           i_FromCellStyle.getRotation());
+        i_ToCellStyle.setTopBorderColor(     i_FromCellStyle.getTopBorderColor());
+        i_ToCellStyle.setVerticalAlignment(  i_FromCellStyle.getVerticalAlignmentEnum());
+        i_ToCellStyle.setWrapText(           i_FromCellStyle.getWrapText());
     }
     
 }
