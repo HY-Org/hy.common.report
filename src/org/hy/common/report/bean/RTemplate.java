@@ -690,7 +690,7 @@ public class RTemplate implements Comparable<RTemplate>
     @Override
     public String toString()
     {
-        return Help.NVL(this.excelFileName);
+        return Help.NVL(this.name ,Help.NVL(this.excelFileName));
     }
     
 }
