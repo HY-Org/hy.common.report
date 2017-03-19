@@ -94,7 +94,7 @@ public class RTemplate implements Comparable<RTemplate>
     {
         this.sheetIndex     = 0;
         this.templateSheet  = null;
-        this.excelVersion   = "xls";
+        this.excelVersion   = null;
         this.valueMethods   = new LinkedHashMap<String ,MethodReflect>();
         this.valueNames     = new Hashtable<String ,String>();
         this.valueListeners = new Hashtable<String ,ValueListener>();
@@ -128,6 +128,8 @@ public class RTemplate implements Comparable<RTemplate>
             }
             
             this.init();
+            
+            this.getExcelVersion();
         }
         
         return this.templateSheet;
@@ -384,8 +386,13 @@ public class RTemplate implements Comparable<RTemplate>
     /**
      * 获取：Excel文件版本(1.xls  2.xlsx)
      */
-    public String getExcelVersion()
+    public synchronized String getExcelVersion()
     {
+        if ( Help.isNull(this.excelVersion) )
+        {
+            this.excelVersion = this.excelFileName.substring(this.excelFileName.lastIndexOf(".") + 1);
+        }
+        
         return excelVersion;
     }
 
@@ -395,7 +402,7 @@ public class RTemplate implements Comparable<RTemplate>
      * 
      * @param excelVersion 
      */
-    public void setExcelVersion(String excelVersion)
+    public synchronized void setExcelVersion(String excelVersion)
     {
         this.excelVersion = excelVersion;
     }

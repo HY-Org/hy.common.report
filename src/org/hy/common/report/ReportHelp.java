@@ -2,15 +2,23 @@ package org.hy.common.report;
 
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFComment;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFComment;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Help;
@@ -122,71 +130,6 @@ public class ReportHelp
         writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataCount ,i_Datas ,i_RTemplate);
         
         return v_DataWorkbook;
-    }
-    
-    
-    
-    /**
-     * 复制模板工作表的标题区域中所有图片到数据工作表中
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2017-03-17
-     * @version     v1.0
-     *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
-     */
-    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
-    {
-        int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
-        
-        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
-    }
-    
-    
-    
-    /**
-     * 复制模板工作表的数据区域中所有图片到数据工作表中
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2017-03-17
-     * @version     v1.0
-     *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
-     */
-    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
-    {
-        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
-                        + i_RTemplate.getRowCountData() * (i_Offset - 1)
-                        - (i_Offset <= 1 ? 0 : 1);
-        
-        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
-    }
-    
-    
-    
-    /**
-     * 复制模板工作表的合计区域中所有图片到数据工作表中
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2017-03-17
-     * @version     v1.0
-     *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
-     */
-    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
-    {
-        // 通过数据计算合计
-        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
-                        + i_RTemplate.getRowCountData() * (i_Offset - 1)
-                        - (i_Offset <= 1 ? 0 : 1);
-        
-        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
     
     
@@ -335,11 +278,11 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
         
-        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
+        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
     }
     
     
@@ -355,13 +298,11 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
-        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
-                        + i_RTemplate.getRowCountData() * (i_Offset - 1)
-                        - (i_Offset <= 1 ? 0 : 1);
+        int v_OffsetRow = i_RTemplate.getRowCountData() * (i_Offset - 1);
         
-        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
+        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
     }
     
     
@@ -377,14 +318,133 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
+    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    {
+        // 通过数据计算合计
+        int v_OffsetRow = i_RTemplate.getRowCountData() * (i_Offset - 1);
+        
+        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的标题区域中合并单元格到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-17
+     * @version     v1.0
+     *
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_Offset     偏移量。下标从 1 开始。
+     */
+    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    {
+        int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
+        
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的数据区域中合并单元格到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-17
+     * @version     v1.0
+     *
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_Offset     偏移量。下标从 1 开始。
+     */
+    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    {
+        int v_OffsetRow = i_RTemplate.getRowCountData() * (i_Offset - 1);
+        
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的合计区域中合并单元格到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-17
+     * @version     v1.0
+     *
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_Offset     偏移量。下标从 1 开始。
+     */
     public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
         // 通过数据计算合计
-        int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
-                        + i_RTemplate.getRowCountData() * (i_Offset - 1)
-                        - (i_Offset <= 1 ? 0 : 1);
+        int v_OffsetRow = i_RTemplate.getRowCountData() * (i_Offset - 1);
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制批注
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-19
+     * @version     v1.0
+     *
+     * @param i_RTemplate     模板对象
+     * @param i_TemplateCell  模板单元格对象
+     * @param i_DataWorkbook  工作薄对象
+     * @param i_DataCell      数据单元格对象
+     */
+    public final static void copyComment(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell)
+    {
+        if ( i_TemplateCell.getCellComment() == null )
+        {
+            return;
+        }
+        
+        Comment      v_TemplateComment = i_TemplateCell.getCellComment();
+        ClientAnchor v_TemplateAnchor  = v_TemplateComment.getClientAnchor();
+        Comment      v_DataComment     = null;
+        
+        if ( v_TemplateComment instanceof HSSFComment )
+        {
+            HSSFPatriarch v_Patriarch = (HSSFPatriarch) i_DataCell.getSheet().createDrawingPatriarch();
+            v_DataComment = v_Patriarch.createCellComment(new HSSFClientAnchor(v_TemplateAnchor.getDx1() 
+                                                                              ,v_TemplateAnchor.getDy1()
+                                                                              ,v_TemplateAnchor.getDx2() 
+                                                                              ,v_TemplateAnchor.getDy2() 
+                                                                              ,v_TemplateAnchor.getCol1()
+                                                                              ,i_DataCell.getRowIndex()
+                                                                              ,v_TemplateAnchor.getCol2()
+                                                                              ,i_DataCell.getRowIndex() + v_TemplateAnchor.getRow2() - v_TemplateAnchor.getRow1()));
+        }
+        else if ( v_TemplateComment instanceof XSSFComment )
+        {
+            XSSFDrawing v_Patriarch = (XSSFDrawing) i_DataCell.getSheet().createDrawingPatriarch();
+            v_DataComment = v_Patriarch.createCellComment(new XSSFClientAnchor(v_TemplateAnchor.getDx1() 
+                                                                              ,v_TemplateAnchor.getDy1()
+                                                                              ,v_TemplateAnchor.getDx2() 
+                                                                              ,v_TemplateAnchor.getDy2() 
+                                                                              ,v_TemplateAnchor.getCol1()
+                                                                              ,i_DataCell.getRowIndex()
+                                                                              ,v_TemplateAnchor.getCol2()
+                                                                              ,i_DataCell.getRowIndex() + v_TemplateAnchor.getRow2() - v_TemplateAnchor.getRow1()));
+        }
+        
+        v_DataComment.setAuthor( v_TemplateComment.getAuthor());
+        v_DataComment.setColumn( v_TemplateComment.getColumn());
+        v_DataComment.setRow(    v_TemplateComment.getRow());
+        v_DataComment.setVisible(v_TemplateComment.isVisible());
+        
+        i_DataCell.setCellComment(v_DataComment);
+        
+        copyRichTextStyleComment(i_RTemplate ,v_TemplateComment.getString() ,i_DataWorkbook ,i_DataCell);
     }
     
     
@@ -451,10 +511,7 @@ public class ReportHelp
         i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
 
         // 复制评论
-        if ( i_TemplateCell.getCellComment() != null ) 
-        {
-            i_DataCell.setCellComment(i_TemplateCell.getCellComment());
-        }
+        copyComment(i_RTemplate ,i_TemplateCell ,i_DataWorkbook ,i_DataCell);
         
         // 复制数据类型
         CellType v_CellType = i_TemplateCell.getCellTypeEnum();
@@ -553,9 +610,12 @@ public class ReportHelp
                 {
                     int  v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
                     Font v_TemplateFont = ((XSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun(v_FontIndex);
-                    Font v_DataFont     = i_DataWorkbook.getFont(i_RTemplate ,v_TemplateFont.getIndex());
+                    if ( v_TemplateFont != null )
+                    {
+                        Font v_DataFont = i_DataWorkbook.getFont(i_RTemplate ,v_TemplateFont.getIndex());
+                        v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                    }
                     
-                    v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
                     v_TextLen = v_FirstIndex;
                 }
             }
@@ -566,6 +626,63 @@ public class ReportHelp
         {
             i_DataCell.setCellValue(v_Text);
         }
+    }
+    
+    
+    
+    /**
+     * 复制批注的高级文本及格式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-19
+     * @version     v1.0
+     *
+     * @param i_RTemplate         模板对象
+     * @param i_TemplateRichText  高级文本对象
+     * @param i_DataWorkbook      数据工作薄
+     * @param i_DataCell          数据单元格
+     */
+    public final static void copyRichTextStyleComment(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell) 
+    {
+        int    v_FontCount = i_TemplateRichText.numFormattingRuns();
+        String v_Text      = i_TemplateRichText.toString();
+        int    v_TextLen   = v_Text.length();
+        
+        RichTextString v_DataRichTextString = null;
+        
+        if ( i_TemplateRichText instanceof HSSFRichTextString )
+        {
+            v_DataRichTextString = new HSSFRichTextString(v_Text);
+            
+            for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+            {
+                int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
+                short v_IDX        = ((HSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun( v_FontIndex);
+                Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
+                
+                v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                v_TextLen = v_FirstIndex;
+            }
+        }
+        else if ( i_TemplateRichText instanceof XSSFRichTextString )
+        {
+            v_DataRichTextString = new XSSFRichTextString(v_Text);
+            
+            for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+            {
+                int  v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
+                Font v_TemplateFont = ((XSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun(v_FontIndex);
+                if ( v_TemplateFont != null )
+                {
+                    Font v_DataFont = i_DataWorkbook.getFont(i_RTemplate ,v_TemplateFont.getIndex());
+                    v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                }
+                
+                v_TextLen = v_FirstIndex;
+            }
+        }
+            
+        i_DataCell.getCellComment().setString(v_DataRichTextString);
     }
     
 }

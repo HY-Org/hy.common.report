@@ -13,6 +13,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.hy.common.Help;
 import org.hy.common.report.bean.RTemplate;
 
@@ -212,13 +214,19 @@ public class ImageListener implements ValueListener
         Drawing<?>   v_Drawing      = i_DataCell.getSheet().createDrawingPatriarch();
         ClientAnchor v_ClientAnchor = null;
         int          v_PictureType  = 0;
-        int          v_OffsetRow    = i_RTemplate.getRowCountTitle() * (i_DataIndex <= 1 ? 0 : 1) 
-                                    + i_RTemplate.getRowCountData() * (i_DataIndex - 1)
-                                    - (i_DataIndex <= 1 ? 0 : 1);
+        int          v_OffsetRow    = i_RTemplate.getRowCountData() * (i_DataIndex - 1);
         
         if ( v_Drawing instanceof HSSFPatriarch )
         {
             v_ClientAnchor = new HSSFClientAnchor(0 , 0 , 255 ,255
+                                                 ,this.beginColumn 
+                                                 ,this.beginRow + v_OffsetRow
+                                                 ,this.endColumn
+                                                 ,this.endRow   + v_OffsetRow);
+        }
+        else if ( v_Drawing instanceof XSSFDrawing )
+        {
+            v_ClientAnchor = new XSSFClientAnchor(0 , 0 , 255 ,255
                                                  ,this.beginColumn 
                                                  ,this.beginRow + v_OffsetRow
                                                  ,this.endColumn
