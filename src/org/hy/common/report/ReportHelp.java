@@ -2,14 +2,17 @@ package org.hy.common.report;
 
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Help;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RWorkbook;
@@ -37,9 +40,20 @@ public class ReportHelp
      *
      * @return
      */
-    public final static RWorkbook createWorkbook()
+    public final static RWorkbook createWorkbook(RTemplate i_RTemplate)
     {
-        return new RWorkbook(new HSSFWorkbook());
+        if ( "xls".equalsIgnoreCase(i_RTemplate.getExcelVersion()) )
+        {
+            return new RWorkbook(new HSSFWorkbook());
+        }
+        else if ( "xlsx".equalsIgnoreCase(i_RTemplate.getExcelVersion()) )
+        {
+            return new RWorkbook(new XSSFWorkbook());
+        }
+        else
+        {
+            return null;
+        }
     }
     
     
@@ -79,12 +93,12 @@ public class ReportHelp
     public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
     {
         RWorkbook v_DataWorkbook  = i_Workbook;
-        HSSFSheet v_DataSheet     = null;
-        HSSFSheet v_TemplateSheet = null;
+        Sheet     v_DataSheet     = null;
+        Sheet     v_TemplateSheet = null;
         
         if ( null == v_DataWorkbook )
         {
-            v_DataWorkbook = createWorkbook();
+            v_DataWorkbook = createWorkbook(i_RTemplate);
         }
         
         v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,i_SheetName);
@@ -123,7 +137,7 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyImagesTitle(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
         
@@ -143,7 +157,7 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyImagesData(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
                         + i_RTemplate.getRowCountData() * (i_Offset - 1)
@@ -165,7 +179,7 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyImagesTotal(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
         // 通过数据计算合计
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
@@ -190,25 +204,25 @@ public class ReportHelp
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTitle(RWorkbook i_DataWorkbook ,HSSFSheet i_DataSheet ,int i_DataCount ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataCount ,Object i_Datas ,RTemplate i_RTemplate) 
     {
-        HSSFSheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
-        int       v_TemplateRowCount = i_RTemplate.getRowCountTitle();
+        Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
+        int   v_TemplateRowCount = i_RTemplate.getRowCountTitle();
 
         copyMergedRegionsTitle(i_RTemplate ,i_DataSheet ,0);  // 按模板合并单元格
         copyImagesTitle(       i_RTemplate ,i_DataSheet ,0);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
-            int     v_TemplateRowNo = i_RTemplate.getTitleBeginRow() + v_RowNo;
-            HSSFRow v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
+            int v_TemplateRowNo = i_RTemplate.getTitleBeginRow() + v_RowNo;
+            Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
             if ( v_TemplateRow == null ) 
             {
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int     v_DataRowNo = v_RowNo;
-            HSSFRow v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
+            int v_DataRowNo = v_RowNo;
+            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
@@ -234,26 +248,26 @@ public class ReportHelp
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeData(RWorkbook i_DataWorkbook ,HSSFSheet i_DataSheet ,int i_DataIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
     {
-        HSSFSheet v_TemplateSheet      = i_RTemplate.getTemplateSheet();
-        int       v_TemplateTitleCount = i_RTemplate.getRowCountTitle();
-        int       v_TemplateRowCount   = i_RTemplate.getRowCountData();
+        Sheet v_TemplateSheet      = i_RTemplate.getTemplateSheet();
+        int   v_TemplateTitleCount = i_RTemplate.getRowCountTitle();
+        int   v_TemplateRowCount   = i_RTemplate.getRowCountData();
         
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
         {
-            int     v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
-            HSSFRow v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
+            int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
+            Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
             if ( v_TemplateRow == null ) 
             {
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int     v_DataRowNo = v_TemplateTitleCount + (i_DataIndex - 1) * v_TemplateRowCount + v_RowNo;
-            HSSFRow v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
+            int v_DataRowNo = v_TemplateTitleCount + (i_DataIndex - 1) * v_TemplateRowCount + v_RowNo;
+            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
@@ -278,27 +292,27 @@ public class ReportHelp
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTotal(RWorkbook i_DataWorkbook ,HSSFSheet i_DataSheet ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
     {
-        HSSFSheet v_TemplateSheet         = i_RTemplate.getTemplateSheet();
-        int       v_TemplateTitleCount    = i_RTemplate.getRowCountTitle();
-        int       v_TemplateRowCountData  = i_RTemplate.getRowCountData();
-        int       v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
+        Sheet v_TemplateSheet         = i_RTemplate.getTemplateSheet();
+        int   v_TemplateTitleCount    = i_RTemplate.getRowCountTitle();
+        int   v_TemplateRowCountData  = i_RTemplate.getRowCountData();
+        int   v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
         
         copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_DataCount);  // 按模板合并单元格
         copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_DataCount);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCountTotal; v_RowNo++) 
         {
-            int     v_TemplateRowNo = i_RTemplate.getTotalBeginRow() + v_RowNo;
-            HSSFRow v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
+            int v_TemplateRowNo = i_RTemplate.getTotalBeginRow() + v_RowNo;
+            Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
             if ( v_TemplateRow == null ) 
             {
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int     v_DataRowNo = v_TemplateTitleCount + i_DataCount * v_TemplateRowCountData + v_RowNo;
-            HSSFRow v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
+            int v_DataRowNo = v_TemplateTitleCount + i_DataCount * v_TemplateRowCountData + v_RowNo;
+            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
@@ -321,7 +335,7 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
         
@@ -341,7 +355,7 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
                         + i_RTemplate.getRowCountData() * (i_Offset - 1)
@@ -363,7 +377,7 @@ public class ReportHelp
      * @param i_DataSheet  数据工作表
      * @param i_Offset     偏移量。下标从 1 开始。
      */
-    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,HSSFSheet i_DataSheet, int i_Offset)
+    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
     {
         // 通过数据计算合计
         int v_OffsetRow = i_RTemplate.getRowCountTitle() * (i_Offset <= 1 ? 0 : 1) 
@@ -390,7 +404,7 @@ public class ReportHelp
      * @param i_DataRow        数据中的行对象
      * @param i_Datas          本行对应的数据
      */
-    public final static void copyRow(RTemplate i_RTemplate ,HSSFRow i_TemplateRow ,RWorkbook i_DataWorkbook ,int i_DataIndex ,int i_DataCount ,HSSFRow i_DataRow ,Object i_Datas) 
+    public final static void copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,int i_DataIndex ,int i_DataCount ,Row i_DataRow ,Object i_Datas) 
     {
         i_DataRow.setHeight(    i_TemplateRow.getHeight());
         i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
@@ -398,13 +412,13 @@ public class ReportHelp
         int v_CellCount = i_TemplateRow.getLastCellNum();
         for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
         {
-            HSSFCell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
+            Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
             if ( v_TemplateCell == null ) 
             {
                 v_TemplateCell = i_TemplateRow.createCell(v_CellIndex);
             }
             
-            HSSFCell v_DataCell = i_DataRow.getCell(v_CellIndex);
+            Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
             if ( v_DataCell == null ) 
             {
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
@@ -431,7 +445,7 @@ public class ReportHelp
      * @param i_DataCount      数据总量
      * @param i_Datas          本行对应的数据
      */
-    public final static void copyCell(RTemplate i_RTemplate ,HSSFCell i_TemplateCell ,RWorkbook i_DataWorkbook ,HSSFCell i_DataCell ,int i_DataIndex ,int i_DataCount ,Object i_Datas)
+    public final static void copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,int i_DataIndex ,int i_DataCount ,Object i_Datas)
     {
         // 复制样式
         i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
@@ -459,8 +473,8 @@ public class ReportHelp
         }
         else if ( v_CellType == CellType.STRING ) 
         {
-            HSSFRichTextString v_TemplateRichText = i_TemplateCell.getRichStringCellValue();
-            String             v_ValueName        = v_TemplateRichText.toString();
+            RichTextString v_TemplateRichText = i_TemplateCell.getRichStringCellValue();
+            String         v_ValueName        = v_TemplateRichText.toString();
             
             if ( i_RTemplate.isExists(v_ValueName) )
             {
@@ -507,7 +521,7 @@ public class ReportHelp
      * @param i_DataWorkbook      数据工作薄
      * @param i_DataCell          数据单元格
      */
-    public final static void copyRichTextStyle(RTemplate i_RTemplate ,HSSFRichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,HSSFCell i_DataCell) 
+    public final static void copyRichTextStyle(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell) 
     {
         int    v_FontCount = i_TemplateRichText.numFormattingRuns();
         String v_Text      = i_TemplateRichText.toString();
@@ -515,16 +529,35 @@ public class ReportHelp
         
         if ( v_FontCount >= 1 )
         {
-            HSSFRichTextString v_DataRichTextString = new HSSFRichTextString(v_Text);
+            RichTextString v_DataRichTextString = null;
             
-            for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+            if ( i_TemplateRichText instanceof HSSFRichTextString )
             {
-                int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
-                short v_IDX        = i_TemplateRichText.getFontOfFormattingRun( v_FontIndex);
-                Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
+                v_DataRichTextString = new HSSFRichTextString(v_Text);
                 
-                v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
-                v_TextLen = v_FirstIndex;
+                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+                {
+                    int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
+                    short v_IDX        = ((HSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun( v_FontIndex);
+                    Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
+                    
+                    v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                    v_TextLen = v_FirstIndex;
+                }
+            }
+            else if ( i_TemplateRichText instanceof XSSFRichTextString )
+            {
+                v_DataRichTextString = new XSSFRichTextString(v_Text);
+                
+                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+                {
+                    int  v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
+                    Font v_TemplateFont = ((XSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun(v_FontIndex);
+                    Font v_DataFont     = i_DataWorkbook.getFont(i_RTemplate ,v_TemplateFont.getIndex());
+                    
+                    v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                    v_TextLen = v_FirstIndex;
+                }
             }
             
             i_DataCell.setCellValue(v_DataRichTextString);

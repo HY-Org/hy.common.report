@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.report.ExcelHelp;
@@ -80,7 +80,7 @@ public class RTemplate implements Comparable<RTemplate>
     
     
     /** 报表模板信息对应的工作表对象(一般只初始加载一次) */
-    private HSSFSheet                  templateSheet; 
+    private Sheet                      templateSheet; 
     
     /** 解释的值的反射方法集合(一般只初始加载一次) */
     private Map<String ,MethodReflect> valueMethods;
@@ -112,11 +112,11 @@ public class RTemplate implements Comparable<RTemplate>
      *
      * @return
      */
-    public synchronized HSSFSheet getTemplateSheet()
+    public synchronized Sheet getTemplateSheet()
     {
         if ( null == this.templateSheet )
         {
-            List<HSSFSheet> v_Sheets = ExcelHelp.read(this.excelFileName);
+            List<Sheet> v_Sheets = ExcelHelp.read(this.excelFileName);
             
             if ( Help.isNull(v_Sheets) )
             {
@@ -173,20 +173,6 @@ public class RTemplate implements Comparable<RTemplate>
             exce.printStackTrace();
         }
     }
-    
-    
-    
-//    public String getExcelType()
-//    {
-//        if ( "xls".equalsIgnoreCase(this.excelVersion) )
-//        {
-//            
-//        }
-//        else if ( "xlsx".equalsIgnoreCase(this.excelVersion) )
-//        {
-//            
-//        }
-//    }
     
     
     

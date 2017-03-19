@@ -9,23 +9,30 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
 import org.apache.poi.hssf.usermodel.HSSFPictureData;
-import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.PrintSetup;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFPicture;
+import org.apache.poi.xssf.usermodel.XSSFPictureData;
+import org.apache.poi.xssf.usermodel.XSSFShape;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Date;
 import org.hy.common.Help;
@@ -65,9 +72,9 @@ public class ExcelHelp
      * @param i_ExcelFileName  文件全路径+文件名称
      * @return
      */
-    public final static List<HSSFSheet> read(String i_ExcelFileName)
+    public final static List<Sheet> read(String i_ExcelFileName)
     {
-        List<HSSFSheet> v_Ret   = new ArrayList<HSSFSheet>();
+        List<Sheet> v_Ret   = new ArrayList<Sheet>();
         InputStream     v_Input = null;
         
         try
@@ -82,8 +89,8 @@ public class ExcelHelp
                 v_Input = new FileInputStream(i_ExcelFileName);
             }
             
-            HSSFWorkbook v_Workbook   = (HSSFWorkbook)WorkbookFactory.create(v_Input);
-            int          v_SheetCount = v_Workbook.getNumberOfSheets();
+            Workbook v_Workbook   = WorkbookFactory.create(v_Input);
+            int      v_SheetCount = v_Workbook.getNumberOfSheets();
             
             for (int v_Index=0; v_Index<v_SheetCount; v_Index++)
             {
@@ -135,24 +142,24 @@ public class ExcelHelp
     
     
     
-    public final static Map<String ,Object> readDatas(HSSFSheet i_Sheet)
+    public final static Map<String ,Object> readDatas(Sheet i_Sheet)
     {
         return readDatas(i_Sheet ,null ,null);
     }
     
     
     
-    public final static Map<String ,Object> readDatas(HSSFSheet i_Sheet ,Integer i_BeginRow)
+    public final static Map<String ,Object> readDatas(Sheet i_Sheet ,Integer i_BeginRow)
     {
         return readDatas(i_Sheet ,i_BeginRow ,null);
     }
     
     
     
-    public final static Map<String ,Object> readDatas(HSSFSheet i_Sheet ,Integer i_BeginRow ,Integer i_EndRow)
+    public final static Map<String ,Object> readDatas(Sheet i_Sheet ,Integer i_BeginRow ,Integer i_EndRow)
     {
         Map<String ,Object> v_Ret      = new LinkedHashMap<String ,Object>();
-        HSSFSheet           v_Sheet    = i_Sheet;
+        Sheet               v_Sheet    = i_Sheet;
         int                 v_BeginRow = 0;
         int                 v_EndRow   = 0;
         
@@ -177,7 +184,7 @@ public class ExcelHelp
         
         for (int v_RowNo=v_BeginRow; v_RowNo<=v_EndRow; v_RowNo++)
         {
-            HSSFRow v_Row = v_Sheet.getRow(v_RowNo);
+            Row v_Row = v_Sheet.getRow(v_RowNo);
             if ( v_Row == null )
             {
                 continue;
@@ -187,7 +194,7 @@ public class ExcelHelp
             
             for (int v_ColumnNo=0; v_ColumnNo<v_CellCount; v_ColumnNo++)
             {
-                HSSFCell v_Cell = v_Row.getCell(v_ColumnNo);
+                Cell v_Cell = v_Row.getCell(v_ColumnNo);
                 if ( v_Cell == null )
                 {
                     continue;
@@ -333,9 +340,9 @@ public class ExcelHelp
      * @param i_FormSheet  源工作表
      * @param i_ToSheet    目标工作表
      */
-    public final static void copyColumnsWidth(HSSFSheet i_FormSheet ,HSSFSheet i_ToSheet) 
+    public final static void copyColumnsWidth(Sheet i_FormSheet ,Sheet i_ToSheet) 
     {
-        HSSFRow v_Row = i_FormSheet.getRow(0);
+        Row v_Row = i_FormSheet.getRow(0);
         if ( null == v_Row ) 
         {
             return;
@@ -362,10 +369,10 @@ public class ExcelHelp
      * @param i_FormSheet  源工作表
      * @param i_ToSheet    目标工作表
      */
-    public final static void copyPrintSetup(HSSFSheet i_FormSheet ,HSSFSheet i_ToSheet) 
+    public final static void copyPrintSetup(Sheet i_FormSheet ,Sheet i_ToSheet) 
     {
-        HSSFPrintSetup v_TemplatePrintSetup = i_FormSheet.getPrintSetup();
-        HSSFPrintSetup v_DataPrintSetup     = i_ToSheet    .getPrintSetup();
+        PrintSetup v_TemplatePrintSetup = i_FormSheet.getPrintSetup();
+        PrintSetup v_DataPrintSetup     = i_ToSheet    .getPrintSetup();
         
         v_DataPrintSetup.setCopies(       v_TemplatePrintSetup.getCopies());
         v_DataPrintSetup.setDraft(        v_TemplatePrintSetup.getDraft());
@@ -405,19 +412,19 @@ public class ExcelHelp
      * @createDate  2017-03-17
      * @version     v1.0
      * 
-     * @param i_TemplateSheet  模板工作表
-     * @param i_AreaBeginRow   定指区域内的开始行号。包含此行。
-     * @param i_AreaEndRow     定指区域内的结束行号。包含此行。
-     * @param i_DataSheet      数据工作表
-     * @param i_OffsetRow      偏移行号
+     * @param i_FormSheet     模板工作表
+     * @param i_AreaBeginRow  定指区域内的开始行号。包含此行。
+     * @param i_AreaEndRow    定指区域内的结束行号。包含此行。
+     * @param i_ToSheet       数据工作表
+     * @param i_OffsetRow     偏移行号
      */
-    public final static void copyMergedRegions(HSSFSheet i_TemplateSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,HSSFSheet i_DataSheet ,int i_OffsetRow) 
+    public final static void copyMergedRegions(Sheet i_FormSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet ,int i_OffsetRow) 
     {
-        int v_MergedRegionsCount = i_TemplateSheet.getNumMergedRegions();
+        int v_MergedRegionsCount = i_FormSheet.getNumMergedRegions();
         
         for (int i=0; i<v_MergedRegionsCount; i++) 
         {
-            CellRangeAddress v_CellRangeAddress = i_TemplateSheet.getMergedRegion(i);
+            CellRangeAddress v_CellRangeAddress = i_FormSheet.getMergedRegion(i);
             
             int v_FirstRow    = v_CellRangeAddress.getFirstRow();
             int v_LastRow     = v_CellRangeAddress.getLastRow();
@@ -437,7 +444,7 @@ public class ExcelHelp
             v_FirstRow += i_OffsetRow;
             v_LastRow  += i_OffsetRow;
             
-            i_DataSheet.addMergedRegion(new CellRangeAddress(v_FirstRow 
+            i_ToSheet.addMergedRegion(new CellRangeAddress(v_FirstRow 
                                                             ,v_LastRow 
                                                             ,v_FirstColumn
                                                             ,v_LastColumn));
@@ -453,50 +460,96 @@ public class ExcelHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_TemplateSheet  模板工作表
-     * @param i_AreaBeginRow   定指区域内的开始行号。包含此行。
-     * @param i_AreaEndRow     定指区域内的结束行号。包含此行。
-     * @param i_DataSheet      数据工作表
-     * @param i_OffsetRow      偏移行号
+     * @param i_FormSheet     模板工作表
+     * @param i_AreaBeginRow  定指区域内的开始行号。包含此行。
+     * @param i_AreaEndRow    定指区域内的结束行号。包含此行。
+     * @param i_ToSheet       数据工作表
+     * @param i_OffsetRow     偏移行号
      */
-    public final static void copyImages(HSSFSheet i_TemplateSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,HSSFSheet i_DataSheet, int i_OffsetRow)
+    public final static void copyImages(Sheet i_FormSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet, int i_OffsetRow)
     {
-        List<HSSFPictureData> v_Pictures = i_TemplateSheet.getWorkbook().getAllPictures();
-        
-        if ( i_TemplateSheet.getDrawingPatriarch() != null ) 
+        if ( i_FormSheet instanceof HSSFSheet )
         {
-            for (HSSFShape v_Shape : i_TemplateSheet.getDrawingPatriarch().getChildren()) 
+            HSSFSheet             v_FormSheet = (HSSFSheet) i_FormSheet;
+            List<HSSFPictureData> v_Pictures  = v_FormSheet.getWorkbook().getAllPictures();
+            
+            if ( i_FormSheet.getDrawingPatriarch() != null ) 
             {
-                if ( v_Shape instanceof HSSFPicture) 
+                for (HSSFShape v_Shape : v_FormSheet.getDrawingPatriarch().getChildren()) 
                 {
-                    HSSFPicture      v_Picture       = (HSSFPicture)      v_Shape;
-                    HSSFClientAnchor v_Anchor        = (HSSFClientAnchor) v_Shape.getAnchor();
-                    HSSFPictureData  v_PictureData   = v_Pictures.get(v_Picture.getPictureIndex() - 1);
-                    
-                    if ( i_AreaBeginRow <= v_Anchor.getRow1() 
-                      && i_AreaEndRow   >= v_Anchor.getRow2() )
+                    if ( v_Shape instanceof HSSFPicture) 
                     {
-                        // Nothing. 在数据区域内的图片
+                        HSSFPicture      v_Picture       = (HSSFPicture)      v_Shape;
+                        HSSFClientAnchor v_Anchor        = (HSSFClientAnchor) v_Shape.getAnchor();
+                        HSSFPictureData  v_PictureData   = v_Pictures.get(v_Picture.getPictureIndex() - 1);
+                        
+                        if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+                          && i_AreaEndRow   >= v_Anchor.getRow2() )
+                        {
+                            // Nothing. 在数据区域内的图片
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        
+                        HSSFPatriarch    v_DataPatriarch = ((HSSFSheet)i_ToSheet).createDrawingPatriarch();
+                        HSSFClientAnchor v_DataAnchor    = new HSSFClientAnchor(v_Anchor.getDx1()
+                                                                               ,Math.min(v_Anchor.getDy1() ,255)
+                                                                               ,v_Anchor.getDx2()
+                                                                               ,Math.min(v_Anchor.getDy2() ,255)
+                                                                               ,v_Anchor.getCol1()
+                                                                               ,v_Anchor.getRow1() + i_OffsetRow
+                                                                               ,v_Anchor.getCol2()
+                                                                               ,v_Anchor.getRow2() + i_OffsetRow);
+                        
+                        v_DataAnchor.setAnchorType(v_Anchor.getAnchorType());
+                        
+                        v_DataPatriarch.createPicture(v_DataAnchor
+                                                     ,i_ToSheet.getWorkbook().addPicture(v_PictureData.getData() ,v_PictureData.getPictureType()));
                     }
-                    else
+                }
+            }
+        }
+        else if ( i_FormSheet instanceof XSSFSheet )
+        {
+            XSSFSheet v_FormSheet = (XSSFSheet) i_FormSheet;
+            
+            if ( i_FormSheet.getDrawingPatriarch() != null ) 
+            {
+                for (XSSFShape v_Shape : v_FormSheet.getDrawingPatriarch().getShapes()) 
+                {
+                    if ( v_Shape instanceof XSSFPicture) 
                     {
-                        continue;
+                        XSSFPicture      v_Picture       = (XSSFPicture)      v_Shape;
+                        XSSFClientAnchor v_Anchor        = (XSSFClientAnchor) v_Shape.getAnchor();
+                        XSSFPictureData  v_PictureData   = v_Picture.getPictureData();
+                        
+                        if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+                          && i_AreaEndRow   >= v_Anchor.getRow2() )
+                        {
+                            // Nothing. 在数据区域内的图片
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        
+                        XSSFDrawing      v_DataPatriarch = ((XSSFSheet)i_ToSheet).createDrawingPatriarch();
+                        XSSFClientAnchor v_DataAnchor    = new XSSFClientAnchor(v_Anchor.getDx1()
+                                                                               ,Math.min(v_Anchor.getDy1() ,255)
+                                                                               ,v_Anchor.getDx2()
+                                                                               ,Math.min(v_Anchor.getDy2() ,255)
+                                                                               ,v_Anchor.getCol1()
+                                                                               ,v_Anchor.getRow1() + i_OffsetRow
+                                                                               ,v_Anchor.getCol2()
+                                                                               ,v_Anchor.getRow2() + i_OffsetRow);
+                        
+                        v_DataAnchor.setAnchorType(v_Anchor.getAnchorType());
+                        
+                        v_DataPatriarch.createPicture(v_DataAnchor
+                                                     ,i_ToSheet.getWorkbook().addPicture(v_PictureData.getData() ,v_PictureData.getPictureType()));
                     }
-                    
-                    HSSFPatriarch    v_DataPatriarch = i_DataSheet.createDrawingPatriarch();
-                    HSSFClientAnchor v_DataAnchor    = new HSSFClientAnchor(v_Anchor.getDx1()
-                                                                           ,Math.min(v_Anchor.getDy1() ,255)
-                                                                           ,v_Anchor.getDx2()
-                                                                           ,Math.min(v_Anchor.getDy2() ,255)
-                                                                           ,v_Anchor.getCol1()
-                                                                           ,v_Anchor.getRow1() + i_OffsetRow
-                                                                           ,v_Anchor.getCol2()
-                                                                           ,v_Anchor.getRow2() + i_OffsetRow);
-                    
-                    v_DataAnchor.setAnchorType(v_Anchor.getAnchorType());
-                    
-                    v_DataPatriarch.createPicture(v_DataAnchor
-                                                 ,i_DataSheet.getWorkbook().addPicture(v_PictureData.getData() ,v_PictureData.getPictureType()));
                 }
             }
         }
