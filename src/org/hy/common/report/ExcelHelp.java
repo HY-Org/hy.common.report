@@ -315,7 +315,7 @@ public class ExcelHelp
      * @param i_SheetName  工作表名称(当为空时，自动生成)
      * @return
      */
-    public final static HSSFSheet createSheet(Workbook i_Workbook ,String i_SheetName) 
+    public final static Sheet createSheet(Workbook i_Workbook ,String i_SheetName) 
     {
         int    v_SheetCount = i_Workbook.getNumberOfSheets();
         String v_SheetName  = i_SheetName;
@@ -325,7 +325,7 @@ public class ExcelHelp
             v_SheetName = "sheet" + (v_SheetCount + 1);
         }
         
-        return (HSSFSheet)i_Workbook.createSheet(v_SheetName);
+        return i_Workbook.createSheet(v_SheetName);
     }
     
     
@@ -371,28 +371,28 @@ public class ExcelHelp
      */
     public final static void copyPrintSetup(Sheet i_FormSheet ,Sheet i_ToSheet) 
     {
-        PrintSetup v_TemplatePrintSetup = i_FormSheet.getPrintSetup();
-        PrintSetup v_DataPrintSetup     = i_ToSheet    .getPrintSetup();
+        PrintSetup v_FormPrintSetup = i_FormSheet.getPrintSetup();
+        PrintSetup v_ToPrintSetup   = i_ToSheet    .getPrintSetup();
         
-        v_DataPrintSetup.setCopies(       v_TemplatePrintSetup.getCopies());
-        v_DataPrintSetup.setDraft(        v_TemplatePrintSetup.getDraft());
-        v_DataPrintSetup.setFitHeight(    v_TemplatePrintSetup.getFitHeight());
-        v_DataPrintSetup.setFitWidth(     v_TemplatePrintSetup.getFitWidth());
-        v_DataPrintSetup.setFooterMargin( v_TemplatePrintSetup.getFooterMargin());
-        v_DataPrintSetup.setHeaderMargin( v_TemplatePrintSetup.getHeaderMargin());
-        v_DataPrintSetup.setHResolution(  v_TemplatePrintSetup.getHResolution());
-        v_DataPrintSetup.setLandscape(    v_TemplatePrintSetup.getLandscape());
-        v_DataPrintSetup.setLeftToRight(  v_TemplatePrintSetup.getLeftToRight());
-        v_DataPrintSetup.setNoColor(      v_TemplatePrintSetup.getNoColor());
-        v_DataPrintSetup.setNoOrientation(v_TemplatePrintSetup.getNoOrientation());
-        v_DataPrintSetup.setNotes(        v_TemplatePrintSetup.getNotes());
-        v_DataPrintSetup.setPageStart(    v_TemplatePrintSetup.getPageStart());
-        v_DataPrintSetup.setPaperSize(    v_TemplatePrintSetup.getPaperSize());
-        v_DataPrintSetup.setScale(        v_TemplatePrintSetup.getScale());
-        v_DataPrintSetup.setUsePage(      v_TemplatePrintSetup.getUsePage());
-        v_DataPrintSetup.setValidSettings(v_TemplatePrintSetup.getValidSettings());
-        v_DataPrintSetup.setVResolution(  v_TemplatePrintSetup.getVResolution());
-        v_DataPrintSetup.setPaperSize(    v_TemplatePrintSetup.getPaperSize());  // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
+        v_ToPrintSetup.setCopies(       v_FormPrintSetup.getCopies());
+        v_ToPrintSetup.setDraft(        v_FormPrintSetup.getDraft());
+        v_ToPrintSetup.setFitHeight(    v_FormPrintSetup.getFitHeight());
+        v_ToPrintSetup.setFitWidth(     v_FormPrintSetup.getFitWidth());
+        v_ToPrintSetup.setFooterMargin( v_FormPrintSetup.getFooterMargin());
+        v_ToPrintSetup.setHeaderMargin( v_FormPrintSetup.getHeaderMargin());
+        v_ToPrintSetup.setHResolution(  v_FormPrintSetup.getHResolution());
+        v_ToPrintSetup.setLandscape(    v_FormPrintSetup.getLandscape());
+        v_ToPrintSetup.setLeftToRight(  v_FormPrintSetup.getLeftToRight());
+        v_ToPrintSetup.setNoColor(      v_FormPrintSetup.getNoColor());
+        v_ToPrintSetup.setNoOrientation(v_FormPrintSetup.getNoOrientation());
+        v_ToPrintSetup.setNotes(        v_FormPrintSetup.getNotes());
+        v_ToPrintSetup.setPageStart(    v_FormPrintSetup.getPageStart());
+        v_ToPrintSetup.setPaperSize(    v_FormPrintSetup.getPaperSize());
+        v_ToPrintSetup.setScale(        v_FormPrintSetup.getScale());
+        v_ToPrintSetup.setUsePage(      v_FormPrintSetup.getUsePage());
+        v_ToPrintSetup.setValidSettings(v_FormPrintSetup.getValidSettings());
+        v_ToPrintSetup.setVResolution(  v_FormPrintSetup.getVResolution());
+        v_ToPrintSetup.setPaperSize(    v_FormPrintSetup.getPaperSize());  // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
         
         // 设置打印参数
         i_ToSheet.setDisplayGridlines(false);
