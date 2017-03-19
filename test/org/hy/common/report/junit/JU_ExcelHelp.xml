@@ -11,6 +11,7 @@
 	<xconfig>
 	
 		<template id="ReportTemplate">
+			<name>模板名称</name>
 			<excelFileName>classpath:JU_ExcelHelp.xls</excelFileName>
 			<titleBeginRow>0</titleBeginRow>
 			<dataBeginRow>1</dataBeginRow>

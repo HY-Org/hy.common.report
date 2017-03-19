@@ -24,6 +24,7 @@ __XML配置举例__
 	<xconfig>
 	
 		<template id="ReportTemplate">
+			<name>模板名称</name>
 			<excelFileName>classpath:JU_ExcelHelp.xls</excelFileName>   <!-- Excel模板文件所在地方 -->
 			<titleBeginRow>0</titleBeginRow>                            <!-- 定义报表标题在模板中位置 -->
 			<titleEndRow>0</titleEndRow>
