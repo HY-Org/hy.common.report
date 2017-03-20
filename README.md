@@ -27,7 +27,7 @@ __XML配置举例__
 	
 		<template id="ReportTemplate">
 			<name>模板名称</name>
-			<excelFileName>classpath:JU_ExcelHelp.xls</excelFileName>   <!-- Excel模板文件所在地方 -->
+			<excelFileName>classpath:JU_ExcelHelp.xls</excelFileName>   <!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
 			<titleBeginRow>0</titleBeginRow>                            <!-- 定义报表标题在模板中位置 -->
 			<titleEndRow>0</titleEndRow>
 			<dataBeginRow>1</dataBeginRow>                              <!-- 定义报表数据在模板中位置 -->           
@@ -61,3 +61,11 @@ RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTemplate");
     
 ExcelHelp.save(ReportHelp.write("Excel工作表名称" ,数据集合 ,v_RTemplate).getWorkbook() ,"Excel报表保存目录及名称");
 ```
+
+
+
+=====
+#### 本项目引用Jar包，其源码链接如下
+引用 https://github.com/HY-ZhengWei/hy.common.base 类库
+
+引用 https://github.com/HY-ZhengWei/hy.common.file 类库
