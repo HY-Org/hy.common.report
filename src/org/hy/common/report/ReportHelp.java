@@ -642,41 +642,41 @@ public class ReportHelp
         
         if ( v_FontCount >= 1 )
         {
-            RichTextString v_DataRichTextString = null;
+            RichTextString v_DataRichText = null;
             
             if ( i_TemplateRichText instanceof HSSFRichTextString )
             {
-                v_DataRichTextString = new HSSFRichTextString(v_Text);
+                v_DataRichText = new HSSFRichTextString(v_Text);
                 
                 for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
                 {
                     int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
-                    short v_IDX        = ((HSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun( v_FontIndex);
+                    short v_IDX        = ((HSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun(v_FontIndex);
                     Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
                     
-                    v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                    v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
                     v_TextLen = v_FirstIndex;
                 }
+                
+                i_DataCell.setCellValue(v_DataRichText);
             }
             else if ( i_TemplateRichText instanceof XSSFRichTextString )
             {
-                v_DataRichTextString = new XSSFRichTextString(v_Text);
-                
-                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
-                {
-                    int  v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
-                    Font v_TemplateFont = ((XSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun(v_FontIndex);
-                    if ( v_TemplateFont != null )
-                    {
-                        Font v_DataFont = i_DataWorkbook.getFont(i_RTemplate ,v_TemplateFont.getIndex());
-                        v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
-                    }
-                    
-                    v_TextLen = v_FirstIndex;
-                }
+                i_DataCell.setCellValue(i_TemplateRichText);
+//                v_DataRichText = new XSSFRichTextString(v_Text); // i_DataCell.getRow().getSheet().getWorkbook().getCreationHelper().createRichTextString(v_Text);
+//                
+//                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+//                {
+//                    int  v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
+//                    Font v_TemplateFont = ((XSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun(v_FontIndex);
+//                    if ( v_TemplateFont != null )
+//                    {
+//                        v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_TemplateFont);
+//                    }
+//                    
+//                    v_TextLen = v_FirstIndex;
+//                }
             }
-            
-            i_DataCell.setCellValue(v_DataRichTextString);
         }
         else
         {
@@ -704,11 +704,11 @@ public class ReportHelp
         String v_Text      = i_TemplateRichText.toString();
         int    v_TextLen   = v_Text.length();
         
-        RichTextString v_DataRichTextString = null;
+        RichTextString v_DataRichText = null;
         
         if ( i_TemplateRichText instanceof HSSFRichTextString )
         {
-            v_DataRichTextString = new HSSFRichTextString(v_Text);
+            v_DataRichText = new HSSFRichTextString(v_Text);
             
             for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
             {
@@ -716,29 +716,16 @@ public class ReportHelp
                 short v_IDX        = ((HSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun( v_FontIndex);
                 Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
                 
-                v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
                 v_TextLen = v_FirstIndex;
             }
+            
+            i_DataCell.getCellComment().setString(v_DataRichText);
         }
         else if ( i_TemplateRichText instanceof XSSFRichTextString )
         {
-            v_DataRichTextString = new XSSFRichTextString(v_Text);
-            
-            for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
-            {
-                int  v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
-                Font v_TemplateFont = ((XSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun(v_FontIndex);
-                if ( v_TemplateFont != null )
-                {
-                    Font v_DataFont = i_DataWorkbook.getFont(i_RTemplate ,v_TemplateFont.getIndex());
-                    v_DataRichTextString.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
-                }
-                
-                v_TextLen = v_FirstIndex;
-            }
+            i_DataCell.getCellComment().setString(i_TemplateRichText);
         }
-            
-        i_DataCell.getCellComment().setString(v_DataRichTextString);
     }
     
 }

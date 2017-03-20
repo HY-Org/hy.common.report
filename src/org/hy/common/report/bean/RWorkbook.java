@@ -64,6 +64,8 @@ public class RWorkbook
     /**
      * 获取模板指定位置上的已转为本工作薄的字体
      * 
+     * 目前看，只用于2003的版本(*.xls)，2007的版本是可以直接 setFont() 方法设置字体的。
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-18
      * @version     v1.0
@@ -91,6 +93,8 @@ public class RWorkbook
     
     /**
      * 获取模板指定位置上的已转为本工作薄的单元格样式
+     * 
+     * 目前看，只用于2003的版本(*.xls)，2007的版本是可以直接 setCellStyle() 方法设置字体的。
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-18
