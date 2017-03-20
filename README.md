@@ -50,7 +50,7 @@ __XML配置举例__
 	</xconfig>
 	
 </config>
-```  
+```xml
   
   
   
@@ -60,7 +60,7 @@ __报表生成及保存的Java代码举例__
 RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTemplate");
     
 ExcelHelp.save(ReportHelp.write("Excel工作表名称" ,数据集合 ,v_RTemplate).getWorkbook() ,"Excel报表保存目录及名称");
-```
+```java
 
 
 
