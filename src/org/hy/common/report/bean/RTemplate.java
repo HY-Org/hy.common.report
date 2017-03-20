@@ -28,6 +28,9 @@ public class RTemplate implements Comparable<RTemplate>
     /** 系统固家变量名称：数据行号的变量名称。下标从1开始 */
     public final static String         $ValueName_RowNo        = "RowNo__";
     
+    /** 系统固家变量名称：数据索引号的变量名称。下标从0开始 */
+    public final static String         $ValueName_RowIndex     = "RowIndex__";
+    
     /** 系统固家变量名称：数据总量的变量名称 */
     public final static String         $ValueName_RowCount     = "RowCount__";
     
@@ -228,11 +231,15 @@ public class RTemplate implements Comparable<RTemplate>
         {
             String v_ValueName = this.valueNames.get(i_ValueName);
             
-            if ( $ValueName_RowNo.equals(v_ValueName) )
+            if ( $ValueName_RowNo.equalsIgnoreCase(v_ValueName) )
             {
                 return String.valueOf(i_RowNo);
             }
-            else if ( $ValueName_RowCount.equals(v_ValueName) )
+            else if ( $ValueName_RowIndex.equalsIgnoreCase(v_ValueName) )
+            {
+                return String.valueOf(i_RowNo - 1);
+            }
+            else if ( $ValueName_RowCount.equalsIgnoreCase(v_ValueName) )
             {
                 return String.valueOf(i_RowCount);
             }
@@ -610,6 +617,7 @@ public class RTemplate implements Comparable<RTemplate>
         this.valueSign = valueSign;
         
         this.valueNames.put(this.valueSign + $ValueName_RowNo    ,$ValueName_RowNo);
+        this.valueNames.put(this.valueSign + $ValueName_RowIndex ,$ValueName_RowIndex);
         this.valueNames.put(this.valueSign + $ValueName_RowCount ,$ValueName_RowCount);
     }
 

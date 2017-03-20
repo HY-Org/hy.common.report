@@ -35,6 +35,7 @@ __XML配置举例__
 			<totalBeginRow>60</totalBeginRow>                           <!-- 定义报表合计在模板中位置 -->
 			<totalEndRow>61</totalEndRow>
 			<dataClass>org.hy.common.report.junit.ExcelBean</dataClass> <!-- 定义报表数据对应的Java类型 -->
+			<valueSign>:</valueSign>                                    <!-- Excel模板中值的标记。默认为一个冒号。通过它识别要反射获取的值。支持 xx.yy.zz 格式 -->
 			
 			<call name="addListener">                                   <!-- 定义自定义变量名称的二次加工事件 -->
 				<listener class="org.hy.common.report.event.ImageListener">
