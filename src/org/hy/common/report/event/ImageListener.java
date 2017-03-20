@@ -211,7 +211,7 @@ public class ImageListener implements ValueListener
             return "";
         }
         
-        Drawing<?>   v_Drawing      = i_DataCell.getSheet().createDrawingPatriarch();
+        Drawing      v_Drawing      = i_DataCell.getSheet().createDrawingPatriarch();
         ClientAnchor v_ClientAnchor = null;
         int          v_PictureType  = 0;
         int          v_OffsetRow    = i_RTemplate.getRowCountData() * (i_DataIndex - 1);

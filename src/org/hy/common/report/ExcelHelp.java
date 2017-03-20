@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
@@ -17,6 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFPictureData;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -27,6 +29,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
@@ -656,34 +659,41 @@ public class ExcelHelp
      */
     public final static void copyCellStyle(CellStyle i_FromCellStyle ,CellStyle i_ToCellStyle)
     {
-        i_ToCellStyle.setAlignment(          i_FromCellStyle.getAlignmentEnum());
-        
-        //边框和边框颜色
-        i_ToCellStyle.setBorderBottom(       i_FromCellStyle.getBorderBottomEnum());
-        i_ToCellStyle.setBorderLeft(         i_FromCellStyle.getBorderLeftEnum());
-        i_ToCellStyle.setBorderRight(        i_FromCellStyle.getBorderRightEnum());
-        i_ToCellStyle.setBorderTop(          i_FromCellStyle.getBorderTopEnum());
-        i_ToCellStyle.setBottomBorderColor(  i_FromCellStyle.getBottomBorderColor());
-        i_ToCellStyle.setDataFormat(         i_FromCellStyle.getDataFormat());
-        
-        //背景和前景
-        i_ToCellStyle.setFillBackgroundColor(i_FromCellStyle.getFillBackgroundColor());
-        i_ToCellStyle.setFillForegroundColor(i_FromCellStyle.getFillForegroundColor());
-        i_ToCellStyle.setFillPattern(        i_FromCellStyle.getFillPatternEnum());
-        i_ToCellStyle.setHidden(             i_FromCellStyle.getHidden());
-        
-        //首行缩进
-        i_ToCellStyle.setIndention(          i_FromCellStyle.getIndention());
-        i_ToCellStyle.setLeftBorderColor(    i_FromCellStyle.getLeftBorderColor());
-        i_ToCellStyle.setLocked(             i_FromCellStyle.getLocked());
-        i_ToCellStyle.setRightBorderColor(   i_FromCellStyle.getRightBorderColor());
-        
-        //旋转
-        i_ToCellStyle.setShrinkToFit(        i_FromCellStyle.getShrinkToFit());
-        i_ToCellStyle.setRotation(           i_FromCellStyle.getRotation());
-        i_ToCellStyle.setTopBorderColor(     i_FromCellStyle.getTopBorderColor());
-        i_ToCellStyle.setVerticalAlignment(  i_FromCellStyle.getVerticalAlignmentEnum());
-        i_ToCellStyle.setWrapText(           i_FromCellStyle.getWrapText());
+        if ( i_FromCellStyle instanceof HSSFCellStyle )
+        {
+            i_ToCellStyle.setAlignment(          i_FromCellStyle.getAlignmentEnum());
+            i_ToCellStyle.setDataFormat(         i_FromCellStyle.getDataFormat());
+            
+            // 边框和边框颜色
+            i_ToCellStyle.setBorderBottom(       i_FromCellStyle.getBorderBottomEnum());
+            i_ToCellStyle.setBorderLeft(         i_FromCellStyle.getBorderLeftEnum());
+            i_ToCellStyle.setBorderRight(        i_FromCellStyle.getBorderRightEnum());
+            i_ToCellStyle.setBorderTop(          i_FromCellStyle.getBorderTopEnum());
+            i_ToCellStyle.setLeftBorderColor(    i_FromCellStyle.getLeftBorderColor());
+            i_ToCellStyle.setRightBorderColor(   i_FromCellStyle.getRightBorderColor());
+            i_ToCellStyle.setTopBorderColor(     i_FromCellStyle.getTopBorderColor());
+            i_ToCellStyle.setBottomBorderColor(  i_FromCellStyle.getBottomBorderColor());
+  
+            // 背景和前景
+            i_ToCellStyle.setFillBackgroundColor(i_FromCellStyle.getFillBackgroundColor());
+            i_ToCellStyle.setFillForegroundColor(HSSFColor.toHSSFColor(i_FromCellStyle.getFillForegroundColorColor()).getIndex());
+            i_ToCellStyle.setFillPattern(        i_FromCellStyle.getFillPatternEnum());
+            i_ToCellStyle.setHidden(             i_FromCellStyle.getHidden());
+  
+            // 首行缩进
+            i_ToCellStyle.setIndention(          i_FromCellStyle.getIndention());
+            i_ToCellStyle.setLocked(             i_FromCellStyle.getLocked());
+  
+            // 旋转
+            i_ToCellStyle.setShrinkToFit(        i_FromCellStyle.getShrinkToFit());
+            i_ToCellStyle.setRotation(           i_FromCellStyle.getRotation());
+            i_ToCellStyle.setVerticalAlignment(  i_FromCellStyle.getVerticalAlignmentEnum());
+            i_ToCellStyle.setWrapText(           i_FromCellStyle.getWrapText());
+        }
+        else if ( i_FromCellStyle instanceof XSSFCellStyle )
+        {
+            i_ToCellStyle.cloneStyleFrom(i_FromCellStyle);
+        }
     }
     
 }
