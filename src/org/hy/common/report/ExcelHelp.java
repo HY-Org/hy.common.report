@@ -18,7 +18,6 @@ import org.apache.poi.hssf.usermodel.HSSFPictureData;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -54,7 +53,6 @@ import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
  */
 public class ExcelHelp
 {
-    
     
     /**
      * 私有构建器
@@ -381,6 +379,39 @@ public class ExcelHelp
     
     
     /**
+     * 复制工作薄相关参数
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-20
+     * @version     v1.0
+     *
+     * @param i_FromSheet
+     * @param i_ToSheet
+     */
+    public final static void copySheet(Sheet i_FromSheet ,Sheet i_ToSheet)
+    {
+        // 网格线
+        i_ToSheet.setDisplayGridlines(i_FromSheet.isDisplayGridlines());
+        
+        // 打印时显示网格线
+        i_ToSheet.setPrintGridlines(  i_FromSheet.isPrintGridlines());
+        
+        // Sheet页自适应页面大小
+        i_ToSheet.setAutobreaks(      i_FromSheet.getAutobreaks());
+        
+        // 冻结线
+        if ( i_FromSheet.getPaneInformation().isFreezePane() )
+        {
+            i_ToSheet.createFreezePane(i_FromSheet.getPaneInformation().getVerticalSplitPosition()
+                                      ,i_FromSheet.getPaneInformation().getHorizontalSplitPosition()
+                                      ,i_FromSheet.getPaneInformation().getVerticalSplitLeftColumn()
+                                      ,i_FromSheet.getPaneInformation().getHorizontalSplitTopRow());
+        }
+    }
+    
+    
+    
+    /**
      * 复制模板工作表的打印区域到数据工作表中
      * 
      * @author      ZhengWei(HY)
@@ -396,28 +427,25 @@ public class ExcelHelp
         PrintSetup v_ToPrintSetup   = i_ToSheet    .getPrintSetup();
         
         v_ToPrintSetup.setCopies(       v_FromPrintSetup.getCopies());
-        v_ToPrintSetup.setDraft(        v_FromPrintSetup.getDraft());
-        v_ToPrintSetup.setFitHeight(    v_FromPrintSetup.getFitHeight());
-        v_ToPrintSetup.setFitWidth(     v_FromPrintSetup.getFitWidth());
+        v_ToPrintSetup.setDraft(        v_FromPrintSetup.getDraft());          // 值为true时，表示用草稿品质打印
+        v_ToPrintSetup.setFitHeight(    v_FromPrintSetup.getFitHeight());      // 设置页高
+        v_ToPrintSetup.setFitWidth(     v_FromPrintSetup.getFitWidth());       // 设置页宽
         v_ToPrintSetup.setFooterMargin( v_FromPrintSetup.getFooterMargin());
         v_ToPrintSetup.setHeaderMargin( v_FromPrintSetup.getHeaderMargin());
         v_ToPrintSetup.setHResolution(  v_FromPrintSetup.getHResolution());
-        v_ToPrintSetup.setLandscape(    v_FromPrintSetup.getLandscape());
-        v_ToPrintSetup.setLeftToRight(  v_FromPrintSetup.getLeftToRight());
-        v_ToPrintSetup.setNoColor(      v_FromPrintSetup.getNoColor());
-        v_ToPrintSetup.setNoOrientation(v_FromPrintSetup.getNoOrientation());
+        v_ToPrintSetup.setLandscape(    v_FromPrintSetup.getLandscape());      // true，则表示页面方向为横向；否则为纵向
+        v_ToPrintSetup.setLeftToRight(  v_FromPrintSetup.getLeftToRight());    // true表示“先行后列”；false表示“先列后行”
+        v_ToPrintSetup.setNoColor(      v_FromPrintSetup.getNoColor());        // 值为true时，表示单色打印
+        v_ToPrintSetup.setNoOrientation(v_FromPrintSetup.getNoOrientation());  // 设置打印批注
         v_ToPrintSetup.setNotes(        v_FromPrintSetup.getNotes());
-        v_ToPrintSetup.setPageStart(    v_FromPrintSetup.getPageStart());
-        v_ToPrintSetup.setPaperSize(    v_FromPrintSetup.getPaperSize());
-        v_ToPrintSetup.setScale(        v_FromPrintSetup.getScale());
-        v_ToPrintSetup.setUsePage(      v_FromPrintSetup.getUsePage());
+        v_ToPrintSetup.setPageStart(    v_FromPrintSetup.getPageStart());      // 设置打印起始页码
+        v_ToPrintSetup.setPaperSize(    v_FromPrintSetup.getPaperSize());      // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
+        v_ToPrintSetup.setScale(        v_FromPrintSetup.getScale());          // 缩放比例80%(设置为0-100之间的值)
+        v_ToPrintSetup.setUsePage(      v_FromPrintSetup.getUsePage());        // 设置打印起始页码是否使用"自动"
         v_ToPrintSetup.setValidSettings(v_FromPrintSetup.getValidSettings());
         v_ToPrintSetup.setVResolution(  v_FromPrintSetup.getVResolution());
-        v_ToPrintSetup.setPaperSize(    v_FromPrintSetup.getPaperSize());  // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
         
         // 设置打印参数
-        i_ToSheet.setDisplayGridlines(false);
-        i_ToSheet.setPrintGridlines(  false);
         i_ToSheet.setMargin(HSSFSheet.TopMargin    ,i_ToSheet.getMargin(HSSFSheet.TopMargin));    // 页边距（上）
         i_ToSheet.setMargin(HSSFSheet.BottomMargin ,i_ToSheet.getMargin(HSSFSheet.BottomMargin)); // 页边距（下）
         i_ToSheet.setMargin(HSSFSheet.LeftMargin   ,i_ToSheet.getMargin(HSSFSheet.LeftMargin));   // 页边距（左）
@@ -673,10 +701,10 @@ public class ExcelHelp
             i_ToCellStyle.setRightBorderColor(   i_FromCellStyle.getRightBorderColor());
             i_ToCellStyle.setTopBorderColor(     i_FromCellStyle.getTopBorderColor());
             i_ToCellStyle.setBottomBorderColor(  i_FromCellStyle.getBottomBorderColor());
-  
+            
             // 背景和前景
             i_ToCellStyle.setFillBackgroundColor(i_FromCellStyle.getFillBackgroundColor());
-            i_ToCellStyle.setFillForegroundColor(HSSFColor.toHSSFColor(i_FromCellStyle.getFillForegroundColorColor()).getIndex());
+            i_ToCellStyle.setFillForegroundColor(i_FromCellStyle.getFillForegroundColor());
             i_ToCellStyle.setFillPattern(        i_FromCellStyle.getFillPatternEnum());
             i_ToCellStyle.setHidden(             i_FromCellStyle.getHidden());
   

@@ -115,6 +115,7 @@ public class ReportHelp
         v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,i_SheetName);
         v_TemplateSheet = i_RTemplate.getTemplateSheet();
         
+        ExcelHelp.copySheet(       v_TemplateSheet ,v_DataSheet);
         // 数据工作表的整体(所有)列的列宽，复制于模板
         ExcelHelp.copyColumnsWidth(v_TemplateSheet ,v_DataSheet);
         // 数据工作表的打印区域，复制于模板
