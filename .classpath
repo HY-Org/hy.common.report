@@ -14,11 +14,10 @@
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="lib/xjava.jar" sourcepath="/SearchDesktop"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/poi-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-examples-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-excelant-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.15.jar"/>
-	<classpathentry kind="lib" path="lib/poi-scratchpad-3.15.jar"/>
+	<classpathentry kind="lib" path="lib/poi-3.16-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/poi-excelant-3.16-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-3.16-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.16-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/poi-scratchpad-3.16-beta2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
