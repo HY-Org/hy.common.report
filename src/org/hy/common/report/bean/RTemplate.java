@@ -25,13 +25,13 @@ import org.hy.common.report.event.ValueListener;
 public class RTemplate implements Comparable<RTemplate>
 {
     
-    /** 系统固家变量名称：数据行号的变量名称。下标从1开始 */
+    /** 系统固定变量名称：数据行号的变量名称。下标从1开始 */
     public final static String         $ValueName_RowNo        = "RowNo__";
     
-    /** 系统固家变量名称：数据索引号的变量名称。下标从0开始 */
+    /** 系统固定变量名称：数据索引号的变量名称。下标从0开始 */
     public final static String         $ValueName_RowIndex     = "RowIndex__";
     
-    /** 系统固家变量名称：数据总量的变量名称 */
+    /** 系统固定变量名称：数据总量的变量名称 */
     public final static String         $ValueName_RowCount     = "RowCount__";
     
     
