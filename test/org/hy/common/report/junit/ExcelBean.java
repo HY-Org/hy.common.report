@@ -6,6 +6,13 @@ import org.hy.common.Date;
 
 
 
+/**
+ * 测试用的样例类 
+ *
+ * @author      ZhengWei(HY)
+ * @createDate  2017-03-17
+ * @version     v1.0
+ */
 public class ExcelBean
 {
     private String  name;
@@ -15,7 +22,7 @@ public class ExcelBean
     private Integer age;
     
     private String  image;
-
+    
 
     
     public String getName()
