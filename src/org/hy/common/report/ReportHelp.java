@@ -5,10 +5,12 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFComment;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -65,6 +67,48 @@ public class ReportHelp
         {
             return null;
         }
+    }
+    
+    
+    
+    /**
+     * 创建颜色。
+     * 
+     * 写本方法的原因是：从2003版本的模板中复制单元格颜色时，会出现颜色失真的问题。
+     * 
+     * 但最终也没有解决。因为：当单元格的颜色设置为非标准颜色时，就会失真，但设置为标准颜色时，是正常的。
+     * 
+     * 也因为此，本方法与 i_ToCellStyle.setFillBackgroundColor(i_FromCellStyle.getFillBackgroundColor()); 的效果是相同的。
+     * 
+     * 本方法作为研究使用而保留下来，但不没有使用价值。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-21
+     * @version     v1.0
+     *
+     * @param i_FromColor
+     * @param i_DataWorkbook
+     * @return
+     */
+    @Deprecated
+    public final static HSSFColor createColor(HSSFColor i_FromColor ,HSSFWorkbook i_DataWorkbook)
+    {
+        short [] v_RGBHex    = i_FromColor.getTriplet();
+        byte     v_ByteRed   = (byte)v_RGBHex[0];
+        byte     v_ByteGreen = (byte)v_RGBHex[1];
+        byte     v_ByteBlue  = (byte)v_RGBHex[2];
+        
+        HSSFPalette v_Palette   = i_DataWorkbook.getCustomPalette();
+        HSSFColor   v_DataColor = v_Palette.findColor(v_ByteRed ,v_ByteGreen ,v_ByteBlue);
+        
+        if ( v_DataColor == null )
+        {
+            v_Palette.setColorAtIndex(i_FromColor.getIndex() ,v_ByteRed ,v_ByteGreen ,v_ByteBlue);
+            
+            return v_Palette.getColor(i_FromColor.getIndex());
+        }
+        
+        return  v_DataColor;
     }
     
     

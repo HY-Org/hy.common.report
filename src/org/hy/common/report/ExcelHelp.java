@@ -689,6 +689,8 @@ public class ExcelHelp
     {
         if ( i_FromCellStyle instanceof HSSFCellStyle )
         {
+            i_ToCellStyle.cloneStyleFrom(i_FromCellStyle);
+            /*
             i_ToCellStyle.setAlignment(          i_FromCellStyle.getAlignmentEnum());
             i_ToCellStyle.setDataFormat(         i_FromCellStyle.getDataFormat());
             
@@ -707,7 +709,7 @@ public class ExcelHelp
             i_ToCellStyle.setFillForegroundColor(i_FromCellStyle.getFillForegroundColor());
             i_ToCellStyle.setFillPattern(        i_FromCellStyle.getFillPatternEnum());
             i_ToCellStyle.setHidden(             i_FromCellStyle.getHidden());
-  
+            
             // 首行缩进
             i_ToCellStyle.setIndention(          i_FromCellStyle.getIndention());
             i_ToCellStyle.setLocked(             i_FromCellStyle.getLocked());
@@ -717,6 +719,7 @@ public class ExcelHelp
             i_ToCellStyle.setRotation(           i_FromCellStyle.getRotation());
             i_ToCellStyle.setVerticalAlignment(  i_FromCellStyle.getVerticalAlignmentEnum());
             i_ToCellStyle.setWrapText(           i_FromCellStyle.getWrapText());
+            */
         }
         else if ( i_FromCellStyle instanceof XSSFCellStyle )
         {
