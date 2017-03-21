@@ -400,7 +400,7 @@ public class ExcelHelp
         i_ToSheet.setAutobreaks(      i_FromSheet.getAutobreaks());
         
         // 冻结线
-        if ( i_FromSheet.getPaneInformation().isFreezePane() )
+        if ( i_FromSheet.getPaneInformation() != null )
         {
             i_ToSheet.createFreezePane(i_FromSheet.getPaneInformation().getVerticalSplitPosition()
                                       ,i_FromSheet.getPaneInformation().getHorizontalSplitPosition()
