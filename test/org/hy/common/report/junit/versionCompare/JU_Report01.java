@@ -1,4 +1,4 @@
-package org.hy.common.report.junit.normal;
+package org.hy.common.report.junit.versionCompare;
 
 import java.util.ArrayList;
 import java.util.List;
