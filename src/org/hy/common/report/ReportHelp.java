@@ -170,14 +170,23 @@ public class ReportHelp
         int v_DataIndex = 1;
         int v_DataCount = i_Datas.size();
         
-        writeTitle(v_DataWorkbook ,v_DataSheet ,v_DataCount ,i_Datas ,i_RTemplate);
-        
-        for (; v_DataIndex<=v_DataCount; v_DataIndex++)
+        if ( i_RTemplate.getRowCountTitle() >= 1 )
         {
-            writeData(v_DataWorkbook ,v_DataSheet ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+            writeTitle(v_DataWorkbook ,v_DataSheet ,v_DataCount ,i_Datas ,i_RTemplate);
         }
         
-        writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataCount ,i_Datas ,i_RTemplate);
+        if ( i_RTemplate.getRowCountData() >= 1 )
+        {
+            for (; v_DataIndex<=v_DataCount; v_DataIndex++)
+            {
+                writeData(v_DataWorkbook ,v_DataSheet ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+            }
+        }
+        
+        if ( i_RTemplate.getRowCountTotal() >= 1 )
+        {
+            writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataCount ,i_Datas ,i_RTemplate);
+        }
         
         return v_DataWorkbook;
     }

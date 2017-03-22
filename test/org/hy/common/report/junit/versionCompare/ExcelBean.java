@@ -1,4 +1,4 @@
-package org.hy.common.report.junit;
+package org.hy.common.report.junit.versionCompare;
 
 import org.hy.common.Date;
 

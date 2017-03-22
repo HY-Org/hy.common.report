@@ -307,7 +307,7 @@ public class RTemplate implements Comparable<RTemplate>
      *
      * @param i_BeginRow  开始行号。下标从零开始
      * @param i_EndRow    结束行号。下标从零开始
-     * @return
+     * @return            0表示不存在
      */
     public int getRowCount(Integer i_BeginRow ,Integer i_EndRow)
     {

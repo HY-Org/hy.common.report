@@ -7,7 +7,6 @@ import org.hy.common.Date;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
-import org.hy.common.report.junit.ExcelBean;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -20,7 +19,7 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元： 
+ * 测试单元：对比2003版本与2007版本生成的报表样式
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-03-19
@@ -47,7 +46,7 @@ public class JU_Report01
     
     public List<ExcelBean> getDatas(int i_DataSize)
     {
-        List<ExcelBean> v_Ret = new ArrayList<>();
+        List<ExcelBean> v_Ret = new ArrayList<ExcelBean>();
         
         for (int i=0; i<i_DataSize; i++)
         {

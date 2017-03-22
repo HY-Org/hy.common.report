@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportTotalSubtotal">
+			<name>小计、分组数据的报表演示</name>
+			<excelFileName>classpath:JU_Total_Subtotal.xlsx</excelFileName>
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>1</titleEndRow>
+			<dataBeginRow>2</dataBeginRow>
+			<dataEndRow>2</dataEndRow>
+			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>

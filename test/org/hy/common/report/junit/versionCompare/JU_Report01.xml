@@ -19,7 +19,7 @@
 			<dataEndRow>18</dataEndRow>
 			<totalBeginRow>19</totalBeginRow>
 			<totalEndRow>20</totalEndRow>
-			<dataClass>org.hy.common.report.junit.ExcelBean</dataClass>
+			<dataClass>org.hy.common.report.junit.versionCompare.ExcelBean</dataClass>
 			
 			<call name="addListener">
 				<listener class="org.hy.common.report.event.ImageListener">
@@ -43,7 +43,7 @@
 			<dataEndRow>18</dataEndRow>
 			<totalBeginRow>19</totalBeginRow>
 			<totalEndRow>20</totalEndRow>
-			<dataClass>org.hy.common.report.junit.ExcelBean</dataClass>
+			<dataClass>org.hy.common.report.junit.versionCompare.ExcelBean</dataClass>
 			
 			<call name="addListener">
 				<listener class="org.hy.common.report.event.ImageListener">
