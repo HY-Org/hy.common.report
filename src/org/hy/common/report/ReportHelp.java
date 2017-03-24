@@ -257,6 +257,7 @@ public class ReportHelp
         Sheet v_TemplateSheet      = i_RTemplate.getTemplateSheet();
         int   v_TemplateTitleCount = i_RTemplate.getRowCountTitle();
         int   v_TemplateRowCount   = i_RTemplate.getRowCountData();
+        int   v_CreateRowCount     = 0;
         
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板复制图片
@@ -270,14 +271,14 @@ public class ReportHelp
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int v_DataRowNo = v_TemplateTitleCount + (i_DataIndex - 1) * v_TemplateRowCount + v_RowNo;
+            int v_DataRowNo = v_TemplateTitleCount + (i_DataIndex - 1) * v_TemplateRowCount + v_RowNo + v_CreateRowCount;
             Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_DataIndex ,i_DataCount ,v_DataRow ,i_Datas);
+            v_CreateRowCount = copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_DataIndex ,i_DataCount ,v_DataRow ,i_Datas);
         }
     }
     
@@ -576,7 +577,7 @@ public class ReportHelp
      * @param i_DataRow        数据中的行对象
      * @param i_Datas          本行对应的数据
      * 
-     * @return                 返回数据工作表中的最后一行有数据的行号。下标从 0 开始。
+     * @return                 返回本方法内一共生成多少新行。
      */
     public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,int i_DataIndex ,int i_DataCount ,Row i_DataRow ,Object i_Datas) 
     {
@@ -681,7 +682,7 @@ public class ReportHelp
             }
         }
         
-        return v_RowNum + v_ForSize - 1;
+        return v_ForSize == 0 ? v_ForSize : v_ForSize - 1;
     }
     
     
