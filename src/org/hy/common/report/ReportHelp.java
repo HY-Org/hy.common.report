@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
@@ -27,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RWorkbook;
 import org.hy.common.report.event.ValueListener;
@@ -573,13 +575,18 @@ public class ReportHelp
      * @param i_DataCount      数据总量
      * @param i_DataRow        数据中的行对象
      * @param i_Datas          本行对应的数据
+     * 
+     * @return                 返回数据工作表中的最后一行有数据的行号。下标从 0 开始。
      */
-    public final static void copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,int i_DataIndex ,int i_DataCount ,Row i_DataRow ,Object i_Datas) 
+    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,int i_DataIndex ,int i_DataCount ,Row i_DataRow ,Object i_Datas) 
     {
         i_DataRow.setHeight(    i_TemplateRow.getHeight());
         i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
         
-        int v_CellCount = i_TemplateRow.getLastCellNum();
+        int     v_RowNum    = i_DataRow.getRowNum();
+        int     v_CellCount = i_TemplateRow.getLastCellNum();
+        int     v_ForSize   = 0;
+        boolean v_IsFor     = false;
         for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
@@ -594,8 +601,87 @@ public class ReportHelp
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
             
-            copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,i_DataIndex ,i_DataCount ,i_Datas);
+            int v_CellRetFroSize = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,i_DataIndex ,i_DataCount ,i_Datas ,0);
+            
+            if ( v_CellRetFroSize > 0 )
+            {
+                // 合并前面列的单元格
+                if ( !v_IsFor )
+                {
+                    v_ForSize = v_CellRetFroSize;
+                    v_IsFor   = true;
+                    
+                    // 创建待合并的新行
+                    for (int v_RowIndex=1; v_RowIndex<=v_ForSize-1; v_RowIndex++)
+                    {
+                        if ( i_DataRow.getSheet().getRow(v_RowIndex + v_RowNum) == null )
+                        {
+                            i_DataRow.getSheet().createRow(v_RowIndex + v_RowNum);
+                        }
+                    }
+                    
+                    // 合并
+                    for (int v_MergedColIndex=0; v_MergedColIndex<v_CellIndex; v_MergedColIndex++)
+                    {
+                        // 创建待合并的新列，并设置单元格的格式
+                        for (int v_RowIndex=1; v_RowIndex<=v_ForSize-1; v_RowIndex++)
+                        {
+                            Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex);
+                            Cell v_DataForCell = v_DataForRow.getCell(v_MergedColIndex);
+                            
+                            if ( v_DataForCell == null ) 
+                            {
+                                v_DataForCell = v_DataForRow.createCell(v_MergedColIndex);
+                            }
+                            
+                            v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
+                        }
+                        
+                        i_DataRow.getSheet().addMergedRegion(new CellRangeAddress(v_RowNum 
+                                                                                 ,v_RowNum + v_ForSize - 1
+                                                                                 ,v_MergedColIndex
+                                                                                 ,v_MergedColIndex));
+                    }
+                }
+                
+                // 填充小计分项数据
+                for (int v_ForIndex=1; v_ForIndex<v_ForSize; v_ForIndex++)
+                {
+                    Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_ForIndex);
+                    Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
+                    
+                    if ( v_DataForCell == null ) 
+                    {
+                        v_DataForCell = v_DataForRow.createCell(v_CellIndex);
+                    }
+                    
+                    copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,i_DataIndex ,i_DataCount ,i_Datas ,v_ForIndex);
+                }
+            }
+            else if ( v_IsFor )
+            {
+                // 创建待合并的新列，并设置单元格的格式
+                for (int v_RowIndex=1; v_RowIndex<=v_ForSize-1; v_RowIndex++)
+                {
+                    Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex);
+                    Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
+                    
+                    if ( v_DataForCell == null ) 
+                    {
+                        v_DataForCell = v_DataForRow.createCell(v_CellIndex);
+                    }
+                    
+                    v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
+                }
+                
+                i_DataRow.getSheet().addMergedRegion(new CellRangeAddress(v_RowNum 
+                                                                         ,v_RowNum + v_ForSize - 1
+                                                                         ,v_CellIndex
+                                                                         ,v_CellIndex));
+            }
         }
+        
+        return v_RowNum + v_ForSize - 1;
     }
     
     
@@ -614,8 +700,11 @@ public class ReportHelp
      * @param i_DataIndex      数据索引号。下标从 1 开始
      * @param i_DataCount      数据总量
      * @param i_Datas          本行对应的数据
+     * @param i_ForIndex       小计循环索引。下标从 0 开始，即List.get()
+     * 
+     * @return                 返回小计循环的次数
      */
-    public final static void copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,int i_DataIndex ,int i_DataCount ,Object i_Datas)
+    public final static int copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,int i_DataIndex ,int i_DataCount ,Object i_Datas ,int i_ForIndex)
     {
         // 复制样式
         i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
@@ -645,15 +734,17 @@ public class ReportHelp
             
             if ( i_RTemplate.isExists(v_ValueName) )
             {
-                Object        v_Value    = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_DataIndex ,i_DataCount);
-                ValueListener v_Listener = i_RTemplate.getListener(v_ValueName);
+                Return<Object> v_Value    = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_DataIndex ,i_DataCount ,i_ForIndex);
+                ValueListener  v_Listener = i_RTemplate.getListener(v_ValueName);
                 
                 if ( v_Listener != null )
                 {
-                    v_Value = Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_DataIndex ,i_Datas ,v_Value));
+                    v_Value.paramObj = Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_DataIndex ,i_Datas ,v_Value.paramObj));
                 }
                 
-                i_DataCell.setCellValue(v_Value.toString());
+                i_DataCell.setCellValue(v_Value.paramObj.toString());
+                
+                return v_Value.paramInt;
             }
             else 
             {
@@ -672,6 +763,8 @@ public class ReportHelp
         {
             // Nothing.
         }
+        
+        return 0;
     }
     
     

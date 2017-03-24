@@ -494,9 +494,9 @@ public class ExcelHelp
             v_LastRow  += i_OffsetRow;
             
             i_ToSheet.addMergedRegion(new CellRangeAddress(v_FirstRow 
-                                                            ,v_LastRow 
-                                                            ,v_FirstColumn
-                                                            ,v_LastColumn));
+                                                          ,v_LastRow 
+                                                          ,v_FirstColumn
+                                                          ,v_LastColumn));
         }
     }
     

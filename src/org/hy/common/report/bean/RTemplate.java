@@ -1,5 +1,6 @@
 package org.hy.common.report.bean;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.Return;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.event.ValueListener;
 
@@ -86,7 +88,7 @@ public class RTemplate implements Comparable<RTemplate>
     private Sheet                      templateSheet; 
     
     /** 解释的值的反射方法集合(一般只初始加载一次) */
-    private Map<String ,MethodReflect> valueMethods;
+    private Map<String ,RCell>         valueMethods;
     
     /** 按 this.valueSign 生成的系统变量名称 */
     private Map<String ,String>        valueNames;
@@ -98,7 +100,7 @@ public class RTemplate implements Comparable<RTemplate>
         this.sheetIndex     = 0;
         this.templateSheet  = null;
         this.excelVersion   = null;
-        this.valueMethods   = new LinkedHashMap<String ,MethodReflect>();
+        this.valueMethods   = new LinkedHashMap<String ,RCell>();
         this.valueNames     = new Hashtable<String ,String>();
         this.valueListeners = new Hashtable<String ,ValueListener>();
         this.setValueSign(":");
@@ -158,18 +160,31 @@ public class RTemplate implements Comparable<RTemplate>
             
             for (int i=v_TempDatas.size()-1; i>=0; i--)
             {
-                String v_Value = v_TempDatas.get(i);
+                final String v_Value = v_TempDatas.get(i);
                 
                 if ( this.valueNames.containsKey(v_Value) )
                 {
-                    // Nothing.
+                    continue;
                 }
-                else if ( this.valueSign.equals(v_Value.substring(0 ,this.valueSign.length())) && v_Value.length() >= this.valueSign.length() + 1 )
+                
+                if ( v_Value.length() >= this.valueSign.length() + 1 && v_Value.startsWith(this.valueSign) )
                 {
+                    RCell  v_RCell     = new RCell();
                     String v_ValueName = v_Value.substring(this.valueSign.length());
                     
-                    MethodReflect v_MethodReflect = new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter);
-                    this.valueMethods.put(v_Value ,v_MethodReflect);
+                    // 解释格式  :for:List.size:List.$get(index).xxx
+                    if ( v_ValueName.toLowerCase().startsWith(RCell.$For) )
+                    {
+                        String [] v_ForArr      = v_ValueName.split(this.valueSign);
+                        String    v_ForSizeName = v_ForArr[1];
+                        
+                        v_ValueName = v_ForArr[2];
+                        
+                        v_RCell.setForSizeMethod(new MethodReflect(v_JavaClass ,v_ForSizeName ,true ,MethodReflect.$NormType_Getter));
+                    }
+                    
+                    v_RCell.setValueMethod(new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                    this.valueMethods.put(v_Value ,v_RCell);
                 }
             }
         }
@@ -209,18 +224,36 @@ public class RTemplate implements Comparable<RTemplate>
      * @param i_Datas      数据
      * @param i_RowNo      数据行号。下标从 1 开始
      * @param i_RowCount   数据总量
-     * @return
+     * @param i_ForIndex   小计循环索引。下标从 0 开始，即List.get()
+     * @return             Return.paramObj  反射出来的数值
+     *                     Return.paramInt  小计For循环的次数
      */
-    public Object getValue(String i_ValueName ,Object i_Datas ,int i_RowNo ,int i_RowCount)
+    public Return<Object> getValue(String i_ValueName ,Object i_Datas ,int i_RowNo ,int i_RowCount ,int i_ForIndex)
     {
-        MethodReflect v_MethodReflect = this.valueMethods.get(i_ValueName);
-        Object        v_Ret           = "";
+        RCell          v_RCell = this.valueMethods.get(i_ValueName);
+        Return<Object> v_Ret   = new Return<Object>(true).paramInt(0);
         
-        if ( v_MethodReflect != null )
+        if ( v_RCell != null )
         {
             try
             {
-                v_Ret = v_MethodReflect.invokeForInstance(i_Datas);
+                if ( v_RCell.isFor() )
+                {
+                    v_Ret.paramInt = (int)v_RCell.getForSizeMethod().invokeForInstance(i_Datas);
+                    
+                    if ( v_Ret.paramInt >= 1 )
+                    {
+                        Map<String ,Object> v_Params = new HashMap<String ,Object>(1);
+                        
+                        v_Params.put(RCell.$Index ,i_ForIndex);
+
+                        v_Ret.paramObj = v_RCell.getValueMethod().invokeForInstance(i_Datas ,v_Params);
+                    }
+                }
+                else
+                {
+                    v_Ret.paramObj = v_RCell.getValueMethod().invokeForInstance(i_Datas);
+                }
             }
             catch (Exception exce)
             {
@@ -233,15 +266,15 @@ public class RTemplate implements Comparable<RTemplate>
             
             if ( $ValueName_RowNo.equalsIgnoreCase(v_ValueName) )
             {
-                return String.valueOf(i_RowNo);
+                v_Ret.paramObj = String.valueOf(i_RowNo);
             }
             else if ( $ValueName_RowIndex.equalsIgnoreCase(v_ValueName) )
             {
-                return String.valueOf(i_RowNo - 1);
+                v_Ret.paramObj = String.valueOf(i_RowNo - 1);
             }
             else if ( $ValueName_RowCount.equalsIgnoreCase(v_ValueName) )
             {
-                return String.valueOf(i_RowCount);
+                v_Ret.paramObj = String.valueOf(i_RowCount);
             }
         }
         
