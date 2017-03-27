@@ -16,34 +16,34 @@ import org.hy.common.MethodReflect;
 public class RCell
 {
     
-    public final static String $Index = "index";
-    
-    
- 
     /** 反射单元格值的方法 */
     private MethodReflect valueMethod;
     
-    /** 获取循环次数的方法 */
-    private MethodReflect forSizeMethod;
+    /** 获取循环迭代器的方法 */
+    private MethodReflect iteratorMethod;
+    
+    /** 获取循环迭代器的元素总个数 */
+    private MethodReflect iteratorSizeMethod;
     
     
     
     public RCell()
     {
-        this(null ,null);
+        this(null ,null ,null);
     }
     
     
     public RCell(MethodReflect i_ValueMethod)
     {
-        this(i_ValueMethod ,null);
+        this(i_ValueMethod ,null ,null);
     }
     
     
-    public RCell(MethodReflect i_ValueMethod ,MethodReflect i_ForSizeMethod)
+    public RCell(MethodReflect i_ValueMethod ,MethodReflect i_IteratorMethod ,MethodReflect i_IteratorSizeMethod)
     {
-        this.valueMethod   = i_ValueMethod;
-        this.forSizeMethod = i_ForSizeMethod;
+        this.valueMethod        = i_ValueMethod;
+        this.iteratorMethod     = i_IteratorMethod;
+        this.iteratorSizeMethod = i_IteratorSizeMethod;
     }
     
     
@@ -52,7 +52,7 @@ public class RCell
      */
     public boolean isFor()
     {
-        return this.forSizeMethod != null;
+        return this.iteratorMethod != null;
     }
     
     
@@ -77,22 +77,42 @@ public class RCell
 
     
     /**
-     * 获取：获取循环次数的方法
+     * 获取：获取循环迭代器的方法
      */
-    public MethodReflect getForSizeMethod()
+    public MethodReflect getIteratorMethod()
     {
-        return forSizeMethod;
+        return iteratorMethod;
     }
 
     
     /**
-     * 设置：获取循环次数的方法
+     * 设置：获取循环迭代器的方法
      * 
-     * @param forSizeMethod 
+     * @param iteratorMethod 
      */
-    public void setForSizeMethod(MethodReflect forSizeMethod)
+    public void setIteratorMethod(MethodReflect iteratorMethod)
     {
-        this.forSizeMethod = forSizeMethod;
+        this.iteratorMethod = iteratorMethod;
     }
+
+
+    /**
+     * 获取：获取循环迭代器的元素总个数
+     */
+    public MethodReflect getIteratorSizeMethod()
+    {
+        return iteratorSizeMethod;
+    }
+
     
+    /**
+     * 设置：获取循环迭代器的元素总个数
+     * 
+     * @param iteratorSizeMethod 
+     */
+    public void setIteratorSizeMethod(MethodReflect iteratorSizeMethod)
+    {
+        this.iteratorSizeMethod = iteratorSizeMethod;
+    }
+
 }

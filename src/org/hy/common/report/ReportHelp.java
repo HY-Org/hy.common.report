@@ -28,8 +28,8 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Help;
-import org.hy.common.Return;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.bean.RValue;
 import org.hy.common.report.bean.RWorkbook;
 import org.hy.common.report.event.ValueListener;
 
@@ -169,8 +169,9 @@ public class ReportHelp
         // 数据工作表的整体(所有)列的样式，复制于模板
         copyColumnsStyle(i_RTemplate ,v_TemplateSheet ,v_DataWorkbook ,v_DataSheet);
         
-        int v_DataIndex = 1;
-        int v_DataCount = i_Datas.size();
+        int v_DataIndex    = 1;
+        int v_DataCount    = i_Datas.size();
+        int v_DataRowIndex = 0;
         
         if ( i_RTemplate.getRowCountTitle() >= 1 )
         {
@@ -179,17 +180,28 @@ public class ReportHelp
         
         if ( i_RTemplate.getRowCountData() >= 1 )
         {
-            int v_DataRowIndex = i_RTemplate.getRowCountTitle();
-            
-            for (; v_DataIndex<=v_DataCount; v_DataIndex++)
+            v_DataRowIndex = i_RTemplate.getRowCountTitle();
+
+            if ( i_RTemplate.getRowCountSubtotal() >= 1 )
             {
-                v_DataRowIndex = writeData(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+                for (; v_DataIndex<=v_DataCount; v_DataIndex++)
+                {
+                    v_DataRowIndex = writeData(    v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+                    v_DataRowIndex = writeSubtotal(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+                }
+            }
+            else
+            {
+                for (; v_DataIndex<=v_DataCount; v_DataIndex++)
+                {
+                    v_DataRowIndex = writeData(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+                }
             }
         }
         
         if ( i_RTemplate.getRowCountTotal() >= 1 )
         {
-            writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataCount ,i_Datas ,i_RTemplate);
+            writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataCount ,i_Datas ,i_RTemplate);
         }
         
         return v_DataWorkbook;
@@ -263,12 +275,63 @@ public class ReportHelp
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
         int   v_DataRowIndex     = i_DataRowIndex;
         
-        copyMergedRegionsData(i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板合并单元格
-        copyImagesData(       i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板复制图片
+        copyMergedRegionsData(i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板合并单元格
+        copyImagesData(       i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
+            Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
+            if ( v_TemplateRow == null ) 
+            {
+                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
+            }
+            
+            int v_DataRowNo = v_RowNo + i_DataRowIndex;
+            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
+            if ( v_DataRow == null ) 
+            {
+                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
+            }
+            
+            v_DataRowIndex ++;
+            v_DataRowIndex += copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_DataIndex ,i_DataCount ,v_DataRow ,i_Datas);
+        }
+        
+        return v_DataRowIndex;
+    }
+    
+    
+    
+    /**
+     * 按报表模板格式写入小计
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-27
+     * @version     v1.0
+     *
+     * @param i_DataWorkbook  数据工作薄
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_DataIndex     数据索引号。下标从 1 开始
+     * @param i_DataCount     数据总量
+     * @param i_Datas         数据
+     * @param i_RTemplate     报表模板对象
+     * 
+     * @param                 返回数据工作表中已写到哪一行的行号。
+     */
+    public final static int writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,int i_DataIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
+    {
+        Sheet v_TemplateSheet            = i_RTemplate.getTemplateSheet();
+        int   v_TemplateRowCountSubtotal = i_RTemplate.getRowCountSubtotal();
+        int   v_DataRowIndex             = i_DataRowIndex;
+        
+        copyMergedRegionsSubtotal(i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板合并单元格
+        copyImagesSubtotal(       i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板复制图片
+        
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCountSubtotal; v_RowNo++) 
+        {
+            int v_TemplateRowNo = i_RTemplate.getSubtotalBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
             if ( v_TemplateRow == null ) 
             {
@@ -300,19 +363,18 @@ public class ReportHelp
      *
      * @param i_DataWorkbook  数据工作薄
      * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
      * @param i_DataCount     数据总量
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet         = i_RTemplate.getTemplateSheet();
-        int   v_TemplateTitleCount    = i_RTemplate.getRowCountTitle();
-        int   v_TemplateRowCountData  = i_RTemplate.getRowCountData();
         int   v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
         
-        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_DataCount);  // 按模板合并单元格
-        copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_DataCount);  // 按模板复制图片
+        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板合并单元格
+        copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCountTotal; v_RowNo++) 
         {
@@ -323,7 +385,7 @@ public class ReportHelp
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int v_DataRowNo = v_TemplateTitleCount + i_DataCount * v_TemplateRowCountData + v_RowNo;
+            int v_DataRowNo = v_RowNo + i_DataRowIndex;
             Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
@@ -363,15 +425,35 @@ public class ReportHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
+     * @param i_RTemplate     模板信息对象
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
      */
-    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
     {
-        int v_OffsetRow = i_RTemplate.getRowCountData() * (i_Offset - 1);
+        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getDataBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的小计区域中所有图片到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-27
+     * @version     v1.0
+     *
+     * @param i_RTemplate     模板信息对象
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     */
+    public final static void copyImagesSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    {
+        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getSubtotalBeginRow();
+        
+        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getSubtotalBeginRow() ,i_RTemplate.getSubtotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
     
     
@@ -383,14 +465,13 @@ public class ReportHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
+     * @param i_RTemplate     模板信息对象
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
      */
-    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
     {
-        // 通过数据计算合计
-        int v_OffsetRow = i_RTemplate.getRowCountData() * (i_Offset - 1);
+        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTotalBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -424,15 +505,35 @@ public class ReportHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
+     * @param i_RTemplate     模板信息对象
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
      */
-    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
     {
-        int v_OffsetRow = i_RTemplate.getRowCountData() * (i_Offset - 1);
+        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getDataBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的小计区域中合并单元格到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-27
+     * @version     v1.0
+     *
+     * @param i_RTemplate     模板信息对象
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     */
+    public final static void copyMergedRegionsSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    {
+        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getSubtotalBeginRow();
+        
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getSubtotalBeginRow() ,i_RTemplate.getSubtotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
     
     
@@ -444,14 +545,13 @@ public class ReportHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
+     * @param i_RTemplate     模板信息对象
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
      */
-    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
     {
-        // 通过数据计算合计
-        int v_OffsetRow = i_RTemplate.getRowCountData() * (i_Offset - 1);
+        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTotalBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -609,14 +709,14 @@ public class ReportHelp
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
             
-            int v_CellRetFroSize = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,i_DataIndex ,i_DataCount ,i_Datas ,0);
+            RValue v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,i_DataIndex ,i_DataCount ,i_Datas ,null);
             
-            if ( v_CellRetFroSize > 0 )
+            if ( v_RValue.getIteratorSize() > 0 )
             {
                 // 合并前面列的单元格
                 if ( !v_IsFor )
                 {
-                    v_ForSize = v_CellRetFroSize;
+                    v_ForSize = v_RValue.getIteratorSize();
                     v_IsFor   = true;
                     
                     // 创建待合并的新行
@@ -663,7 +763,7 @@ public class ReportHelp
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
                     
-                    copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,i_DataIndex ,i_DataCount ,i_Datas ,v_ForIndex);
+                    v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,i_DataIndex ,i_DataCount ,i_Datas ,v_RValue);
                 }
             }
             else if ( v_IsFor )
@@ -708,11 +808,10 @@ public class ReportHelp
      * @param i_DataIndex      数据索引号。下标从 1 开始
      * @param i_DataCount      数据总量
      * @param i_Datas          本行对应的数据
-     * @param i_ForIndex       小计循环索引。下标从 0 开始，即List.get()
-     * 
-     * @return                 返回小计循环的次数
+     * @param io_RValue        小计循环的迭代器
+     * @return                 
      */
-    public final static int copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,int i_DataIndex ,int i_DataCount ,Object i_Datas ,int i_ForIndex)
+    public final static RValue copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,int i_DataIndex ,int i_DataCount ,Object i_Datas ,RValue io_RValue)
     {
         // 复制样式
         i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
@@ -742,17 +841,17 @@ public class ReportHelp
             
             if ( i_RTemplate.isExists(v_ValueName) )
             {
-                Return<Object> v_Value    = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_DataIndex ,i_DataCount ,i_ForIndex);
-                ValueListener  v_Listener = i_RTemplate.getListener(v_ValueName);
+                RValue        v_RValue   = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_DataIndex ,i_DataCount ,io_RValue);
+                ValueListener v_Listener = i_RTemplate.getListener(v_ValueName);
                 
                 if ( v_Listener != null )
                 {
-                    v_Value.paramObj = Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_DataIndex ,i_Datas ,v_Value.paramObj));
+                    v_RValue.setValue(Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_DataIndex ,i_Datas ,v_RValue.getValue())));
                 }
                 
-                i_DataCell.setCellValue(v_Value.paramObj.toString());
+                i_DataCell.setCellValue(v_RValue.getValue().toString());
                 
-                return v_Value.paramInt;
+                return v_RValue;
             }
             else 
             {
@@ -772,7 +871,7 @@ public class ReportHelp
             // Nothing.
         }
         
-        return 0;
+        return io_RValue == null ? new RValue() : io_RValue;
     }
     
     

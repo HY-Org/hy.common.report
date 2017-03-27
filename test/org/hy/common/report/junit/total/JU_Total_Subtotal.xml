@@ -17,6 +17,8 @@
 			<titleEndRow>1</titleEndRow>
 			<dataBeginRow>2</dataBeginRow>
 			<dataEndRow>2</dataEndRow>
+			<subtotalBeginRow>3</subtotalBeginRow>
+			<subtotalEndRow>4</subtotalEndRow>
 			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
 		</template>
 		
