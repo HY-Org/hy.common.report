@@ -1,7 +1,9 @@
 package org.hy.common.report.junit.total;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 
@@ -17,17 +19,20 @@ import java.util.List;
 public class OrgInfo
 {
     
-    private String           orgNo;
+    private String              orgNo;
     
-    private String           orgName;
+    private String              orgName;
 
-    private List<StaffInfo>  staffs;
+    private List<StaffInfo>     staffs;
+    
+    private Map<String ,String> orgAttrs;
     
     
     
     public OrgInfo()
     {
-        this.staffs = new ArrayList<StaffInfo>();
+        this.staffs   = new ArrayList<StaffInfo>();
+        this.orgAttrs = new HashMap<String ,String>(); 
     }
     
     
@@ -64,6 +69,18 @@ public class OrgInfo
     public void setStaffs(List<StaffInfo> staffs)
     {
         this.staffs = staffs;
+    }
+
+
+    public Map<String ,String> getOrgAttrs()
+    {
+        return orgAttrs;
+    }
+
+
+    public void setOrgAttrs(Map<String ,String> orgAttrs)
+    {
+        this.orgAttrs = orgAttrs;
     }
     
 }

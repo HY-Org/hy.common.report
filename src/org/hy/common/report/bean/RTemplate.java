@@ -164,21 +164,41 @@ public class RTemplate implements Comparable<RTemplate>
                 
                 if ( this.valueNames.containsKey(v_Value) )
                 {
+                    // 系统变量名称不解释
+                    continue;
+                }
+                
+                if ( this.valueMethods.containsKey(v_Value) )
+                {
+                    // 防止重复解释
                     continue;
                 }
                 
                 if ( v_Value.length() >= this.valueSign.length() + 1 && v_Value.startsWith(this.valueSign) )
                 {
-                    RCell  v_RCell     = new RCell();
-                    String v_ValueName = v_Value.substring(this.valueSign.length());
+                    RCell     v_RCell     = new RCell();
+                    String    v_ValueName = v_Value.substring(this.valueSign.length());
+                    String [] v_Fors      = v_ValueName.split("\\[\\]");
                     
-                    // 解释格式  :for:List.size:List.$get(index).xxx
-                    if ( v_ValueName.toLowerCase().startsWith(RCell.$For) )
+                    if ( v_Fors.length >= 2 )
                     {
-                        String [] v_ForArr      = v_ValueName.split(this.valueSign);
-                        String    v_ForSizeName = v_ForArr[1];
+                        MethodReflect v_ForMR       = new MethodReflect(v_JavaClass ,v_Fors[0] ,true ,MethodReflect.$NormType_Getter);
+                        String        v_ForSizeName = "";
                         
-                        v_ValueName = v_ForArr[2];
+                        if ( MethodReflect.isExtendImplement(v_ForMR.getReturnType() ,List.class) )
+                        {
+                            v_ForSizeName = v_Fors[0] + ".$size";
+                            v_ValueName   = v_Fors[0] + ".$get(index)" + v_Fors[1];
+                        }
+                        else if ( MethodReflect.isExtendImplement(v_ForMR.getReturnType() ,Map.class) )
+                        {
+                            v_ForSizeName = v_Fors[0] + ".$size";
+                            v_ValueName   = v_Fors[0] + ".$get(index)" + v_Fors[1];
+                        }
+                        else
+                        {
+                            v_ForSizeName = v_Fors[0] + ".$length";
+                        }
                         
                         v_RCell.setForSizeMethod(new MethodReflect(v_JavaClass ,v_ForSizeName ,true ,MethodReflect.$NormType_Getter));
                     }

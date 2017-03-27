@@ -16,8 +16,6 @@ import org.hy.common.MethodReflect;
 public class RCell
 {
     
-    public final static String $For   = "for";
-    
     public final static String $Index = "index";
     
     
