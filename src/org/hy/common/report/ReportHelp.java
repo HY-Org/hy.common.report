@@ -179,9 +179,11 @@ public class ReportHelp
         
         if ( i_RTemplate.getRowCountData() >= 1 )
         {
+            int v_DataRowIndex = i_RTemplate.getRowCountTitle();
+            
             for (; v_DataIndex<=v_DataCount; v_DataIndex++)
             {
-                writeData(v_DataWorkbook ,v_DataSheet ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+                v_DataRowIndex = writeData(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
             }
         }
         
@@ -247,17 +249,19 @@ public class ReportHelp
      *
      * @param i_DataWorkbook  数据工作薄
      * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
      * @param i_DataIndex     数据索引号。下标从 1 开始
      * @param i_DataCount     数据总量
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
+     * 
+     * @param                 返回数据工作表中已写到哪一行的行号。
      */
-    public final static void writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static int writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,int i_DataIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
     {
-        Sheet v_TemplateSheet      = i_RTemplate.getTemplateSheet();
-        int   v_TemplateTitleCount = i_RTemplate.getRowCountTitle();
-        int   v_TemplateRowCount   = i_RTemplate.getRowCountData();
-        int   v_CreateRowCount     = 0;
+        Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
+        int   v_TemplateRowCount = i_RTemplate.getRowCountData();
+        int   v_DataRowIndex     = i_DataRowIndex;
         
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,i_DataIndex);  // 按模板复制图片
@@ -271,15 +275,18 @@ public class ReportHelp
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int v_DataRowNo = v_TemplateTitleCount + (i_DataIndex - 1) * v_TemplateRowCount + v_RowNo + v_CreateRowCount;
+            int v_DataRowNo = v_RowNo + i_DataRowIndex;
             Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            v_CreateRowCount = copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_DataIndex ,i_DataCount ,v_DataRow ,i_Datas);
+            v_DataRowIndex ++;
+            v_DataRowIndex += copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_DataIndex ,i_DataCount ,v_DataRow ,i_Datas);
         }
+        
+        return v_DataRowIndex;
     }
     
     

@@ -80,7 +80,7 @@ public class JU_Total_Subtotal
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTotalSubtotal");
         
-        ExcelHelp.save(ReportHelp.write("小计、分组数据的报表演示" ,this.getOrgs(2) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/TotalSubtotal");
+        ExcelHelp.save(ReportHelp.write("小计、分组数据的报表演示" ,this.getOrgs(10) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/TotalSubtotal");
     }
     
 }
