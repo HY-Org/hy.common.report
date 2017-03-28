@@ -145,7 +145,7 @@ __XML小计配置举例__
 
 ---
 #### 十分感谢以下朋友支持与建议
-  1. 邹德福：建议使用简单化的反射规则，如 :staffs[].staffName 这样的简单形式，而非之前的 staffs.$get(index).staffName Java完全方法路径形式。
+  1. 邹德福：建议使用简单的反射规则，如 :staffs[].staffName ，而非之前的 :staffs.$get(index).staffName Java完整方法路径形式。
   
   2. 李　浩：建议对动态数据及小计功能的支持。
    
