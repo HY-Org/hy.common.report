@@ -188,6 +188,7 @@ public class ReportHelp
 
             if ( i_RTemplate.getRowCountSubtotal() >= 1 )
             {
+                // 模板中有小计的
                 for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
                 {
                     v_DataRowIndex = writeData(    v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
@@ -273,7 +274,6 @@ public class ReportHelp
      * @param i_RSystemValue  系统变量信息
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
-     * 
      * @param                 返回数据工作表中已写到哪一行的行号。
      */
     public final static int writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
@@ -411,13 +411,13 @@ public class ReportHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
+     * @param i_RTemplate     模板信息对象
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
      */
-    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
     {
-        int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
+        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTitleBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -491,13 +491,13 @@ public class ReportHelp
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate  模板信息对象
-     * @param i_DataSheet  数据工作表
-     * @param i_Offset     偏移量。下标从 1 开始。
+     * @param i_RTemplate     模板信息对象
+     * @param i_DataSheet     数据工作表
+     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
      */
-    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_Offset)
+    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
     {
-        int v_OffsetRow = (i_RTemplate.getRowCountTitle() - i_RTemplate.getTitleBeginRow()) * i_Offset;
+        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTitleBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
     }
