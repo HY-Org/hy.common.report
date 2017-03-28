@@ -23,7 +23,7 @@ __Excel模板文件中定义变量名称__，格式为 ":xx.yy.zz" ，通过反�
 
   
 
-__Excel模板举例__  
+__Excel常规模板举例__  
 
 ![image](images/Excel.png)
 
@@ -33,7 +33,7 @@ __Excel模板举例__
   
   
   
-__XML配置举例__
+__XML常规配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -84,6 +84,45 @@ RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTemplate");
     
 ExcelHelp.save(ReportHelp.write("Excel工作表名称" ,数据集合 ,v_RTemplate).getWorkbook() ,"Excel报表保存目录及名称");
 ```  
+
+
+
+__Excel动态行+小计模板举例__  
+
+![image](images/Subtotal.png)
+
+
+
+__XML小计配置举例__
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportTotalSubtotal">
+			<name>小计、分组数据的报表演示</name>
+			<excelFileName>classpath:JU_Total_Subtotal.xlsx</excelFileName>
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>1</titleEndRow>
+			<dataBeginRow>2</dataBeginRow>
+			<dataEndRow>2</dataEndRow>
+			<subtotalBeginRow>3</subtotalBeginRow>   <!-- 报表小计的开始行号（包括此行）。下标从零开始 -->
+			<subtotalEndRow>4</subtotalEndRow>       <!-- 报表小计的结束行号（包括此行）。下标从零开始 -->
+			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```
 
 
 
