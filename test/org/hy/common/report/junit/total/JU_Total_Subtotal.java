@@ -64,7 +64,9 @@ public class JU_Total_Subtotal
                 v_Staff.setStaffName("员工名称 " + x);
                 v_Staff.setTime(new Date());
                 
-                v_Org.getStaffs().add(v_Staff);
+                v_Org.getStaffs()  .add(v_Staff);
+                v_Org.getStaffSet().add(v_Staff);
+                v_Org.getStaffMap().put(v_Staff.getStaffNo() ,v_Staff);
             }
             
             v_Orgs.add(v_Org);

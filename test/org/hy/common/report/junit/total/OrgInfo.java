@@ -2,8 +2,10 @@ package org.hy.common.report.junit.total;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 
@@ -19,20 +21,23 @@ import java.util.Map;
 public class OrgInfo
 {
     
-    private String              orgNo;
+    private String                 orgNo;
     
-    private String              orgName;
+    private String                 orgName;
 
-    private List<StaffInfo>     staffs;
+    private List<StaffInfo>        staffs;
     
-    private Map<String ,String> orgAttrs;
+    private Set<StaffInfo>         staffSet;
+    
+    private Map<String ,StaffInfo> staffMap;
     
     
     
     public OrgInfo()
     {
         this.staffs   = new ArrayList<StaffInfo>();
-        this.orgAttrs = new HashMap<String ,String>(); 
+        this.staffSet = new HashSet<StaffInfo>();
+        this.staffMap = new HashMap<String ,StaffInfo>(); 
     }
     
     
@@ -71,16 +76,28 @@ public class OrgInfo
         this.staffs = staffs;
     }
 
-
-    public Map<String ,String> getOrgAttrs()
-    {
-        return orgAttrs;
-    }
-
-
-    public void setOrgAttrs(Map<String ,String> orgAttrs)
-    {
-        this.orgAttrs = orgAttrs;
-    }
     
+    public Set<StaffInfo> getStaffSet()
+    {
+        return staffSet;
+    }
+
+    
+    public void setStaffSet(Set<StaffInfo> staffSet)
+    {
+        this.staffSet = staffSet;
+    }
+
+    
+    public Map<String ,StaffInfo> getStaffMap()
+    {
+        return staffMap;
+    }
+
+    
+    public void setStaffMap(Map<String ,StaffInfo> staffMap)
+    {
+        this.staffMap = staffMap;
+    }
+
 }

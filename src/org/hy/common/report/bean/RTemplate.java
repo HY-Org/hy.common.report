@@ -188,33 +188,37 @@ public class RTemplate implements Comparable<RTemplate>
                     
                     if ( v_Fors.length >= 2 )
                     {
-                        MethodReflect v_ForMR        = new MethodReflect(v_JavaClass ,v_Fors[0] ,true ,MethodReflect.$NormType_Getter);
-                        String        v_Iterator     = "";
-                        String        v_IteratorSize = "";
+                        MethodReflect v_ForMR         = new MethodReflect(v_JavaClass ,v_Fors[0] ,true ,MethodReflect.$NormType_Getter);
+                        String        v_Iterator      = "";
+                        String        v_IteratorSize  = "";
+                        int           v_GenericsIndex = 0;
                         
                         if (      MethodReflect.isExtendImplement(v_ForMR.getReturnType() ,List.class) )
                         {
-                            v_Iterator     = v_Fors[0] + ".$iterator";
-                            v_IteratorSize = v_Fors[0] + ".$size";
-                            v_ValueName    = v_Fors[1].substring(1);
+                            v_Iterator      = v_Fors[0] + ".$iterator";
+                            v_IteratorSize  = v_Fors[0] + ".$size";
+                            v_ValueName     = v_Fors[1].substring(1);
+                            v_GenericsIndex = 0;
                         }
                         else if ( MethodReflect.isExtendImplement(v_ForMR.getReturnType() ,Set.class) )
                         {
-                            v_Iterator     = v_Fors[0] + ".$iterator";
-                            v_IteratorSize = v_Fors[0] + ".$size";
-                            v_ValueName    = v_Fors[1].substring(1);
+                            v_Iterator      = v_Fors[0] + ".$iterator";
+                            v_IteratorSize  = v_Fors[0] + ".$size";
+                            v_ValueName     = v_Fors[1].substring(1);
+                            v_GenericsIndex = 0;
                         }
                         else if ( MethodReflect.isExtendImplement(v_ForMR.getReturnType() ,Map.class) )
                         {
-                            v_Iterator     = v_Fors[0] + ".$values.$iterator";
-                            v_IteratorSize = v_Fors[0] + ".$size";
-                            v_ValueName    = v_Fors[1].substring(1);
+                            v_Iterator      = v_Fors[0] + ".$values.$iterator";
+                            v_IteratorSize  = v_Fors[0] + ".$size";
+                            v_ValueName     = v_Fors[1].substring(1);
+                            v_GenericsIndex = 1;
                         }
                         
                         v_RCell.setIteratorSizeMethod(new MethodReflect(v_JavaClass ,v_IteratorSize ,true ,MethodReflect.$NormType_Getter));
                         v_RCell.setIteratorMethod(    new MethodReflect(v_JavaClass ,v_Iterator     ,true ,MethodReflect.$NormType_Getter));
                         
-                        Class<?> v_ForElementJavaClass = MethodReflect.getGenericsReturn(v_ForMR.getReturnMethod()).getGenericType();
+                        Class<?> v_ForElementJavaClass = MethodReflect.getGenericsReturn(v_ForMR.getReturnMethod() ,v_GenericsIndex).getGenericType();
                         
                         v_RCell.setValueMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
                     }
