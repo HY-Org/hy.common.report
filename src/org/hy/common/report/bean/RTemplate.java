@@ -36,7 +36,7 @@ public class RTemplate implements Comparable<RTemplate>
     /** 系统固定变量名称：数据总量的变量名称 */
     public final static String         $ValueName_RowCount           = "RowCount__";
     
-    /** 系统固定变量名称：数据总量的变量名称 */
+    /** 系统固定变量名称：数据小计总量的变量名称 */
     public final static String         $ValueName_RowSubtotalCount   = "RowSubtotalCount__";
     
     
