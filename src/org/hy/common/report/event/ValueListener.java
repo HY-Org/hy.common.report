@@ -3,6 +3,7 @@ package org.hy.common.report.event;
 import java.util.EventListener;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
 
 
@@ -42,11 +43,11 @@ public interface ValueListener extends EventListener
      * @param i_RTemplate     模板
      * @param i_TemplateCell  模板单元格对象
      * @param i_DataCell      数据单元格对象
-     * @param i_DataIndex     数据索引号。下标从 1 开始
+     * @param i_RSystemValue  系统变量信息
      * @param i_Datas         本行对应的数据
      * @param i_Value         反射出来的变量名称对应的值
      * @return 
      */
-    public String getValue(RTemplate i_RTemplate ,Cell i_TemplateCell ,Cell i_DataCell ,int i_DataIndex ,Object i_Datas ,Object i_Value);
+    public String getValue(RTemplate i_RTemplate ,Cell i_TemplateCell ,Cell i_DataCell ,RSystemValue i_RSystemValue ,Object i_Datas ,Object i_Value);
     
 }

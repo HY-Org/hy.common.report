@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.hy.common.Help;
+import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
 
 
@@ -169,12 +170,12 @@ public class ImageListener implements ValueListener
      * @param i_RTemplate     模板
      * @param i_TemplateCell  模板单元格对象
      * @param i_DataCell      数据单元格对象
-     * @param i_DataIndex     数据索引号。下标从 1 开始
+     * @param i_RSystemValue  系统变量信息
      * @param i_Datas         本行对应的数据
      * @param i_Value         反射出来的变量名称对应的值（图片文件的全路径）
      * @return 
      */
-    public String getValue(RTemplate i_RTemplate ,Cell i_TemplateCell ,Cell i_DataCell ,int i_DataIndex ,Object i_Datas ,Object i_Value)
+    public String getValue(RTemplate i_RTemplate ,Cell i_TemplateCell ,Cell i_DataCell ,RSystemValue i_RSystemValue ,Object i_Datas ,Object i_Value)
     {
         if ( i_Value == null )
         {
@@ -214,7 +215,7 @@ public class ImageListener implements ValueListener
         Drawing<?>   v_Drawing      = i_DataCell.getSheet().createDrawingPatriarch();
         ClientAnchor v_ClientAnchor = null;
         int          v_PictureType  = 0;
-        int          v_OffsetRow    = i_RTemplate.getRowCountData() * (i_DataIndex - 1);
+        int          v_OffsetRow    = i_RTemplate.getRowCountData() * (i_RSystemValue.getRowNo() - 1);
         
         if ( v_Drawing instanceof HSSFPatriarch )
         {

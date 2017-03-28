@@ -28,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Help;
+import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RValue;
 import org.hy.common.report.bean.RWorkbook;
@@ -169,13 +170,15 @@ public class ReportHelp
         // 数据工作表的整体(所有)列的样式，复制于模板
         copyColumnsStyle(i_RTemplate ,v_TemplateSheet ,v_DataWorkbook ,v_DataSheet);
         
-        int v_DataIndex    = 1;
-        int v_DataCount    = i_Datas.size();
-        int v_DataRowIndex = 0;
+        RSystemValue v_RSystemValue = new RSystemValue();
+        int          v_DataRowIndex = 0;
+        
+        v_RSystemValue.setRowNo(   1);
+        v_RSystemValue.setRowCount(i_Datas.size());
         
         if ( i_RTemplate.getRowCountTitle() >= 1 )
         {
-            writeTitle(v_DataWorkbook ,v_DataSheet ,v_DataCount ,i_Datas ,i_RTemplate);
+            writeTitle(v_DataWorkbook ,v_DataSheet ,v_RSystemValue ,i_Datas ,i_RTemplate);
         }
         
         if ( i_RTemplate.getRowCountData() >= 1 )
@@ -184,24 +187,28 @@ public class ReportHelp
 
             if ( i_RTemplate.getRowCountSubtotal() >= 1 )
             {
-                for (; v_DataIndex<=v_DataCount; v_DataIndex++)
+                for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
                 {
-                    v_DataRowIndex = writeData(    v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
-                    v_DataRowIndex = writeSubtotal(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+                    v_DataRowIndex = writeData(    v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                    v_DataRowIndex = writeSubtotal(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                    
+                    v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
                 }
             }
             else
             {
-                for (; v_DataIndex<=v_DataCount; v_DataIndex++)
+                for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
                 {
-                    v_DataRowIndex = writeData(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataIndex ,v_DataCount ,i_Datas.get(v_DataIndex - 1) ,i_RTemplate);
+                    v_DataRowIndex = writeData(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                    
+                    v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
                 }
             }
         }
         
         if ( i_RTemplate.getRowCountTotal() >= 1 )
         {
-            writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_DataCount ,i_Datas ,i_RTemplate);
+            writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas ,i_RTemplate);
         }
         
         return v_DataWorkbook;
@@ -218,11 +225,11 @@ public class ReportHelp
      *
      * @param i_DataWorkbook  数据工作薄
      * @param i_DataSheet     数据工作表
-     * @param i_DataCount     数据总量
+     * @param i_RSystemValue  系统变量信息
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataCount ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RSystemValue i_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountTitle();
@@ -246,7 +253,7 @@ public class ReportHelp
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,0 ,i_DataCount ,v_DataRow ,i_Datas);
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RSystemValue ,v_DataRow ,i_Datas);
         }
     } 
     
@@ -262,14 +269,13 @@ public class ReportHelp
      * @param i_DataWorkbook  数据工作薄
      * @param i_DataSheet     数据工作表
      * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
-     * @param i_DataIndex     数据索引号。下标从 1 开始
-     * @param i_DataCount     数据总量
+     * @param i_RSystemValue  系统变量信息
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      * 
      * @param                 返回数据工作表中已写到哪一行的行号。
      */
-    public final static int writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,int i_DataIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static int writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
@@ -295,7 +301,7 @@ public class ReportHelp
             }
             
             v_DataRowIndex ++;
-            v_DataRowIndex += copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_DataIndex ,i_DataCount ,v_DataRow ,i_Datas);
+            v_DataRowIndex += copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RSystemValue ,v_DataRow ,i_Datas);
         }
         
         return v_DataRowIndex;
@@ -313,14 +319,13 @@ public class ReportHelp
      * @param i_DataWorkbook  数据工作薄
      * @param i_DataSheet     数据工作表
      * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
-     * @param i_DataIndex     数据索引号。下标从 1 开始
-     * @param i_DataCount     数据总量
+     * @param i_RSystemValue  系统变量信息
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      * 
      * @param                 返回数据工作表中已写到哪一行的行号。
      */
-    public final static int writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,int i_DataIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static int writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet            = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountSubtotal = i_RTemplate.getRowCountSubtotal();
@@ -346,7 +351,7 @@ public class ReportHelp
             }
             
             v_DataRowIndex ++;
-            v_DataRowIndex += copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_DataIndex ,i_DataCount ,v_DataRow ,i_Datas);
+            v_DataRowIndex += copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RSystemValue ,v_DataRow ,i_Datas);
         }
         
         return v_DataRowIndex;
@@ -364,11 +369,11 @@ public class ReportHelp
      * @param i_DataWorkbook  数据工作薄
      * @param i_DataSheet     数据工作表
      * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
-     * @param i_DataCount     数据总量
+     * @param i_RSystemValue  系统变量信息
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,int i_DataCount, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet         = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
@@ -392,7 +397,7 @@ public class ReportHelp
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_DataCount ,i_DataCount ,v_DataRow ,i_Datas);
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
     
@@ -679,14 +684,13 @@ public class ReportHelp
      * @param i_RTemplate      模板
      * @param i_TemplateRow    模板中的行对象
      * @param i_DataWorkbook   数据工作薄
-     * @param i_DataIndex      数据索引号。下标从 1 开始
-     * @param i_DataCount      数据总量
+     * @param i_RSystemValue   系统变量信息
      * @param i_DataRow        数据中的行对象
      * @param i_Datas          本行对应的数据
      * 
      * @return                 返回本方法内一共生成多少新行。
      */
-    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,int i_DataIndex ,int i_DataCount ,Row i_DataRow ,Object i_Datas) 
+    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RSystemValue i_RSystemValue ,Row i_DataRow ,Object i_Datas) 
     {
         i_DataRow.setHeight(    i_TemplateRow.getHeight());
         i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
@@ -709,7 +713,7 @@ public class ReportHelp
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
             
-            RValue v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,i_DataIndex ,i_DataCount ,i_Datas ,null);
+            RValue v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,i_RSystemValue ,i_Datas ,null);
             
             if ( v_RValue.getIteratorSize() > 0 )
             {
@@ -763,7 +767,7 @@ public class ReportHelp
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
                     
-                    v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,i_DataIndex ,i_DataCount ,i_Datas ,v_RValue);
+                    v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,i_RSystemValue ,i_Datas ,v_RValue);
                 }
             }
             else if ( v_IsFor )
@@ -805,13 +809,12 @@ public class ReportHelp
      * @param i_TemplateCell   模板中的单元格对象
      * @param i_DataWorkbook   数据工作薄
      * @param i_DataCell       数据中的单元格对象
-     * @param i_DataIndex      数据索引号。下标从 1 开始
-     * @param i_DataCount      数据总量
+     * @param i_RSystemValue   系统变量信息
      * @param i_Datas          本行对应的数据
      * @param io_RValue        小计循环的迭代器
      * @return                 
      */
-    public final static RValue copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,int i_DataIndex ,int i_DataCount ,Object i_Datas ,RValue io_RValue)
+    public final static RValue copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,RSystemValue i_RSystemValue ,Object i_Datas ,RValue io_RValue)
     {
         // 复制样式
         i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
@@ -841,12 +844,12 @@ public class ReportHelp
             
             if ( i_RTemplate.isExists(v_ValueName) )
             {
-                RValue        v_RValue   = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_DataIndex ,i_DataCount ,io_RValue);
+                RValue        v_RValue   = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_RSystemValue ,io_RValue);
                 ValueListener v_Listener = i_RTemplate.getListener(v_ValueName);
                 
                 if ( v_Listener != null )
                 {
-                    v_RValue.setValue(Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_DataIndex ,i_Datas ,v_RValue.getValue())));
+                    v_RValue.setValue(Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_RSystemValue ,i_Datas ,v_RValue.getValue())));
                 }
                 
                 i_DataCell.setCellValue(v_RValue.getValue().toString());

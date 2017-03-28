@@ -263,14 +263,13 @@ public class RTemplate implements Comparable<RTemplate>
      * @createDate  2017-03-18
      * @version     v1.0
      *
-     * @param i_ValueName  变量名称
-     * @param i_Datas      数据
-     * @param i_RowNo      数据行号。下标从 1 开始
-     * @param i_RowCount   数据总量
-     * @param io_RValue    小计循环迭代器
+     * @param i_ValueName     变量名称
+     * @param i_Datas         数据
+     * @param i_RSystemValue  系统变量信息
+     * @param io_RValue       小计循环迭代器
      * @return             
      */
-    public RValue getValue(String i_ValueName ,Object i_Datas ,int i_RowNo ,int i_RowCount ,RValue io_RValue)
+    public RValue getValue(String i_ValueName ,Object i_Datas ,RSystemValue i_RSystemValue ,RValue io_RValue)
     {
         RCell  v_RCell  = this.valueMethods.get(i_ValueName);
         RValue v_RValue = io_RValue != null ? io_RValue : new RValue();
@@ -310,15 +309,15 @@ public class RTemplate implements Comparable<RTemplate>
             
             if ( $ValueName_RowNo.equalsIgnoreCase(v_ValueName) )
             {
-                v_RValue.setValue(String.valueOf(i_RowNo));
+                v_RValue.setValue(String.valueOf(i_RSystemValue.getRowNo()));
             }
             else if ( $ValueName_RowIndex.equalsIgnoreCase(v_ValueName) )
             {
-                v_RValue.setValue(String.valueOf(i_RowNo - 1));
+                v_RValue.setValue(String.valueOf(i_RSystemValue.getRowIndex()));
             }
             else if ( $ValueName_RowCount.equalsIgnoreCase(v_ValueName) )
             {
-                v_RValue.setValue(String.valueOf(i_RowCount));
+                v_RValue.setValue(String.valueOf(i_RSystemValue.getRowCount()));
             }
         }
         
