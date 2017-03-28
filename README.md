@@ -91,6 +91,10 @@ __Excel动态行+小计模板举例__
 
 ![image](images/Subtotal.png)
 
+报表生成结果
+
+![image](images/Subtotal_Result.png)
+
 
 
 __XML小计配置举例__
