@@ -11,7 +11,7 @@
 	<xconfig>
 	
 		<template id="Report01">
-			<name>模板名称01</name>
+			<name>常规报表2003版的对比演示</name>
 			<excelFileName>classpath:JU_Report01.xls</excelFileName>
 			<titleBeginRow>0</titleBeginRow>
 			<titleEndRow>3</titleEndRow>
@@ -35,7 +35,7 @@
 		
 		
 		<template id="Report02">
-			<name>模板名称02</name>
+			<name>常规报表2007版的对比演示</name>
 			<excelFileName>classpath:JU_Report01.xlsx</excelFileName>
 			<titleBeginRow>0</titleBeginRow>
 			<titleEndRow>3</titleEndRow>

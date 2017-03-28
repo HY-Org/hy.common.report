@@ -139,6 +139,44 @@ public class ReportHelp
      * 向Excel文件中写数据
      * 
      * @author      ZhengWei(HY)
+     * @createDate  2017-03-28
+     * @version     v1.0
+     *
+     * @param i_Datas      数据对象
+     * @param i_RTemplate  模板信息对象
+     * @return
+     */
+    public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate)
+    {
+        return write(null ,null ,i_Datas ,i_RTemplate);
+    }
+    
+    
+    
+    /**
+     * 向Excel文件中写数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-03-16
+     * @version     v1.0
+     *
+     * @param i_Workbook   工作薄对象
+     * @param i_SheetName  工作表名称
+     * @param i_Datas      数据对象
+     * @param i_RTemplate  模板信息对象
+     * @return
+     */
+    public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate)
+    {
+        return write(i_Workbook ,null ,i_Datas ,i_RTemplate);
+    }
+    
+    
+    
+    /**
+     * 向Excel文件中写数据
+     * 
+     * @author      ZhengWei(HY)
      * @createDate  2017-03-16
      * @version     v1.0
      *
@@ -159,7 +197,7 @@ public class ReportHelp
             v_DataWorkbook = createWorkbook(i_RTemplate);
         }
         
-        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,i_SheetName);
+        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,Help.NVL(i_SheetName ,i_RTemplate.getName()));
         v_TemplateSheet = i_RTemplate.getTemplateSheet();
         
         ExcelHelp.copySheet(       v_TemplateSheet ,v_DataSheet);

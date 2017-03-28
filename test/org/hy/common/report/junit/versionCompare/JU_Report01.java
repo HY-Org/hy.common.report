@@ -7,6 +7,7 @@ import org.hy.common.Date;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.junit.JUBase;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -27,7 +28,7 @@ import org.junit.runners.MethodSorters;
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_Report01
+public class JU_Report01 implements JUBase<ExcelBean>
 {
     private static boolean $isInit = false;
     
@@ -71,8 +72,8 @@ public class JU_Report01
         RTemplate v_RTemplate01 = (RTemplate)XJava.getObject("Report01");
         RTemplate v_RTemplate02 = (RTemplate)XJava.getObject("Report02");
         
-        ExcelHelp.save(ReportHelp.write("XLSX格式" ,this.getDatas(10) ,v_RTemplate02).getWorkbook() ,"/Users/hy/Downloads/Report01");
-        ExcelHelp.save(ReportHelp.write("XLS格式"  ,this.getDatas(10) ,v_RTemplate01).getWorkbook() ,"/Users/hy/Downloads/Report01");
+        ExcelHelp.save(ReportHelp.write("XLSX格式" ,getDatas(10) ,v_RTemplate02).getWorkbook() ,"/Users/hy/Downloads/Report01");
+        ExcelHelp.save(ReportHelp.write("XLS格式"  ,getDatas(10) ,v_RTemplate01).getWorkbook() ,"/Users/hy/Downloads/Report01");
     }
     
 }

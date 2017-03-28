@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="junits"          class="java.util.ArrayList" />
+	<import name="rtemplates"      class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<junits id="Junits">
+			<junit class="org.hy.common.report.junit.total.JU_Total_Subtotal" />
+			<junit class="org.hy.common.report.junit.versionCompare.JU_Report01" />
+		</junits>
+	
+		<rtemplates id="ReportTemplates">
+			<template ref="ReportTotalSubtotal" />
+			<template ref="Report02" />
+		</rtemplates>
+		
+	</xconfig>
+	
+</config>

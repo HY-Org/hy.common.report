@@ -8,6 +8,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.junit.JUBase;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -28,7 +29,7 @@ import org.junit.runners.MethodSorters;
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_Total_Subtotal
+public class JU_Total_Subtotal implements JUBase<OrgInfo>
 {
     private static boolean $isInit = false;
     
@@ -45,7 +46,7 @@ public class JU_Total_Subtotal
     
     
     
-    public List<OrgInfo> getOrgs(int i_OrgSize)
+    public List<OrgInfo> getDatas(int i_OrgSize)
     {
         List<OrgInfo> v_Orgs = new ArrayList<OrgInfo>();
         
@@ -82,7 +83,7 @@ public class JU_Total_Subtotal
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTotalSubtotal");
         
-        ExcelHelp.save(ReportHelp.write("小计、分组数据的报表演示" ,this.getOrgs(10) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/TotalSubtotal");
+        ExcelHelp.save(ReportHelp.write("小计、分组数据的报表演示" ,getDatas(10) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/TotalSubtotal");
     }
     
 }
