@@ -28,13 +28,16 @@ public class RTemplate implements Comparable<RTemplate>
 {
     
     /** 系统固定变量名称：数据行号的变量名称。下标从1开始 */
-    public final static String         $ValueName_RowNo        = "RowNo__";
+    public final static String         $ValueName_RowNo              = "RowNo__";
     
     /** 系统固定变量名称：数据索引号的变量名称。下标从0开始 */
-    public final static String         $ValueName_RowIndex     = "RowIndex__";
+    public final static String         $ValueName_RowIndex           = "RowIndex__";
     
     /** 系统固定变量名称：数据总量的变量名称 */
-    public final static String         $ValueName_RowCount     = "RowCount__";
+    public final static String         $ValueName_RowCount           = "RowCount__";
+    
+    /** 系统固定变量名称：数据总量的变量名称 */
+    public final static String         $ValueName_RowSubtotalCount   = "RowSubtotalCount__";
     
     
     
@@ -318,6 +321,10 @@ public class RTemplate implements Comparable<RTemplate>
             else if ( $ValueName_RowCount.equalsIgnoreCase(v_ValueName) )
             {
                 v_RValue.setValue(String.valueOf(i_RSystemValue.getRowCount()));
+            }
+            else if ( $ValueName_RowSubtotalCount.equalsIgnoreCase(v_ValueName) )
+            {
+                v_RValue.setValue(String.valueOf(i_RSystemValue.getRowSubtotalCount()));
             }
         }
         
@@ -749,9 +756,10 @@ public class RTemplate implements Comparable<RTemplate>
     {
         this.valueSign = valueSign;
         
-        this.valueNames.put(this.valueSign + $ValueName_RowNo    ,$ValueName_RowNo);
-        this.valueNames.put(this.valueSign + $ValueName_RowIndex ,$ValueName_RowIndex);
-        this.valueNames.put(this.valueSign + $ValueName_RowCount ,$ValueName_RowCount);
+        this.valueNames.put(this.valueSign + $ValueName_RowNo            ,$ValueName_RowNo);
+        this.valueNames.put(this.valueSign + $ValueName_RowIndex         ,$ValueName_RowIndex);
+        this.valueNames.put(this.valueSign + $ValueName_RowCount         ,$ValueName_RowCount);
+        this.valueNames.put(this.valueSign + $ValueName_RowSubtotalCount ,$ValueName_RowSubtotalCount);
     }
 
 

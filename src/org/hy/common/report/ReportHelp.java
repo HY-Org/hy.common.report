@@ -173,8 +173,9 @@ public class ReportHelp
         RSystemValue v_RSystemValue = new RSystemValue();
         int          v_DataRowIndex = 0;
         
-        v_RSystemValue.setRowNo(   1);
-        v_RSystemValue.setRowCount(i_Datas.size());
+        v_RSystemValue.setRowNo(           1);
+        v_RSystemValue.setRowCount(        i_Datas.size());
+        v_RSystemValue.setRowSubtotalCount(i_Datas.size());
         
         if ( i_RTemplate.getRowCountTitle() >= 1 )
         {
@@ -722,6 +723,8 @@ public class ReportHelp
                 {
                     v_ForSize = v_RValue.getIteratorSize();
                     v_IsFor   = true;
+                    
+                    i_RSystemValue.setRowSubtotalCount(i_RSystemValue.getRowSubtotalCount() + v_ForSize - 1);
                     
                     // 创建待合并的新行
                     for (int v_RowIndex=1; v_RowIndex<=v_ForSize-1; v_RowIndex++)

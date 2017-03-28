@@ -19,6 +19,9 @@ public class RSystemValue
     
     /** 数据总量的变量名称 */
     private int rowCount;
+    
+    /** 数据小计总量的变量名称 */
+    private int rowSubtotalCount;
 
     
     
@@ -68,6 +71,26 @@ public class RSystemValue
     public void setRowCount(int rowCount)
     {
         this.rowCount = rowCount;
+    }
+
+    
+    /**
+     * 获取：数据小计总量的变量名称
+     */
+    public int getRowSubtotalCount()
+    {
+        return rowSubtotalCount;
+    }
+
+    
+    /**
+     * 设置：数据小计总量的变量名称
+     * 
+     * @param rowSubtotalCount 
+     */
+    public void setRowSubtotalCount(int rowSubtotalCount)
+    {
+        this.rowSubtotalCount = rowSubtotalCount;
     }
     
 }
