@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.PartitionMap;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.event.ValueListener;
 
@@ -53,6 +54,13 @@ public class RTemplate implements Comparable<RTemplate>
     /** 报表模板对应的工作表索引位置（下标从零开始） */
     private Integer                    sheetIndex;
     
+    /** 
+     * Excel数据的方向。
+     * 0：纵深扩展--表示从左到右的方向，一行或多行为一个对象数据。此为默认值
+     * 1：横向扩展--表示从上到下的方向，一列或多列为一个对象数据
+     */
+    private Integer                    direction;
+    
     /** 报表标题的开始行号（包括此行）。下标从零开始 */
     private Integer                    titleBeginRow;
     
@@ -64,6 +72,12 @@ public class RTemplate implements Comparable<RTemplate>
     
     /** 报表数据的结束行号（包括此行）。下标从零开始 */
     private Integer                    dataEndRow;
+    
+    /** 报表数据的开始列号（包括此列）。下标从零开始。用于Excel转为Java对象，并且this.direction=1的情况 */
+    private Integer                    dataBeginCol;
+    
+    /** 报表数据的结束列号（包括此列）。下标从零开始。用于Excel转为Java对象，并且this.direction=1的情况 */
+    private Integer                    dataEndCol;
     
     /** 报表小计的开始行号（包括此行）。下标从零开始 */
     private Integer                    subtotalBeginRow;
@@ -107,12 +121,38 @@ public class RTemplate implements Comparable<RTemplate>
     public RTemplate()
     {
         this.sheetIndex     = 0;
+        this.direction      = 0;
         this.templateSheet  = null;
         this.excelVersion   = null;
         this.valueMethods   = new LinkedHashMap<String ,RCell>();
         this.valueNames     = new Hashtable<String ,String>();
         this.valueListeners = new Hashtable<String ,ValueListener>();
         this.setValueSign(":");
+    }
+    
+    
+    
+    /**
+     * 创建报表数据的Java对象实例
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-05-08
+     * @version     v1.0
+     *
+     * @return
+     */
+    public Object newObject()
+    {
+        try
+        {
+            return Class.forName(this.dataClass).newInstance();
+        }
+        catch (Exception exce)
+        {
+            exce.printStackTrace();
+        }
+        
+        return null;
     }
     
     
@@ -163,9 +203,9 @@ public class RTemplate implements Comparable<RTemplate>
     {
         try
         {
-            Map<String ,Object> v_ExcelDatas = ExcelHelp.readDatas(this.getTemplateSheet());
-            List<String>        v_TempDatas  = Help.toListKeys(v_ExcelDatas);
-            Class<?>            v_JavaClass  = Help.forName(this.dataClass);
+            PartitionMap<String ,RCell> v_ExcelDatas = ExcelHelp.readDatas(this.getTemplateSheet());
+            List<String>                v_TempDatas  = Help.toListKeys(v_ExcelDatas);
+            Class<?>                    v_JavaClass  = Help.forName(this.dataClass);
             
             for (int i=v_TempDatas.size()-1; i>=0; i--)
             {
@@ -223,11 +263,13 @@ public class RTemplate implements Comparable<RTemplate>
                         
                         Class<?> v_ForElementJavaClass = MethodReflect.getGenericsReturn(v_ForMR.getReturnMethod() ,v_GenericsIndex).getGenericType();
                         
-                        v_RCell.setValueMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                        v_RCell.setValueMethod(   new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                        v_RCell.setValueSetMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
                     }
                     else
                     {
-                        v_RCell.setValueMethod(new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                        v_RCell.setValueMethod(   new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                        v_RCell.setValueSetMethod(new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
                     }
                     
                     this.valueMethods.put(v_Value ,v_RCell);
@@ -333,6 +375,26 @@ public class RTemplate implements Comparable<RTemplate>
     
     
     
+    public void setValue(String i_ValueName ,Object i_Value ,Object io_RowObj)
+    {
+        RCell v_RCell = this.valueMethods.get(i_ValueName);
+        
+        if ( v_RCell != null )
+        {
+            try
+            {
+                v_RCell.getValueSetMethod().invokeSetForInstance(io_RowObj ,i_Value);
+            }
+            catch (Exception exce)
+            {
+                exce.printStackTrace();
+            }
+        }
+        
+    }
+    
+    
+    
     /**
      * 获取标题的总行数
      * 
@@ -361,6 +423,22 @@ public class RTemplate implements Comparable<RTemplate>
     public int getRowCountData()
     {
         return this.getRowCount(this.dataBeginRow ,this.dataEndRow);
+    }
+    
+    
+    
+    /**
+     * 获取数据的总列数。用于Excel转为Java对象，并且this.direction=1的情况
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-05-08
+     * @version     v1.0
+     *
+     * @return
+     */
+    public int getColCountData()
+    {
+        return this.getRowCount(this.dataBeginCol ,this.dataEndCol);
     }
     
     
@@ -552,7 +630,31 @@ public class RTemplate implements Comparable<RTemplate>
     {
         this.sheetIndex = sheetIndex;
     }
-
+    
+    
+    /**
+     * 获取：Excel数据的方向。
+     * 0：表示从左到右的方向，一行或多行为一个对象数据。此为默认值
+     * 1：表示从上到下的方向，一列或多列为一个对象数据
+     */
+    public Integer getDirection()
+    {
+        return direction;
+    }
+    
+    
+    /**
+     * 设置：Excel数据的方向。
+     * 0：表示从左到右的方向，一行或多行为一个对象数据。此为默认值
+     * 1：表示从上到下的方向，一列或多列为一个对象数据
+     * 
+     * @param direction 
+     */
+    public void setDirection(Integer direction)
+    {
+        this.direction = direction;
+    }
+    
     
     /**
      * 获取：报表标题的开始行号（包括此行）。下标从零开始
@@ -636,6 +738,47 @@ public class RTemplate implements Comparable<RTemplate>
     }
     
     
+    /**
+     * 获取：报表数据的开始列号（包括此列）。下标从零开始。用于Excel转为Java对象，并且this.direction=1的情况
+     */
+    public Integer getDataBeginCol()
+    {
+        return dataBeginCol;
+    }
+
+
+    /**
+     * 设置：报表数据的开始列号（包括此列）。下标从零开始。用于Excel转为Java对象，并且this.direction=1的情况
+     * 
+     * @param dataBeginCol 
+     */
+    public void setDataBeginCol(Integer dataBeginCol)
+    {
+        this.dataBeginCol = dataBeginCol;
+        this.dataEndCol   = dataBeginCol;
+    }
+
+    
+    /**
+     * 获取：报表数据的结束列号（包括此列）。下标从零开始。用于Excel转为Java对象，并且this.direction=1的情况
+     */
+    public Integer getDataEndCol()
+    {
+        return dataEndCol;
+    }
+
+    
+    /**
+     * 设置：报表数据的结束列号（包括此列）。下标从零开始。用于Excel转为Java对象，并且this.direction=1的情况
+     * 
+     * @param dataEndCol 
+     */
+    public void setDataEndCol(Integer dataEndCol)
+    {
+        this.dataEndCol = dataEndCol;
+    }
+
+
     /**
      * 获取：报表小计的开始行号（包括此行）。下标从零开始
      */

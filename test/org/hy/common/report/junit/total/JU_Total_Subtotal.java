@@ -83,7 +83,7 @@ public class JU_Total_Subtotal implements JUBase<OrgInfo>
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTotalSubtotal");
         
-        ExcelHelp.save(ReportHelp.write("小计、分组数据的报表演示" ,getDatas(10) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/TotalSubtotal");
+        ExcelHelp.save(ReportHelp.toExcel("小计、分组数据的报表演示" ,getDatas(10) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/TotalSubtotal");
     }
     
 }

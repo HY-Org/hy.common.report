@@ -25,6 +25,15 @@ public class RCell
     /** 获取循环迭代器的元素总个数 */
     private MethodReflect iteratorSizeMethod;
     
+    /** 行号。下标从0开始 */
+    private Integer rowNo;
+    
+    /** 列号。下标从0开始 */
+    private Integer cellNo;
+    
+    /** 反射单元格值的Settter方法。用于Excel转为Java对象时 */
+    private MethodReflect valueSetMethod;
+    
     
     
     public RCell()
@@ -39,11 +48,25 @@ public class RCell
     }
     
     
+    public RCell(Integer i_RowNo ,Integer i_CellNo)
+    {
+        this.valueMethod        = null;
+        this.iteratorMethod     = null;
+        this.iteratorSizeMethod = null;
+        this.rowNo              = i_RowNo;
+        this.cellNo             = i_CellNo;
+        this.valueSetMethod     = null;
+    }
+    
+    
     public RCell(MethodReflect i_ValueMethod ,MethodReflect i_IteratorMethod ,MethodReflect i_IteratorSizeMethod)
     {
         this.valueMethod        = i_ValueMethod;
         this.iteratorMethod     = i_IteratorMethod;
         this.iteratorSizeMethod = i_IteratorSizeMethod;
+        this.rowNo              = null;
+        this.cellNo             = null;
+        this.valueSetMethod     = null;
     }
     
     
@@ -113,6 +136,67 @@ public class RCell
     public void setIteratorSizeMethod(MethodReflect iteratorSizeMethod)
     {
         this.iteratorSizeMethod = iteratorSizeMethod;
+    }
+
+    
+    /**
+     * 获取：行号。下标从0开始
+     */
+    public Integer getRowNo()
+    {
+        return rowNo;
+    }
+
+    
+    /**
+     * 设置：行号。下标从0开始
+     * 
+     * @param rowNo 
+     */
+    public void setRowNo(Integer rowNo)
+    {
+        this.rowNo = rowNo;
+    }
+
+
+    
+    /**
+     * 获取：列号。下标从0开始
+     */
+    public Integer getCellNo()
+    {
+        return cellNo;
+    }
+
+    
+    /**
+     * 设置：列号。下标从0开始
+     * 
+     * @param cellNo 
+     */
+    public void setCellNo(Integer cellNo)
+    {
+        this.cellNo = cellNo;
+    }
+
+    
+    /**
+     * 获取：反射单元格值的Settter方法。用于Excel转为Java对象时
+     */
+    public MethodReflect getValueSetMethod()
+    {
+        return valueSetMethod;
+    }
+
+    
+    /**
+     * 设置：反射单元格值的Settter方法。用于Excel转为Java对象时
+     * 
+     * @param valueSetMethod 
+     */
+    public void setValueSetMethod(MethodReflect valueSetMethod)
+    {
+        this.valueSetMethod = valueSetMethod;
     }
 
 }

@@ -5,9 +5,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
@@ -38,6 +36,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.PartitionMap;
+import org.hy.common.TablePartition;
+import org.hy.common.report.bean.RCell;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
 
@@ -123,47 +124,47 @@ public class ExcelHelp
     
     
     
-    public final static Map<String ,Object> readDatas(String i_ExcelFileName ,int i_SheetIndex)
+    public final static PartitionMap<String ,RCell> readDatas(String i_ExcelFileName ,int i_SheetIndex)
     {
         return readDatas(i_ExcelFileName ,i_SheetIndex ,null ,null);
     }
     
     
     
-    public final static Map<String ,Object> readDatas(String i_ExcelFileName ,int i_SheetIndex ,Integer i_BeginRow)
+    public final static PartitionMap<String ,RCell> readDatas(String i_ExcelFileName ,int i_SheetIndex ,Integer i_BeginRow)
     {
         return readDatas(i_ExcelFileName ,i_SheetIndex ,i_BeginRow ,null);
     }
     
     
     
-    public final static Map<String ,Object> readDatas(String i_ExcelFileName ,int i_SheetIndex ,Integer i_BeginRow ,Integer i_EndRow)
+    public final static PartitionMap<String ,RCell> readDatas(String i_ExcelFileName ,int i_SheetIndex ,Integer i_BeginRow ,Integer i_EndRow)
     {
         return readDatas(read(i_ExcelFileName).get(i_SheetIndex) ,i_BeginRow ,i_EndRow);
     }
     
     
     
-    public final static Map<String ,Object> readDatas(Sheet i_Sheet)
+    public final static PartitionMap<String ,RCell> readDatas(Sheet i_Sheet)
     {
         return readDatas(i_Sheet ,null ,null);
     }
     
     
     
-    public final static Map<String ,Object> readDatas(Sheet i_Sheet ,Integer i_BeginRow)
+    public final static PartitionMap<String ,RCell> readDatas(Sheet i_Sheet ,Integer i_BeginRow)
     {
         return readDatas(i_Sheet ,i_BeginRow ,null);
     }
     
     
     
-    public final static Map<String ,Object> readDatas(Sheet i_Sheet ,Integer i_BeginRow ,Integer i_EndRow)
+    public final static PartitionMap<String ,RCell> readDatas(Sheet i_Sheet ,Integer i_BeginRow ,Integer i_EndRow)
     {
-        Map<String ,Object> v_Ret      = new LinkedHashMap<String ,Object>();
-        Sheet               v_Sheet    = i_Sheet;
-        int                 v_BeginRow = 0;
-        int                 v_EndRow   = 0;
+        PartitionMap<String ,RCell> v_Ret      = new TablePartition<String ,RCell>();
+        Sheet                       v_Sheet    = i_Sheet;
+        int                         v_BeginRow = 0;
+        int                         v_EndRow   = 0;
         
         if ( i_BeginRow != null )
         {
@@ -208,7 +209,7 @@ public class ExcelHelp
                     
                     if ( !Help.isNull(v_Value) )
                     {
-                        v_Ret.put(v_Value.trim() ,null);
+                        v_Ret.putRow(v_Value.trim() ,new RCell(v_RowNo ,v_ColumnNo));
                     }
                 }
                 else if ( v_Cell.getCellTypeEnum() == CellType.NUMERIC )

@@ -57,7 +57,7 @@ public class JU_Sheets
         for (int i_Index=0; i_Index<v_ReportTemplates.size(); i_Index++)
         {
             v_RTemplate = v_ReportTemplates.get(i_Index);
-            v_RWorkbook = ReportHelp.write(v_RWorkbook ,v_Junits.get(i_Index).getDatas(10) ,v_RTemplate);
+            v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,v_Junits.get(i_Index).getDatas(10) ,v_RTemplate);
         }
         
         ExcelHelp.save(v_RWorkbook.getWorkbook() ,"/Users/hy/Downloads/Sheets");

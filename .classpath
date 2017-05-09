@@ -12,12 +12,12 @@
 	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="lib/xjava.jar" sourcepath="/SearchDesktop"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.16-beta2.jar" sourcepath="/Users/hy/WSS/WorkSpace_SearchDesktop/poi-src-3.16-beta2-20170202.zip"/>
 	<classpathentry kind="lib" path="lib/poi-excelant-3.16-beta2.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-3.16-beta2.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.16-beta2.jar"/>
 	<classpathentry kind="lib" path="lib/poi-scratchpad-3.16-beta2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/XJava"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
