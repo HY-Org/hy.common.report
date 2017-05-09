@@ -5,7 +5,10 @@
 
 
 
-__主导思想：__ 由Excel模板文件 + XML配置文件即可定义一张报表。无须编写代码，实现快速、高效、简单的开发报表。 
+__主导思想：__ 
+	* 1. 由Excel模板文件 + XML配置文件即可定义一张报表。无须编写代码，实现快速、高效、简单的开发报表。
+
+	* 2. 并且可以反向，将Excel文件数据转为Java对象。
 
 基于Apache POI接口。实现对*.xls 、*.xlsx两种文件格式的操作。
 
@@ -145,6 +148,43 @@ __XML小计配置举例__
 
 
 
+__Excel转为Java对象：模板举例(常规的纵深扩展)__
+ 
+![image](images/ReadVertical.png)
+
+__Excel转为Java对象：Excel数据举例(常规的纵深扩展)__
+
+![image](images/ReadVertical_Datas.png)
+
+__Excel转为Java对象：配置举例(常规的纵深扩展)__
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReadVertical">
+			<name>Excel转Java纵深扩展数据的Excel文件</name>
+			<excelFileName>classpath:JU_ReadVertical.xlsx</excelFileName>
+			<dataBeginRow>1</dataBeginRow>
+			<dataClass>org.hy.common.report.junit.readHorizontal.Finance</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```
+
+
+
+
 ---
 #### 十分感谢以下朋友支持与建议
   1. [邹德福](https://github.com/dirful)：建议使用简单的反射规则，如 :staffs[].staffName ，而非之前的 :staffs.$get(index).staffName 完整Java方法路径形式。
@@ -158,3 +198,5 @@ __XML小计配置举例__
 引用 https://github.com/HY-ZhengWei/hy.common.base 类库
 
 引用 https://github.com/HY-ZhengWei/hy.common.file 类库
+
+引用 https://github.com/HY-ZhengWei/XJava 类库
