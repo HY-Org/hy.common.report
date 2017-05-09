@@ -182,6 +182,15 @@ __Excel转为Java对象：配置举例(常规的纵深扩展)__
 </config>
 ```
 
+__Excel转为Java对象：Java代码举例(常规的纵深扩展)__
+```java
+// 获取报表模板对象
+RTemplate    v_RTemplate = (RTemplate)XJava.getObject("ReadVertical");
+List<Object> v_Datas     = ReportHelp.toJava(v_RTemplate ,"Excel数据文件的路径");
+
+Help.print(v_Datas);
+```
+
 
 
 __Excel转为Java对象：模板举例(横向扩展)__
@@ -221,6 +230,14 @@ __Excel转为Java对象：配置举例(横向扩展)__
 </config>
 ```
 
+__Excel转为Java对象：Java代码举例(横向扩展)__
+```java
+// 获取报表模板对象
+RTemplate    v_RTemplate = (RTemplate)XJava.getObject("ReadHorizontal");
+List<Object> v_Datas     = ReportHelp.toJava(v_RTemplate ,"Excel数据文件的路径");
+
+Help.print(v_Datas);
+```
 
 
 
