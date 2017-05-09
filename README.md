@@ -184,6 +184,45 @@ __Excel转为Java对象：配置举例(常规的纵深扩展)__
 
 
 
+__Excel转为Java对象：模板举例(横向扩展)__
+ 
+![image](images/ReadHorizontal.png)
+
+__Excel转为Java对象：Excel数据举例(横向扩展)__
+
+![image](images/ReadHorizontal_Datas.png)
+
+__Excel转为Java对象：配置举例(横向扩展)__
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReadHorizontal">
+			<name>Excel转Java横向扩展数据的Excel文件</name>
+			<excelFileName>classpath:JU_ReadHorizontal.xlsx</excelFileName>
+			<direction>1</direction>        <!-- 方向：横向扩展 -->
+			<dataBeginRow>0</dataBeginRow>
+			<dataEndRow>4</dataEndRow>
+			<dataBeginCol>1</dataBeginCol>
+			<dataClass>org.hy.common.report.junit.readHorizontal.Finance</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```
+
+
+
 
 ---
 #### 十分感谢以下朋友支持与建议

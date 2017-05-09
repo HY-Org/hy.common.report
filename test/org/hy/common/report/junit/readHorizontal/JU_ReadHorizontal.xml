@@ -13,7 +13,7 @@
 		<template id="ReadHorizontal">
 			<name>Excel转Java横向扩展数据的Excel文件</name>
 			<excelFileName>classpath:JU_ReadHorizontal.xlsx</excelFileName>
-			<direction>1</direction>
+			<direction>1</direction>        <!-- 方向：横向扩展 -->
 			<dataBeginRow>0</dataBeginRow>
 			<dataEndRow>4</dataEndRow>
 			<dataBeginCol>1</dataBeginCol>
