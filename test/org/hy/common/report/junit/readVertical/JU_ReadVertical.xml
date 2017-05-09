@@ -13,8 +13,6 @@
 		<template id="ReadVertical">
 			<name>Excel转Java纵深扩展数据的Excel文件</name>
 			<excelFileName>classpath:JU_ReadVertical.xlsx</excelFileName>
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>0</titleEndRow>
 			<dataBeginRow>1</dataBeginRow>
 			<dataClass>org.hy.common.report.junit.readHorizontal.Finance</dataClass>
 		</template>

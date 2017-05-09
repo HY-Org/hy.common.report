@@ -169,8 +169,13 @@ public class ExcelToJava
                         }
                     }
                     
-                    i_RTemplate.setValue(i_RowColDatas.get((i_RTemplate.getDataBeginRow() + v_RowDataNo) + "," + v_ColumnNo) ,v_Value ,v_RowObj);
-                    v_IsHaveData = true;
+                    if ( null != v_Value )
+                    {
+                        if ( i_RTemplate.setValue(i_RowColDatas.get((i_RTemplate.getDataBeginRow() + v_RowDataNo) + "," + v_ColumnNo) ,v_Value ,v_RowObj) )
+                        {
+                            v_IsHaveData = true;
+                        }
+                    }
                 }
             }
             
@@ -244,8 +249,13 @@ public class ExcelToJava
                         }
                     }
                     
-                    i_RTemplate.setValue(i_RowColDatas.get(v_RowNo + "," + (i_RTemplate.getDataBeginCol() + v_ColDataNo)) ,v_Value ,v_RowObj);
-                    v_IsHaveData = true;
+                    if ( null != v_Value )
+                    {
+                        if ( i_RTemplate.setValue(i_RowColDatas.get(v_RowNo + "," + (i_RTemplate.getDataBeginCol() + v_ColDataNo)) ,v_Value ,v_RowObj) )
+                        {
+                            v_IsHaveData = true;
+                        }
+                    }
                 }
             }
             

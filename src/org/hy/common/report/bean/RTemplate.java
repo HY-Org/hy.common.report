@@ -263,13 +263,43 @@ public class RTemplate implements Comparable<RTemplate>
                         
                         Class<?> v_ForElementJavaClass = MethodReflect.getGenericsReturn(v_ForMR.getReturnMethod() ,v_GenericsIndex).getGenericType();
                         
-                        v_RCell.setValueMethod(   new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
-                        v_RCell.setValueSetMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
+                        try
+                        {
+                            v_RCell.setValueMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                        }
+                        catch (Exception exce)
+                        {
+                            // 有可能没有Getter方法
+                        }
+                        
+                        try
+                        {
+                            v_RCell.setValueSetMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
+                        }
+                        catch (Exception exce)
+                        {
+                            // 有可能没有Setter方法
+                        }
                     }
                     else
                     {
-                        v_RCell.setValueMethod(   new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
-                        v_RCell.setValueSetMethod(new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
+                        try
+                        {
+                            v_RCell.setValueMethod(new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                        }
+                        catch (Exception exce)
+                        {
+                            // 有可能没有Getter方法
+                        }
+                        
+                        try
+                        {
+                            v_RCell.setValueSetMethod(new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
+                        }
+                        catch (Exception exce)
+                        {
+                            // 有可能没有Setter方法
+                        }
                     }
                     
                     this.valueMethods.put(v_Value ,v_RCell);
@@ -319,7 +349,7 @@ public class RTemplate implements Comparable<RTemplate>
         RCell  v_RCell  = this.valueMethods.get(i_ValueName);
         RValue v_RValue = io_RValue != null ? io_RValue : new RValue();
         
-        if ( v_RCell != null )
+        if ( null != v_RCell && null != v_RCell.getValueMethod() )
         {
             try
             {
@@ -375,15 +405,29 @@ public class RTemplate implements Comparable<RTemplate>
     
     
     
-    public void setValue(String i_ValueName ,Object i_Value ,Object io_RowObj)
+    /**
+     * Excel转Java时，将Excel单位格中的数据映射并赋值给Java对象的属性
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-05-09
+     * @version     v1.0
+     *
+     * @param i_ValueName  占位符名称
+     * @param i_Value      Excel单位格中的数据
+     * @param io_RowObj    Java对象
+     * @return             映射赋值成功时返回true
+     */
+    public boolean setValue(String i_ValueName ,Object i_Value ,Object io_RowObj)
     {
         RCell v_RCell = this.valueMethods.get(i_ValueName);
         
-        if ( v_RCell != null )
+        if ( null != v_RCell && null != v_RCell.getValueSetMethod() )
         {
             try
             {
                 v_RCell.getValueSetMethod().invokeSetForInstance(io_RowObj ,i_Value);
+                
+                return true;
             }
             catch (Exception exce)
             {
@@ -391,6 +435,7 @@ public class RTemplate implements Comparable<RTemplate>
             }
         }
         
+        return false;
     }
     
     

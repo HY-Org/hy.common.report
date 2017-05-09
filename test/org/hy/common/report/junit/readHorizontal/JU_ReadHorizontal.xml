@@ -14,8 +14,6 @@
 			<name>Excel转Java横向扩展数据的Excel文件</name>
 			<excelFileName>classpath:JU_ReadHorizontal.xlsx</excelFileName>
 			<direction>1</direction>
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
 			<dataBeginRow>0</dataBeginRow>
 			<dataEndRow>4</dataEndRow>
 			<dataBeginCol>1</dataBeginCol>

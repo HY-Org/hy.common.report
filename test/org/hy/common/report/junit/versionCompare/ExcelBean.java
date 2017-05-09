@@ -1,6 +1,7 @@
 package org.hy.common.report.junit.versionCompare;
 
 import org.hy.common.Date;
+import org.hy.common.xml.SerializableDef;
 
 
 
@@ -13,8 +14,11 @@ import org.hy.common.Date;
  * @createDate  2017-03-17
  * @version     v1.0
  */
-public class ExcelBean
+public class ExcelBean extends SerializableDef
 {
+    private static final long serialVersionUID = 2423903679071434270L;
+    
+
     private String  name;
     
     private Date    date;

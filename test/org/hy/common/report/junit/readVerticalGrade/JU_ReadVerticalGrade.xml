@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReadVerticalGrade">
+			<name>Excel转为Java对象，并且Excel文件中的数据是纵深扩展的（高级版本的Excel文件）</name>
+			<excelFileName>classpath:JU_ReadVerticalGrade.xlsx</excelFileName>
+			<dataBeginRow>4</dataBeginRow>
+			<dataEndRow>18</dataEndRow>
+			<dataClass>org.hy.common.report.junit.versionCompare.ExcelBean</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>
