@@ -218,12 +218,12 @@ public class ExcelHelp
                     {
                         if ( v_Cell.getDateCellValue() != null )
                         {
-                            v_Ret.put((new Date(v_Cell.getDateCellValue())).getFull() ,null);
+                            v_Ret.putRow((new Date(v_Cell.getDateCellValue())).getFull() ,new RCell(v_RowNo ,v_ColumnNo));
                         }
                     } 
                     else 
                     {
-                        v_Ret.put(String.valueOf(v_Cell.getNumericCellValue()) ,null);
+                        v_Ret.putRow(String.valueOf(v_Cell.getNumericCellValue()) ,new RCell(v_RowNo ,v_ColumnNo));
                     }
                 }
             }

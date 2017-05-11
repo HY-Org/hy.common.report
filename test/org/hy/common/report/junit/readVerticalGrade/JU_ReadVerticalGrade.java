@@ -44,8 +44,8 @@ public class JU_ReadVerticalGrade
     @Test
     public void test_JU_ReadVerticalGrade()
     {
-        RTemplate    v_RTemplate = (RTemplate)XJava.getObject("ReadVerticalGrade");
-        List<Object> v_Datas     = ReportHelp.toJava(v_RTemplate ,JU_ReadVerticalGrade.class.getResource("JU_ReadVerticalGrade_Datas.xlsx").toString());
+        RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReadVerticalGrade");
+        List<?>   v_Datas     = ReportHelp.toJava(v_RTemplate ,JU_ReadVerticalGrade.class.getResource("JU_ReadVerticalGrade_Datas.xlsx").toString());
         
         Help.print(v_Datas);
     }

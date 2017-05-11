@@ -33,7 +33,7 @@ public class ReportHelp
      * @param i_ExcelFileName  Excel文件的全路径
      * @return
      */
-    public final static List<Object> toJava(RTemplate i_RTemplate ,String i_ExcelFileName)
+    public final static List<?> toJava(RTemplate i_RTemplate ,String i_ExcelFileName)
     {
         return ExcelToJava.read(i_RTemplate ,i_ExcelFileName ,0);
     }
@@ -52,7 +52,7 @@ public class ReportHelp
      * @param i_SheetNo        读取哪个工作表中的数据。下标从0开始。
      * @return
      */
-    public final static List<Object> toJava(RTemplate i_RTemplate ,String i_ExcelFileName ,int i_SheetNo)
+    public final static List<?> toJava(RTemplate i_RTemplate ,String i_ExcelFileName ,int i_SheetNo)
     {
         return ExcelToJava.read(i_RTemplate ,i_ExcelFileName ,i_SheetNo);
     }

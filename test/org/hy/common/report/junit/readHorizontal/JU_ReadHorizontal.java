@@ -45,8 +45,8 @@ public class JU_ReadHorizontal
     @Test
     public void test_ReadHorizontal()
     {
-        RTemplate    v_RTemplate = (RTemplate)XJava.getObject("ReadHorizontal");
-        List<Object> v_Datas     = ReportHelp.toJava(v_RTemplate ,JU_ReadHorizontal.class.getResource("JU_ReadHorizontal_Datas.xlsx").toString());
+        RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReadHorizontal");
+        List<?>   v_Datas     = ReportHelp.toJava(v_RTemplate ,JU_ReadHorizontal.class.getResource("JU_ReadHorizontal_Datas.xlsx").toString());
         
         Help.print(v_Datas);
     }
