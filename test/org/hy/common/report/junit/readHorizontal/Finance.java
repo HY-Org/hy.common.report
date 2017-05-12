@@ -19,8 +19,6 @@ public class Finance extends SerializableDef
     
     private static final long serialVersionUID = 1788013639015556011L;
 
-    /** 月份 */
-    private String month;
     
     /** 收益 */
     private Double income;
@@ -73,28 +71,6 @@ public class Finance extends SerializableDef
     public void setPay(Double pay)
     {
         this.pay = pay;
-    }
-
-
-    
-    /**
-     * 获取：月份
-     */
-    public String getMonth()
-    {
-        return month;
-    }
-
-
-    
-    /**
-     * 设置：月份
-     * 
-     * @param month 
-     */
-    public void setMonth(String month)
-    {
-        this.month = month;
     }
 
 

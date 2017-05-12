@@ -17,7 +17,7 @@
 			<dataBeginRow>0</dataBeginRow>
 			<dataEndRow>4</dataEndRow>
 			<dataBeginCol>1</dataBeginCol>
-			<dataClass>org.hy.common.report.junit.readHorizontal.Finance</dataClass>
+			<dataClass>org.hy.common.report.junit.readHorizontal.Factory</dataClass>
 		</template>
 		
 	</xconfig>
