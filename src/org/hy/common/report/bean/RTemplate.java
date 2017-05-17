@@ -41,6 +41,13 @@ public class RTemplate implements Comparable<RTemplate>
     public final static String         $ValueName_RowSubtotalCount   = "RowSubtotalCount__";
     
     
+    /** 纵深扩展--表示从左到右的方向，一行或多行为一个对象数据 */
+    public final static Integer       $Direction_Horizontal          = 0;
+    
+    /** 横向扩展--表示从上到下的方向，一列或多列为一个对象数据 */
+    public final static Integer       $Direction_Vertical            = 1;
+    
+    
     
     /** 模板名称 */
     private String                     name;
