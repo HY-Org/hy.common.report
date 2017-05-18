@@ -26,6 +26,7 @@ import org.hy.common.report.bean.RTemplate;
  * @author      ZhengWei(HY)
  * @createDate  2017-05-08
  * @version     v1.0
+ *              v1.1  修复：在读取单位格时，支持对公式表达式的计算结果的读取
  */
 public class ExcelToJava
 {
@@ -150,7 +151,8 @@ public class ExcelToJava
                     }
                     
                     Object v_Value = null;
-                    if ( v_Cell.getCellTypeEnum() == CellType.STRING )
+                    if ( v_Cell.getCellTypeEnum() == CellType.STRING 
+                      || v_Cell.getCellTypeEnum() == CellType.FORMULA )
                     {
                         v_Value = v_Cell.getStringCellValue();
                     }
@@ -230,7 +232,8 @@ public class ExcelToJava
                     }
                     
                     Object v_Value = null;
-                    if ( v_Cell.getCellTypeEnum() == CellType.STRING )
+                    if ( v_Cell.getCellTypeEnum() == CellType.STRING 
+                      || v_Cell.getCellTypeEnum() == CellType.FORMULA )
                     {
                         v_Value = v_Cell.getStringCellValue();
                     }
