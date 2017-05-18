@@ -151,8 +151,7 @@ public class ExcelToJava
                     }
                     
                     Object v_Value = null;
-                    if ( v_Cell.getCellTypeEnum() == CellType.STRING 
-                      || v_Cell.getCellTypeEnum() == CellType.FORMULA )
+                    if ( v_Cell.getCellTypeEnum() == CellType.STRING )
                     {
                         v_Value = v_Cell.getStringCellValue();
                     }
@@ -168,6 +167,38 @@ public class ExcelToJava
                         else 
                         {
                             v_Value = String.valueOf(v_Cell.getNumericCellValue());
+                        }
+                    }
+                    else if ( v_Cell.getCellTypeEnum() == CellType.BOOLEAN )
+                    {
+                        v_Value = Boolean.valueOf(v_Cell.getBooleanCellValue());
+                    }
+                    else if ( v_Cell.getCellTypeEnum() == CellType.FORMULA )
+                    {
+                        try
+                        {
+                            v_Value = v_Cell.getStringCellValue();
+                        }
+                        catch (Exception exce)
+                        {
+                            try
+                            {
+                                if ( HSSFDateUtil.isCellDateFormatted(v_Cell) ) 
+                                {
+                                    if ( v_Cell.getDateCellValue() != null )
+                                    {
+                                        v_Value = new Date(v_Cell.getDateCellValue());
+                                    }
+                                } 
+                                else 
+                                {
+                                    v_Value = String.valueOf(v_Cell.getNumericCellValue());
+                                }
+                            }
+                            catch (Exception exce2)
+                            {
+                                v_Value = Boolean.valueOf(v_Cell.getBooleanCellValue());
+                            }
                         }
                     }
                     
@@ -232,8 +263,7 @@ public class ExcelToJava
                     }
                     
                     Object v_Value = null;
-                    if ( v_Cell.getCellTypeEnum() == CellType.STRING 
-                      || v_Cell.getCellTypeEnum() == CellType.FORMULA )
+                    if ( v_Cell.getCellTypeEnum() == CellType.STRING )
                     {
                         v_Value = v_Cell.getStringCellValue();
                     }
@@ -249,6 +279,38 @@ public class ExcelToJava
                         else 
                         {
                             v_Value = String.valueOf(v_Cell.getNumericCellValue());
+                        }
+                    }
+                    else if ( v_Cell.getCellTypeEnum() == CellType.BOOLEAN )
+                    {
+                        v_Value = Boolean.valueOf(v_Cell.getBooleanCellValue());
+                    }
+                    else if ( v_Cell.getCellTypeEnum() == CellType.FORMULA )
+                    {
+                        try
+                        {
+                            v_Value = v_Cell.getStringCellValue();
+                        }
+                        catch (Exception exce)
+                        {
+                            try
+                            {
+                                if ( HSSFDateUtil.isCellDateFormatted(v_Cell) ) 
+                                {
+                                    if ( v_Cell.getDateCellValue() != null )
+                                    {
+                                        v_Value = new Date(v_Cell.getDateCellValue());
+                                    }
+                                } 
+                                else 
+                                {
+                                    v_Value = String.valueOf(v_Cell.getNumericCellValue());
+                                }
+                            }
+                            catch (Exception exce2)
+                            {
+                                v_Value = Boolean.valueOf(v_Cell.getBooleanCellValue());
+                            }
                         }
                     }
                     
