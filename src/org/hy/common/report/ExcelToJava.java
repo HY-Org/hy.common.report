@@ -167,6 +167,21 @@ public class ExcelToJava
                         else 
                         {
                             v_Value = String.valueOf(v_Cell.getNumericCellValue());
+                            
+                            // 2017-05-22 Add ZhengWei(HY)
+                            // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
+                            // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
+                            // 即使设置了Excel单元格的格式为文本后，也是不行的。
+                            try
+                            {
+                                v_Cell.setCellType(CellType.STRING);
+                                Object v_ValueTemp = v_Cell.getStringCellValue();
+                                v_Value = v_ValueTemp;
+                            }
+                            catch (Exception exce)
+                            {
+                                // Nothing.
+                            }
                         }
                     }
                     else if ( v_Cell.getCellTypeEnum() == CellType.BOOLEAN )
@@ -193,6 +208,21 @@ public class ExcelToJava
                                 else 
                                 {
                                     v_Value = String.valueOf(v_Cell.getNumericCellValue());
+                                    
+                                    // 2017-05-22 Add ZhengWei(HY)
+                                    // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
+                                    // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
+                                    // 即使设置了Excel单元格的格式为文本后，也是不行的。
+                                    try
+                                    {
+                                        v_Cell.setCellType(CellType.STRING);
+                                        Object v_ValueTemp = v_Cell.getStringCellValue();
+                                        v_Value = v_ValueTemp;
+                                    }
+                                    catch (Exception exce1)
+                                    {
+                                        // Nothing.
+                                    }
                                 }
                             }
                             catch (Exception exce2)
@@ -279,6 +309,21 @@ public class ExcelToJava
                         else 
                         {
                             v_Value = String.valueOf(v_Cell.getNumericCellValue());
+                            
+                            // 2017-05-22 Add ZhengWei(HY)
+                            // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
+                            // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
+                            // 即使设置了Excel单元格的格式为文本后，也是不行的。
+                            try
+                            {
+                                v_Cell.setCellType(CellType.STRING);
+                                Object v_ValueTemp = v_Cell.getStringCellValue();
+                                v_Value = v_ValueTemp;
+                            }
+                            catch (Exception exce)
+                            {
+                                // Nothing.
+                            }
                         }
                     }
                     else if ( v_Cell.getCellTypeEnum() == CellType.BOOLEAN )
@@ -305,6 +350,21 @@ public class ExcelToJava
                                 else 
                                 {
                                     v_Value = String.valueOf(v_Cell.getNumericCellValue());
+                                    
+                                    // 2017-05-22 Add ZhengWei(HY)
+                                    // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
+                                    // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
+                                    // 即使设置了Excel单元格的格式为文本后，也是不行的。
+                                    try
+                                    {
+                                        v_Cell.setCellType(CellType.STRING);
+                                        Object v_ValueTemp = v_Cell.getStringCellValue();
+                                        v_Value = v_ValueTemp;
+                                    }
+                                    catch (Exception exce1)
+                                    {
+                                        // Nothing.
+                                    }
                                 }
                             }
                             catch (Exception exce2)
