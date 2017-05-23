@@ -174,9 +174,17 @@ public class ExcelToJava
                             // 即使设置了Excel单元格的格式为文本后，也是不行的。
                             try
                             {
-                                v_Cell.setCellType(CellType.STRING);
-                                Object v_ValueTemp = v_Cell.getStringCellValue();
-                                v_Value = v_ValueTemp;
+                                if ( null != v_Value )
+                                {
+                                    v_Cell.setCellType(CellType.STRING);
+                                    Object v_ValueTemp = v_Cell.getStringCellValue();
+                                    
+                                    // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
+                                    if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
+                                    {
+                                        v_Value = v_ValueTemp;
+                                    }
+                                }
                             }
                             catch (Exception exce)
                             {
@@ -215,9 +223,17 @@ public class ExcelToJava
                                     // 即使设置了Excel单元格的格式为文本后，也是不行的。
                                     try
                                     {
-                                        v_Cell.setCellType(CellType.STRING);
-                                        Object v_ValueTemp = v_Cell.getStringCellValue();
-                                        v_Value = v_ValueTemp;
+                                        if ( null != v_Value )
+                                        {
+                                            v_Cell.setCellType(CellType.STRING);
+                                            Object v_ValueTemp = v_Cell.getStringCellValue();
+                                            
+                                            // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
+                                            if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
+                                            {
+                                                v_Value = v_ValueTemp;
+                                            }
+                                        }
                                     }
                                     catch (Exception exce1)
                                     {
@@ -316,9 +332,17 @@ public class ExcelToJava
                             // 即使设置了Excel单元格的格式为文本后，也是不行的。
                             try
                             {
-                                v_Cell.setCellType(CellType.STRING);
-                                Object v_ValueTemp = v_Cell.getStringCellValue();
-                                v_Value = v_ValueTemp;
+                                if ( null != v_Value )
+                                {
+                                    v_Cell.setCellType(CellType.STRING);
+                                    Object v_ValueTemp = v_Cell.getStringCellValue();
+                                    
+                                    // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
+                                    if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
+                                    {
+                                        v_Value = v_ValueTemp;
+                                    }
+                                }
                             }
                             catch (Exception exce)
                             {
@@ -357,9 +381,17 @@ public class ExcelToJava
                                     // 即使设置了Excel单元格的格式为文本后，也是不行的。
                                     try
                                     {
-                                        v_Cell.setCellType(CellType.STRING);
-                                        Object v_ValueTemp = v_Cell.getStringCellValue();
-                                        v_Value = v_ValueTemp;
+                                        if ( null != v_Value )
+                                        {
+                                            v_Cell.setCellType(CellType.STRING);
+                                            Object v_ValueTemp = v_Cell.getStringCellValue();
+                                            
+                                            // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
+                                            if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
+                                            {
+                                                v_Value = v_ValueTemp;
+                                            }
+                                        }
                                     }
                                     catch (Exception exce1)
                                     {
