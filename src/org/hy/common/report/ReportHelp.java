@@ -71,7 +71,7 @@ public class ReportHelp
      * @param i_IsAddNull      当一行数据为空时，是否添加到返回集合中。
      * @return
      */
-    public final static List<Object> toJava(RTemplate i_RTemplate ,String i_ExcelFileName ,boolean i_IsAddNull)
+    public final static List<?> toJava(RTemplate i_RTemplate ,String i_ExcelFileName ,boolean i_IsAddNull)
     {
         return ExcelToJava.read(i_RTemplate ,i_ExcelFileName ,i_IsAddNull);
     }
@@ -91,7 +91,7 @@ public class ReportHelp
      * @param i_IsAddNull      当一行数据为空时，是否添加到返回集合中。
      * @return
      */
-    public final static List<Object> toJava(RTemplate i_RTemplate ,String i_ExcelFileName ,int i_SheetNo ,boolean i_IsAddNull)
+    public final static List<?> toJava(RTemplate i_RTemplate ,String i_ExcelFileName ,int i_SheetNo ,boolean i_IsAddNull)
     {
         return ExcelToJava.read(i_RTemplate ,i_ExcelFileName ,i_SheetNo ,i_IsAddNull);
     }
