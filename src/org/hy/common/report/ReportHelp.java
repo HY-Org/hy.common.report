@@ -60,6 +60,45 @@ public class ReportHelp
     
     
     /**
+     * Excel数据通过占位符的映射转为Java对象
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-05-24
+     * @version     v1.0
+     *
+     * @param i_RTemplate      模板对象
+     * @param i_ExcelFileName  Excel文件的全路径
+     * @param i_IsAddNull      当一行数据为空时，是否添加到返回集合中。
+     * @return
+     */
+    public final static List<Object> toJava(RTemplate i_RTemplate ,String i_ExcelFileName ,boolean i_IsAddNull)
+    {
+        return ExcelToJava.read(i_RTemplate ,i_ExcelFileName ,i_IsAddNull);
+    }
+    
+    
+    
+    /**
+     * Excel数据通过占位符的映射转为Java对象
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-05-09
+     * @version     v1.0
+     *
+     * @param i_RTemplate      模板对象
+     * @param i_ExcelFileName  Excel文件的全路径
+     * @param i_SheetNo        读取哪个工作表中的数据。下标从0开始。
+     * @param i_IsAddNull      当一行数据为空时，是否添加到返回集合中。
+     * @return
+     */
+    public final static List<Object> toJava(RTemplate i_RTemplate ,String i_ExcelFileName ,int i_SheetNo ,boolean i_IsAddNull)
+    {
+        return ExcelToJava.read(i_RTemplate ,i_ExcelFileName ,i_SheetNo ,i_IsAddNull);
+    }
+    
+    
+    
+    /**
      * 向Excel文件中写数据
      * 
      * @author      ZhengWei(HY)
