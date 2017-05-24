@@ -44,7 +44,7 @@ public class ExcelToJava
      */
     public final static List<Object> read(RTemplate i_RTemplate ,String i_ExcelFileName)
     {
-        return read(i_RTemplate ,i_ExcelFileName ,0);
+        return read(i_RTemplate ,i_ExcelFileName ,0 ,false);
     }
     
     
@@ -62,6 +62,45 @@ public class ExcelToJava
      * @return
      */
     public final static List<Object> read(RTemplate i_RTemplate ,String i_ExcelFileName ,int i_SheetNo)
+    {
+        return read(i_RTemplate ,i_ExcelFileName ,i_SheetNo ,false);
+    }
+    
+    
+    
+    /**
+     * Excel数据通过占位符的映射转为Java对象
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-05-24
+     * @version     v1.0
+     *
+     * @param i_RTemplate      模板对象
+     * @param i_ExcelFileName  Excel文件的全路径
+     * @param i_IsAddNull      当一行数据为空时，是否添加到返回集合中。
+     * @return
+     */
+    public final static List<Object> read(RTemplate i_RTemplate ,String i_ExcelFileName ,boolean i_IsAddNull)
+    {
+        return read(i_RTemplate ,i_ExcelFileName ,0 ,i_IsAddNull);
+    }
+    
+    
+    
+    /**
+     * Excel数据通过占位符的映射转为Java对象
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-05-09
+     * @version     v1.0
+     *
+     * @param i_RTemplate      模板对象
+     * @param i_ExcelFileName  Excel文件的全路径
+     * @param i_SheetNo        读取哪个工作表中的数据。下标从0开始。
+     * @param i_IsAddNull      当一行数据为空时，是否添加到返回集合中。
+     * @return
+     */
+    public final static List<Object> read(RTemplate i_RTemplate ,String i_ExcelFileName ,int i_SheetNo ,boolean i_IsAddNull)
     {
         PartitionMap<String ,RCell> v_RCellDatas  = ExcelHelp.readDatas(i_RTemplate.getTemplateSheet());
         List<String>                v_DelKeys     = new ArrayList<String>();
@@ -99,11 +138,11 @@ public class ExcelToJava
         List<Sheet> v_Sheets = ExcelHelp.read(i_ExcelFileName);
         if ( i_RTemplate.getDirection().intValue() == 1 )
         {
-            return readHorizontal(i_RTemplate ,v_RowColDatas ,v_Sheets.get(i_SheetNo));
+            return readHorizontal(i_RTemplate ,v_RowColDatas ,v_Sheets.get(i_SheetNo) ,i_IsAddNull);
         }
         else
         {
-            return readVertical(  i_RTemplate ,v_RowColDatas ,v_Sheets.get(i_SheetNo));
+            return readVertical(  i_RTemplate ,v_RowColDatas ,v_Sheets.get(i_SheetNo) ,i_IsAddNull);
         }
     }
     
@@ -119,9 +158,10 @@ public class ExcelToJava
      * @param i_RTemplate    模板对象
      * @param i_RowColDatas  模板中的占位符信息。Map.key为"单位格行号,单位格列号"，Map.value为占位符
      * @param i_Sheet        要读取的工作表
+     * @param i_IsAddNull    当一行数据为空时，是否添加到返回集合中。
      * @return
      */
-    private final static List<Object> readVertical(RTemplate i_RTemplate ,Map<String ,String> i_RowColDatas ,Sheet i_Sheet)
+    private final static List<Object> readVertical(RTemplate i_RTemplate ,Map<String ,String> i_RowColDatas ,Sheet i_Sheet ,boolean i_IsAddNull)
     {
         int          v_RowCount     = i_Sheet.getPhysicalNumberOfRows();
         int          v_RowCountData = i_RTemplate.getRowCountData();
@@ -161,7 +201,10 @@ public class ExcelToJava
                 }
             }
             
-            if ( v_IsHaveData ) { v_Ret.add(v_RowObj); }
+            if ( v_IsHaveData || i_IsAddNull ) 
+            { 
+                v_Ret.add(v_RowObj); 
+            }
             v_IsHaveData = false;
         }
         
@@ -180,9 +223,10 @@ public class ExcelToJava
      * @param i_RTemplate    模板对象
      * @param i_RowColDatas  模板中的占位符信息。Map.key为"单位格行号,单位格列号"，Map.value为占位符
      * @param i_Sheet        要读取的工作表
+     * @param i_IsAddNull    当一行数据为空时，是否添加到返回集合中。
      * @return
      */
-    private final static List<Object> readHorizontal(RTemplate i_RTemplate ,Map<String ,String> i_RowColDatas ,Sheet i_Sheet)
+    private final static List<Object> readHorizontal(RTemplate i_RTemplate ,Map<String ,String> i_RowColDatas ,Sheet i_Sheet ,boolean i_IsAddNull)
     {
         int          v_CellCount    = i_Sheet.getRow(i_RTemplate.getDataBeginRow()).getPhysicalNumberOfCells();
         int          v_ColCountData = i_RTemplate.getColCountData();
@@ -222,7 +266,10 @@ public class ExcelToJava
                 }
             }
             
-            if ( v_IsHaveData ) { v_Ret.add(v_RowObj); }
+            if ( v_IsHaveData || i_IsAddNull ) 
+            { 
+                v_Ret.add(v_RowObj); 
+            }
             v_IsHaveData = false;
         }
         
