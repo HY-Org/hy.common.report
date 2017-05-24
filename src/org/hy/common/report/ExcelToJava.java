@@ -150,104 +150,7 @@ public class ExcelToJava
                         continue;
                     }
                     
-                    Object v_Value = null;
-                    if ( v_Cell.getCellTypeEnum() == CellType.STRING )
-                    {
-                        v_Value = v_Cell.getStringCellValue();
-                    }
-                    else if ( v_Cell.getCellTypeEnum() == CellType.NUMERIC )
-                    {
-                        if ( HSSFDateUtil.isCellDateFormatted(v_Cell) ) 
-                        {
-                            if ( v_Cell.getDateCellValue() != null )
-                            {
-                                v_Value = new Date(v_Cell.getDateCellValue());
-                            }
-                        } 
-                        else 
-                        {
-                            v_Value = String.valueOf(v_Cell.getNumericCellValue());
-                            
-                            // 2017-05-22 Add ZhengWei(HY)
-                            // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
-                            // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
-                            // 即使设置了Excel单元格的格式为文本后，也是不行的。
-                            try
-                            {
-                                if ( null != v_Value )
-                                {
-                                    v_Cell.setCellType(CellType.STRING);
-                                    Object v_ValueTemp = v_Cell.getStringCellValue();
-                                    
-                                    // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
-                                    if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
-                                    {
-                                        v_Value = v_ValueTemp;
-                                    }
-                                }
-                            }
-                            catch (Exception exce)
-                            {
-                                // Nothing.
-                            }
-                        }
-                    }
-                    else if ( v_Cell.getCellTypeEnum() == CellType.BOOLEAN )
-                    {
-                        v_Value = Boolean.valueOf(v_Cell.getBooleanCellValue());
-                    }
-                    else if ( v_Cell.getCellTypeEnum() == CellType.FORMULA )
-                    {
-                        try
-                        {
-                            v_Value = v_Cell.getStringCellValue();
-                        }
-                        catch (Exception exce)
-                        {
-                            try
-                            {
-                                if ( HSSFDateUtil.isCellDateFormatted(v_Cell) ) 
-                                {
-                                    if ( v_Cell.getDateCellValue() != null )
-                                    {
-                                        v_Value = new Date(v_Cell.getDateCellValue());
-                                    }
-                                } 
-                                else 
-                                {
-                                    v_Value = String.valueOf(v_Cell.getNumericCellValue());
-                                    
-                                    // 2017-05-22 Add ZhengWei(HY)
-                                    // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
-                                    // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
-                                    // 即使设置了Excel单元格的格式为文本后，也是不行的。
-                                    try
-                                    {
-                                        if ( null != v_Value )
-                                        {
-                                            v_Cell.setCellType(CellType.STRING);
-                                            Object v_ValueTemp = v_Cell.getStringCellValue();
-                                            
-                                            // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
-                                            if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
-                                            {
-                                                v_Value = v_ValueTemp;
-                                            }
-                                        }
-                                    }
-                                    catch (Exception exce1)
-                                    {
-                                        // Nothing.
-                                    }
-                                }
-                            }
-                            catch (Exception exce2)
-                            {
-                                v_Value = Boolean.valueOf(v_Cell.getBooleanCellValue());
-                            }
-                        }
-                    }
-                    
+                    Object v_Value = readCellValue(v_Cell);
                     if ( null != v_Value )
                     {
                         if ( i_RTemplate.setValue(i_RowColDatas.get((i_RTemplate.getDataBeginRow() + v_RowDataNo) + "," + v_ColumnNo) ,v_Value ,v_RowObj) )
@@ -308,104 +211,7 @@ public class ExcelToJava
                         continue;
                     }
                     
-                    Object v_Value = null;
-                    if ( v_Cell.getCellTypeEnum() == CellType.STRING )
-                    {
-                        v_Value = v_Cell.getStringCellValue();
-                    }
-                    else if ( v_Cell.getCellTypeEnum() == CellType.NUMERIC )
-                    {
-                        if ( HSSFDateUtil.isCellDateFormatted(v_Cell) ) 
-                        {
-                            if ( v_Cell.getDateCellValue() != null )
-                            {
-                                v_Value = new Date(v_Cell.getDateCellValue());
-                            }
-                        } 
-                        else 
-                        {
-                            v_Value = String.valueOf(v_Cell.getNumericCellValue());
-                            
-                            // 2017-05-22 Add ZhengWei(HY)
-                            // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
-                            // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
-                            // 即使设置了Excel单元格的格式为文本后，也是不行的。
-                            try
-                            {
-                                if ( null != v_Value )
-                                {
-                                    v_Cell.setCellType(CellType.STRING);
-                                    Object v_ValueTemp = v_Cell.getStringCellValue();
-                                    
-                                    // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
-                                    if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
-                                    {
-                                        v_Value = v_ValueTemp;
-                                    }
-                                }
-                            }
-                            catch (Exception exce)
-                            {
-                                // Nothing.
-                            }
-                        }
-                    }
-                    else if ( v_Cell.getCellTypeEnum() == CellType.BOOLEAN )
-                    {
-                        v_Value = Boolean.valueOf(v_Cell.getBooleanCellValue());
-                    }
-                    else if ( v_Cell.getCellTypeEnum() == CellType.FORMULA )
-                    {
-                        try
-                        {
-                            v_Value = v_Cell.getStringCellValue();
-                        }
-                        catch (Exception exce)
-                        {
-                            try
-                            {
-                                if ( HSSFDateUtil.isCellDateFormatted(v_Cell) ) 
-                                {
-                                    if ( v_Cell.getDateCellValue() != null )
-                                    {
-                                        v_Value = new Date(v_Cell.getDateCellValue());
-                                    }
-                                } 
-                                else 
-                                {
-                                    v_Value = String.valueOf(v_Cell.getNumericCellValue());
-                                    
-                                    // 2017-05-22 Add ZhengWei(HY)
-                                    // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
-                                    // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
-                                    // 即使设置了Excel单元格的格式为文本后，也是不行的。
-                                    try
-                                    {
-                                        if ( null != v_Value )
-                                        {
-                                            v_Cell.setCellType(CellType.STRING);
-                                            Object v_ValueTemp = v_Cell.getStringCellValue();
-                                            
-                                            // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
-                                            if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
-                                            {
-                                                v_Value = v_ValueTemp;
-                                            }
-                                        }
-                                    }
-                                    catch (Exception exce1)
-                                    {
-                                        // Nothing.
-                                    }
-                                }
-                            }
-                            catch (Exception exce2)
-                            {
-                                v_Value = Boolean.valueOf(v_Cell.getBooleanCellValue());
-                            }
-                        }
-                    }
-                    
+                    Object v_Value = readCellValue(v_Cell);
                     if ( null != v_Value )
                     {
                         if ( i_RTemplate.setValue(i_RowColDatas.get(v_RowNo + "," + (i_RTemplate.getDataBeginCol() + v_ColDataNo)) ,v_Value ,v_RowObj) )
@@ -421,6 +227,121 @@ public class ExcelToJava
         }
         
         return v_Ret;
+    }
+    
+    
+    
+    /**
+     * 读取单元格的数值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-05-08
+     * @version     v1.0
+     *
+     * @param i_Cell
+     * @return
+     */
+    public final static Object readCellValue(Cell i_Cell)
+    {
+        Object v_Value = null;
+        if ( i_Cell.getCellTypeEnum() == CellType.STRING )
+        {
+            v_Value = i_Cell.getStringCellValue();
+        }
+        else if ( i_Cell.getCellTypeEnum() == CellType.NUMERIC )
+        {
+            if ( HSSFDateUtil.isCellDateFormatted(i_Cell) ) 
+            {
+                if ( i_Cell.getDateCellValue() != null )
+                {
+                    v_Value = new Date(i_Cell.getDateCellValue());
+                }
+            } 
+            else 
+            {
+                v_Value = String.valueOf(i_Cell.getNumericCellValue());
+                
+                // 2017-05-22 Add ZhengWei(HY)
+                // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
+                // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
+                // 即使设置了Excel单元格的格式为文本后，也是不行的。
+                try
+                {
+                    if ( null != v_Value )
+                    {
+                        i_Cell.setCellType(CellType.STRING);
+                        Object v_ValueTemp = i_Cell.getStringCellValue();
+                        
+                        // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
+                        if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
+                        {
+                            v_Value = v_ValueTemp;
+                        }
+                    }
+                }
+                catch (Exception exce)
+                {
+                    // Nothing.
+                }
+            }
+        }
+        else if ( i_Cell.getCellTypeEnum() == CellType.BOOLEAN )
+        {
+            v_Value = Boolean.valueOf(i_Cell.getBooleanCellValue());
+        }
+        else if ( i_Cell.getCellTypeEnum() == CellType.FORMULA )
+        {
+            try
+            {
+                v_Value = i_Cell.getStringCellValue();
+            }
+            catch (Exception exce)
+            {
+                try
+                {
+                    if ( HSSFDateUtil.isCellDateFormatted(i_Cell) ) 
+                    {
+                        if ( i_Cell.getDateCellValue() != null )
+                        {
+                            v_Value = new Date(i_Cell.getDateCellValue());
+                        }
+                    } 
+                    else 
+                    {
+                        v_Value = String.valueOf(i_Cell.getNumericCellValue());
+                        
+                        // 2017-05-22 Add ZhengWei(HY)
+                        // Excel中单元格中的以文本保存数字时，防止产生与Excel单元格显示不一致的数据。
+                        // 如Excel中为100，如果用 v_Cell.getNumericCellValue() 读取会变成 "100.0"，
+                        // 即使设置了Excel单元格的格式为文本后，也是不行的。
+                        try
+                        {
+                            if ( null != v_Value )
+                            {
+                                i_Cell.setCellType(CellType.STRING);
+                                Object v_ValueTemp = i_Cell.getStringCellValue();
+                                
+                                // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
+                                if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
+                                {
+                                    v_Value = v_ValueTemp;
+                                }
+                            }
+                        }
+                        catch (Exception exce1)
+                        {
+                            // Nothing.
+                        }
+                    }
+                }
+                catch (Exception exce2)
+                {
+                    v_Value = Boolean.valueOf(i_Cell.getBooleanCellValue());
+                }
+            }
+        }
+        
+        return v_Value;
     }
     
 }

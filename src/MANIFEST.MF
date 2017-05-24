@@ -1,4 +1,4 @@
-Manifest-Version: 2.0.5.S8
+Manifest-Version: 2.0.6.S9
 Created-By: HY.ZhengWei@qq.com  2017
-Specification-Version: 2.0.5.S8  2017-05-23
+Specification-Version: 2.0.6.S9  2017-05-24
 SourceCode: https://github.com/HY-ZhengWei/hy.common.report
