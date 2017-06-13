@@ -327,7 +327,7 @@ public class ExcelToJava
                         else
                         {
                             // 将 0.28999999999999992 转为 0.28 
-                            v_ValueTemp = "" + Help.round(v_Value.toString() ,15);
+                            v_ValueTemp = "" + Help.round(v_Value.toString() ,10);
                             
                             if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
                             {
