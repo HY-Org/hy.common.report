@@ -218,7 +218,7 @@ public class JavaToExcel
         
         if ( i_RTemplate.getRowCountTitle() >= 1 )
         {
-            writeTitle(v_DataWorkbook ,v_DataSheet ,v_RSystemValue ,i_Datas ,i_RTemplate);
+            writeTitle(v_DataWorkbook ,v_DataSheet ,v_RSystemValue ,i_Datas.get(0) ,i_RTemplate);
         }
         
         if ( i_RTemplate.getRowCountData() >= 1 )

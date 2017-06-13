@@ -324,6 +324,16 @@ public class ExcelToJava
                         {
                             v_Value = v_ValueTemp;
                         }
+                        else
+                        {
+                            // 将 0.28999999999999992 转为 0.28 
+                            v_ValueTemp = "" + Help.round(v_Value.toString() ,15);
+                            
+                            if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
+                            {
+                                v_Value = v_ValueTemp;
+                            }
+                        }
                     }
                 }
                 catch (Exception exce)
