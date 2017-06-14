@@ -894,7 +894,14 @@ public class JavaToExcel
                     v_RValue.setValue(Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_RSystemValue ,i_Datas ,v_RValue.getValue())));
                 }
                 
-                i_DataCell.setCellValue(v_RValue.getValue().toString());
+                if ( null != v_RValue.getValue() )
+                {
+                    i_DataCell.setCellValue(v_RValue.getValue().toString());
+                }
+                else
+                {
+                    i_DataCell.setCellValue("");
+                }
                 
                 return v_RValue;
             }
