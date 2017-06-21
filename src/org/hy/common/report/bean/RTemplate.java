@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.PartitionMap;
@@ -24,6 +25,8 @@ import org.hy.common.report.event.ValueListener;
  * @author      ZhengWei(HY)
  * @createDate  2017-03-15
  * @version     v1.0
+ *              v2.0  2017-06-21  优化：通过isSafe参数控制，放弃一些非必要的效验来提高性能
+ *                                优化：启用对SXSSFWorkbook工作薄的支持大数据量
  */
 public class RTemplate implements Comparable<RTemplate>
 {
@@ -106,7 +109,23 @@ public class RTemplate implements Comparable<RTemplate>
     
     /** 是要安全？还是要性能（默认为：性能） */
     private Boolean                    isSafe;
+    
+    /** 
+     * 当为大数据量导出时，建议使用 SXSSFWorkbook
+     * POI对excel的导出操作，一般只使用HSSFWorkbook以及SXSSFWorkbook，
+     * HSSFWorkbook用来处理较少的数据量，
+     * SXSSFWorkbook用来处理大数据量以及超大数据量的导出
+     * 
+     * 默认为：true
+     */
+    private Boolean                    isBig;
 
+    /** 
+     * 当使用 SXSSFWorkbook 时（this.isBig=true），创建对象new SXSSFWorkbook(rowAccessWindowSize)入参。
+     * 保持在内存中的行数，直到刷新为止
+     */
+    private Integer                    rowAccessWindowSize;
+    
     
     
     /** 
@@ -130,14 +149,16 @@ public class RTemplate implements Comparable<RTemplate>
     
     public RTemplate()
     {
-        this.sheetIndex     = 0;
-        this.direction      = 0;
-        this.templateSheet  = null;
-        this.excelVersion   = null;
-        this.valueMethods   = new LinkedHashMap<String ,RCell>();
-        this.valueNames     = new Hashtable<String ,String>();
-        this.valueListeners = new Hashtable<String ,ValueListener>();
-        this.isSafe         = false;
+        this.sheetIndex          = 0;
+        this.direction           = 0;
+        this.templateSheet       = null;
+        this.excelVersion        = null;
+        this.valueMethods        = new LinkedHashMap<String ,RCell>();
+        this.valueNames          = new Hashtable<String ,String>();
+        this.valueListeners      = new Hashtable<String ,ValueListener>();
+        this.isSafe              = false;
+        this.isBig               = true;
+        this.rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
         this.setValueSign(":");
     }
     
@@ -981,7 +1002,58 @@ public class RTemplate implements Comparable<RTemplate>
         this.isSafe = isSafe;
     }
 
+    
+    /**
+     * 获取：当为大数据量导出时，建议使用 SXSSFWorkbook
+     * POI对excel的导出操作，一般只使用HSSFWorkbook以及SXSSFWorkbook，
+     * HSSFWorkbook用来处理较少的数据量，
+     * SXSSFWorkbook用来处理大数据量以及超大数据量的导出
+     * 
+     * 默认为：false
+     */
+    public Boolean getIsBig()
+    {
+        return isBig;
+    }
 
+    
+    /**
+     * 设置：当为大数据量导出时，建议使用 SXSSFWorkbook
+     * POI对excel的导出操作，一般只使用HSSFWorkbook以及SXSSFWorkbook，
+     * HSSFWorkbook用来处理较少的数据量，
+     * SXSSFWorkbook用来处理大数据量以及超大数据量的导出
+     * 
+     * 默认为：false
+     * 
+     * @param isBig 
+     */
+    public void setIsBig(Boolean isBig)
+    {
+        this.isBig = isBig;
+    }
+    
+    
+    /**
+     * 获取：当使用 SXSSFWorkbook 时，创建对象new SXSSFWorkbook(rowAccessWindowSize)入参。
+     * 保持在内存中的行数，直到刷新为止
+     */
+    public Integer getRowAccessWindowSize()
+    {
+        return rowAccessWindowSize;
+    }
+
+    
+    /**
+     * 设置：当使用 SXSSFWorkbook 时，创建对象new SXSSFWorkbook(rowAccessWindowSize)入参。
+     * 保持在内存中的行数，直到刷新为止
+     * 
+     * @param rowAccessWindowSize 
+     */
+    public void setRowAccessWindowSize(Integer rowAccessWindowSize)
+    {
+        this.rowAccessWindowSize = rowAccessWindowSize;
+    }
+    
 
     @Override
     public int compareTo(RTemplate i_Other)

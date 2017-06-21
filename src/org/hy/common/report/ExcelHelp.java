@@ -26,6 +26,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFDrawing;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
@@ -54,10 +57,15 @@ import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
  * @author      ZhengWei(HY)
  * @createDate  2017-03-16
  * @version     v1.0
+ *              v2.0  2017-06-21  优化：合并单元格的区域信息添加缓存中，不用每次都生成一次
+ *                                优化：合并单元格的图像信息添加缓存中，不用每次都生成一次
+ *                                优化：通过isSafe参数控制，放弃一些非必要的效验来提高性能
+ *                                优化：启用对SXSSFWorkbook工作薄的支持大数据量
  */
 public class ExcelHelp
 {
     
+    /** 缓存保存的时长（单位秒） */
     public  static int $CacheTimeLen = 60;
     
     private static ExpireMap<CacheSheetInfo ,List<CellRangeAddress>> $MergedRegionsAreaCaches = new ExpireMap<CacheSheetInfo ,List<CellRangeAddress>>();
@@ -266,6 +274,13 @@ public class ExcelHelp
                 v_SaveFile += ".xls";
             }
         }
+        else if ( i_Workbook instanceof SXSSFWorkbook )
+        {
+            if ( !v_SaveFile.toLowerCase().endsWith(".xlsx") )
+            {
+                v_SaveFile += ".xlsx";
+            }
+        }
         else if ( i_Workbook instanceof XSSFWorkbook )
         {
             if ( !v_SaveFile.toLowerCase().endsWith(".xlsx") )
@@ -366,7 +381,7 @@ public class ExcelHelp
         
         short v_ColumnCount = v_Row.getLastCellNum();
         
-        if ( i_FromSheet instanceof HSSFSheet )
+        if ( i_ToSheet instanceof HSSFSheet )
         {
             HSSFSheet v_ToSheet = (HSSFSheet)i_ToSheet;
             
@@ -376,7 +391,17 @@ public class ExcelHelp
                 v_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
             }
         }
-        else if ( i_FromSheet instanceof XSSFSheet )
+        else if ( i_ToSheet instanceof SXSSFSheet )
+        {
+            SXSSFSheet v_ToSheet = (SXSSFSheet)i_ToSheet;
+            
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            {
+                int v_Width = i_FromSheet.getColumnWidth(v_ColumnIndex);
+                v_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
+            }
+        }
+        else if ( i_ToSheet instanceof XSSFSheet )
         {
             XSSFSheet v_ToSheet = (XSSFSheet)i_ToSheet;
             
@@ -644,7 +669,7 @@ public class ExcelHelp
      * @author      ZhengWei(HY)
      * @createDate  2017-03-17
      * @version     v1.0
-     *              v2.0  2017-06-21  添加：合并单元格的区域信息添加缓存中，不用每次都生成一次
+     *              v2.0  2017-06-21  添加：合并单元格的图像信息添加缓存中，不用每次都生成一次
      *
      * @param i_FromSheet     模板工作表
      * @param i_AreaBeginRow  定指区域内的开始行号。包含此行。
@@ -657,7 +682,7 @@ public class ExcelHelp
         CacheSheetInfo      v_CacheKey   = new CacheSheetInfo(i_FromSheet ,i_AreaBeginRow ,i_AreaEndRow);
         List<ImageAreaInfo> v_CacheDatas = $ImageAreaCaches.get(v_CacheKey);
         
-        if ( i_FromSheet instanceof HSSFSheet )
+        if ( i_ToSheet instanceof HSSFSheet )
         {
             if ( v_CacheDatas == null )
             {
@@ -714,7 +739,65 @@ public class ExcelHelp
                                            ,i_ToSheet.getWorkbook().addPicture(v_ImageArea.getPictureData().getData() ,v_ImageArea.getPictureData().getPictureType()));
             }
         }
-        else if ( i_FromSheet instanceof XSSFSheet )
+        else if ( i_ToSheet instanceof SXSSFSheet )
+        {
+            if ( v_CacheDatas == null )
+            {
+                v_CacheDatas = new ArrayList<ImageAreaInfo>();
+                
+                XSSFSheet v_FromSheet = (XSSFSheet) i_FromSheet;
+                
+                if ( i_FromSheet.getDrawingPatriarch() != null ) 
+                {
+                    for (XSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getShapes()) 
+                    {
+                        if ( v_Shape instanceof XSSFPicture) 
+                        {
+                            XSSFPicture      v_Picture       = (XSSFPicture) v_Shape;
+                            XSSFClientAnchor v_Anchor        = v_Picture.getClientAnchor();
+                            XSSFPictureData  v_PictureData   = v_Picture.getPictureData();
+                            
+                            if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+                              && i_AreaEndRow   >= v_Anchor.getRow2() )
+                            {
+                                // Nothing. 在数据区域内的图片
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                            
+                            v_CacheDatas.add(new ImageAreaInfo(v_Anchor ,v_PictureData));
+                        }
+                    }
+                }
+                
+                $ImageAreaCaches.put(v_CacheKey ,v_CacheDatas ,$CacheTimeLen);
+            }
+            
+            if ( Help.isNull(v_CacheDatas) ) return;
+            
+            for (ImageAreaInfo v_ImageArea : v_CacheDatas)
+            {
+                SXSSFDrawing     v_ToPatriarch = ((SXSSFSheet)i_ToSheet).createDrawingPatriarch();
+                XSSFClientAnchor v_ToAnchor    = new XSSFClientAnchor(v_ImageArea.getAnchor().getDx1()
+                                                                     ,v_ImageArea.getAnchor().getDy1()
+                                                                     ,v_ImageArea.getAnchor().getDx2()
+                                                                     ,v_ImageArea.getAnchor().getDy2()
+                                                                     ,v_ImageArea.getAnchor().getCol1()
+                                                                     ,v_ImageArea.getAnchor().getRow1() + i_OffsetRow
+                                                                     ,v_ImageArea.getAnchor().getCol2()
+                                                                     ,v_ImageArea.getAnchor().getRow2() + i_OffsetRow);
+                
+                v_ToAnchor.setAnchorType(v_ImageArea.getAnchor().getAnchorType());
+                
+                copyClientAnchor((XSSFClientAnchor)v_ImageArea.getAnchor() ,v_ToAnchor ,i_OffsetRow);
+                
+                v_ToPatriarch.createPicture(v_ToAnchor
+                                           ,i_ToSheet.getWorkbook().addPicture(v_ImageArea.getPictureData().getData() ,v_ImageArea.getPictureData().getPictureType()));
+            }
+        }
+        else if ( i_ToSheet instanceof XSSFSheet )
         {
             if ( v_CacheDatas == null )
             {

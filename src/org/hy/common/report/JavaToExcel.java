@@ -20,6 +20,8 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
@@ -43,6 +45,10 @@ import org.hy.common.report.event.ValueListener;
  * @author      ZhengWei(HY)
  * @createDate  2017-03-18
  * @version     v1.0
+ *              v2.0  2017-06-21  优化：通过isSafe参数控制，放弃一些非必要的效验来提高性能
+ *                                优化：启用对SXSSFWorkbook工作薄的支持大数据量
+ *                                添加：当模板的单元格为数字格式的，并且导出文本也为数字字符，将转为数字写入到单元格中。
+ *                                     这种做的好处是：支持0.123456789数字的写入单元格的同时还将只表面显示n位小数(n也在模板是设置)
  */
 public class JavaToExcel
 {
@@ -64,7 +70,14 @@ public class JavaToExcel
         }
         else if ( "xlsx".equalsIgnoreCase(i_RTemplate.getExcelVersion()) )
         {
-            return new RWorkbook(new XSSFWorkbook());
+            if ( i_RTemplate.getIsBig() )
+            {
+                return new RWorkbook(new SXSSFWorkbook(i_RTemplate.getRowAccessWindowSize()));
+            }
+            else
+            {
+                return new RWorkbook(new XSSFWorkbook());
+            }
         }
         else
         {
@@ -191,13 +204,16 @@ public class JavaToExcel
         RWorkbook v_DataWorkbook  = i_Workbook;
         Sheet     v_DataSheet     = null;
         Sheet     v_TemplateSheet = null;
+        String    v_SheetName     = null;
         
         if ( null == v_DataWorkbook )
         {
             v_DataWorkbook = createWorkbook(i_RTemplate);
         }
         
-        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,Help.NVL(i_SheetName ,i_RTemplate.getTemplateSheet().getSheetName()));
+        // 如果不这为转码一下，新生成的Excel会有异常，无法正常显示工作表的名称
+        v_SheetName     = new String(i_RTemplate.getTemplateSheet().getSheetName().getBytes());
+        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,Help.NVL(i_SheetName ,v_SheetName));
         v_TemplateSheet = i_RTemplate.getTemplateSheet();
         
         ExcelHelp.copySheet(       v_TemplateSheet ,v_DataSheet);
@@ -683,7 +699,7 @@ public class JavaToExcel
         
         short v_ColumnCount = v_Row.getLastCellNum();
         
-        if ( i_TemplateSheet instanceof HSSFSheet )
+        if ( i_DataSheet instanceof HSSFSheet )
         {
             HSSFSheet v_DataSheet = (HSSFSheet)i_DataSheet;
             
@@ -696,7 +712,20 @@ public class JavaToExcel
                 }
             }
         }
-        else if ( i_TemplateSheet instanceof XSSFSheet )
+        else if ( i_DataSheet instanceof SXSSFSheet )
+        {
+            SXSSFSheet v_DataSheet = (SXSSFSheet)i_DataSheet;
+            
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            {
+                CellStyle v_ColumnStyle = i_TemplateSheet.getColumnStyle(v_ColumnIndex);
+                if ( v_ColumnStyle != null )
+                {
+                    v_DataSheet.setDefaultColumnStyle(v_ColumnIndex ,i_DataWorkbook.getCellStyle(i_RTemplate ,v_ColumnStyle.getIndex()));
+                }
+            }
+        }
+        else if ( i_DataSheet instanceof XSSFSheet )
         {
             XSSFSheet v_DataSheet = (XSSFSheet)i_DataSheet;
             
@@ -741,7 +770,12 @@ public class JavaToExcel
         for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
-            Cell v_DataCell     = i_DataRow.getCell(v_CellIndex);
+            if ( v_TemplateCell == null )
+            {
+                continue;
+            }
+            
+            Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
             if ( v_DataCell == null ) 
             {
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
@@ -858,7 +892,7 @@ public class JavaToExcel
     {
         // 复制样式
         i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
-
+        
         // 复制评论
         copyComment(i_RTemplate ,i_TemplateCell ,i_DataWorkbook ,i_DataCell);
         
@@ -894,7 +928,23 @@ public class JavaToExcel
                 
                 if ( null != v_RValue.getValue() )
                 {
-                    i_DataCell.setCellValue(v_RValue.getValue().toString());
+                    // 如果模板的数据格式是：数值
+                    if ( i_DataCell.getCellStyle().getDataFormat() > 0 )
+                    {
+                        if ( Help.isNumber(v_RValue.getValue().toString()) )
+                        {
+                            i_DataCell.setCellType(CellType.NUMERIC);
+                            i_DataCell.setCellValue(Double.parseDouble(v_RValue.getValue().toString()));
+                        }
+                        else
+                        {
+                            i_DataCell.setCellValue(v_RValue.getValue().toString());
+                        }
+                    }
+                    else
+                    {
+                        i_DataCell.setCellValue(v_RValue.getValue().toString());
+                    }
                 }
                 else
                 {
