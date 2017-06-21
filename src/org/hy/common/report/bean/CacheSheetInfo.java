@@ -8,13 +8,15 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 
 /**
- * 单元格合并的缓存信息 
+ * 缓存工作表中的各中对象内容。
+ *   1. 如，缓存单元格合并区域信息
+ *   2. 如，缓存单元格图像信息
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-06-21
  * @version     v1.0
  */
-public class MergedRegionsAreaCache implements Comparable<MergedRegionsAreaCache>
+public class CacheSheetInfo implements Comparable<CacheSheetInfo>
 {
     /** 工作表 */
     private Sheet sheet;
@@ -27,7 +29,7 @@ public class MergedRegionsAreaCache implements Comparable<MergedRegionsAreaCache
     
     
     
-    public MergedRegionsAreaCache(Sheet i_Sheet ,int i_AreaBeginRow ,int i_AreaEndRow)
+    public CacheSheetInfo(Sheet i_Sheet ,int i_AreaBeginRow ,int i_AreaEndRow)
     {
         this.sheet        = i_Sheet;
         this.areaBeginRow = i_AreaBeginRow;
@@ -97,7 +99,7 @@ public class MergedRegionsAreaCache implements Comparable<MergedRegionsAreaCache
 
     
     @Override
-    public int compareTo(MergedRegionsAreaCache i_Other)
+    public int compareTo(CacheSheetInfo i_Other)
     {
         if ( this == i_Other )
         {
@@ -141,9 +143,9 @@ public class MergedRegionsAreaCache implements Comparable<MergedRegionsAreaCache
         {
             return false;
         }
-        else if ( i_Other instanceof MergedRegionsAreaCache )
+        else if ( i_Other instanceof CacheSheetInfo )
         {
-            return this.compareTo((MergedRegionsAreaCache)i_Other) == 0;
+            return this.compareTo((CacheSheetInfo)i_Other) == 0;
         }
         else
         {
