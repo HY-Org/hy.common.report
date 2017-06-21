@@ -20,7 +20,6 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
@@ -538,7 +537,7 @@ public class JavaToExcel
     {
         int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTitleBeginRow();
         
-        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
     
     
@@ -558,7 +557,7 @@ public class JavaToExcel
     {
         int v_OffsetRow = i_DataRowIndex - i_RTemplate.getDataBeginRow();
         
-        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
     
     
@@ -578,7 +577,7 @@ public class JavaToExcel
     {
         int v_OffsetRow = i_DataRowIndex - i_RTemplate.getSubtotalBeginRow();
         
-        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getSubtotalBeginRow() ,i_RTemplate.getSubtotalEndRow() ,i_DataSheet ,v_OffsetRow);
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getSubtotalBeginRow() ,i_RTemplate.getSubtotalEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
     
     
@@ -598,7 +597,7 @@ public class JavaToExcel
     {
         int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTotalBeginRow();
         
-        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
     
     
@@ -791,10 +790,12 @@ public class JavaToExcel
                             v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
                         }
                         
-                        i_DataRow.getSheet().addMergedRegion(new CellRangeAddress(v_RowNum 
-                                                                                 ,v_RowNum + v_ForSize - 1
-                                                                                 ,v_MergedColIndex
-                                                                                 ,v_MergedColIndex));
+                        ExcelHelp.addMergedRegions(i_DataRow.getSheet() 
+                                                  ,v_RowNum 
+                                                  ,v_RowNum + v_ForSize - 1 
+                                                  ,v_MergedColIndex 
+                                                  ,v_MergedColIndex 
+                                                  ,i_RTemplate.getIsSafe());
                     }
                 }
                 
@@ -828,10 +829,12 @@ public class JavaToExcel
                     v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
                 }
                 
-                i_DataRow.getSheet().addMergedRegion(new CellRangeAddress(v_RowNum 
-                                                                         ,v_RowNum + v_ForSize - 1
-                                                                         ,v_CellIndex
-                                                                         ,v_CellIndex));
+                ExcelHelp.addMergedRegions(i_DataRow.getSheet()
+                                          ,v_RowNum
+                                          ,v_RowNum + v_ForSize - 1
+                                          ,v_CellIndex
+                                          ,v_CellIndex
+                                          ,i_RTemplate.getIsSafe());
             }
         }
         

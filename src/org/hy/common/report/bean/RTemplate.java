@@ -103,6 +103,9 @@ public class RTemplate implements Comparable<RTemplate>
     
     /** 值的标记。默认为一个冒号：":" */
     private String                     valueSign;
+    
+    /** 是要安全？还是要性能（默认为：性能） */
+    private Boolean                    isSafe;
 
     
     
@@ -134,6 +137,7 @@ public class RTemplate implements Comparable<RTemplate>
         this.valueMethods   = new LinkedHashMap<String ,RCell>();
         this.valueNames     = new Hashtable<String ,String>();
         this.valueListeners = new Hashtable<String ,ValueListener>();
+        this.isSafe         = false;
         this.setValueSign(":");
     }
     
@@ -955,6 +959,26 @@ public class RTemplate implements Comparable<RTemplate>
         this.valueNames.put(this.valueSign + $ValueName_RowIndex         ,$ValueName_RowIndex);
         this.valueNames.put(this.valueSign + $ValueName_RowCount         ,$ValueName_RowCount);
         this.valueNames.put(this.valueSign + $ValueName_RowSubtotalCount ,$ValueName_RowSubtotalCount);
+    }
+
+    
+    /**
+     * 获取：是要安全？还是要性能（默认为：性能）
+     */
+    public Boolean getIsSafe()
+    {
+        return isSafe;
+    }
+
+
+    /**
+     * 设置：是要安全？还是要性能（默认为：性能）
+     * 
+     * @param isSafe 
+     */
+    public void setIsSafe(Boolean isSafe)
+    {
+        this.isSafe = isSafe;
     }
 
 

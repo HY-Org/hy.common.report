@@ -467,8 +467,9 @@ public class ExcelHelp
      * @param i_AreaEndRow    定指区域内的结束行号。包含此行。
      * @param i_ToSheet       数据工作表
      * @param i_OffsetRow     偏移行号
+     * @param i_IsSafe        是要安全？还是要性能
      */
-    public final static void copyMergedRegions(Sheet i_FromSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet ,int i_OffsetRow) 
+    public final static void copyMergedRegions(Sheet i_FromSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet ,int i_OffsetRow ,boolean i_IsSafe) 
     {
         int v_MergedRegionsCount = i_FromSheet.getNumMergedRegions();
         
@@ -494,10 +495,45 @@ public class ExcelHelp
             v_FirstRow += i_OffsetRow;
             v_LastRow  += i_OffsetRow;
             
-            i_ToSheet.addMergedRegion(new CellRangeAddress(v_FirstRow 
-                                                          ,v_LastRow 
-                                                          ,v_FirstColumn
-                                                          ,v_LastColumn));
+            addMergedRegions(i_ToSheet 
+                            ,v_FirstRow 
+                            ,v_LastRow 
+                            ,v_FirstColumn 
+                            ,v_LastColumn 
+                            ,i_IsSafe);
+        }
+    }
+    
+    
+    
+    /**
+     * 合并单元格
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-21
+     * @version     v1.0
+     *
+     * @param i_Sheet        工作表
+     * @param i_FirstRow     首行
+     * @param i_LastRow      尾行
+     * @param i_FirstColumn  首列
+     * @param i_LastColumn   尾列
+     * @param i_IsSafe       是要安全？还是要性能
+     */
+    public final static void addMergedRegions(Sheet i_Sheet ,int i_FirstRow ,int i_LastRow ,int i_FirstColumn ,int i_LastColumn ,boolean i_IsSafe)
+    {
+        CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow 
+                                                        ,i_LastRow 
+                                                        ,i_FirstColumn
+                                                        ,i_LastColumn);
+        
+        if ( i_IsSafe )
+        {
+            i_Sheet.addMergedRegion(v_CellRA);
+        }
+        else
+        {
+            i_Sheet.addMergedRegionUnsafe(v_CellRA);
         }
     }
     
