@@ -35,9 +35,11 @@ import org.apache.poi.xssf.usermodel.XSSFShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Date;
+import org.hy.common.ExpireMap;
 import org.hy.common.Help;
 import org.hy.common.PartitionMap;
 import org.hy.common.TablePartition;
+import org.hy.common.report.bean.MergedRegionsAreaCache;
 import org.hy.common.report.bean.RCell;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
@@ -54,6 +56,10 @@ import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
  */
 public class ExcelHelp
 {
+    
+    private static ExpireMap<MergedRegionsAreaCache ,List<CellRangeAddress>> $MergedRegionsAreaCaches = new ExpireMap<MergedRegionsAreaCache ,List<CellRangeAddress>>();
+    
+    
     
     /**
      * 私有构建器
@@ -461,6 +467,7 @@ public class ExcelHelp
      * @author      ZhengWei(HY)
      * @createDate  2017-03-17
      * @version     v1.0
+     *              v2.0  2017-06-21  添加：合并单元格的区域信息添加缓存中，不用每次都生成一次
      * 
      * @param i_FromSheet     模板工作表
      * @param i_AreaBeginRow  定指区域内的开始行号。包含此行。
@@ -472,26 +479,40 @@ public class ExcelHelp
     public final static void copyMergedRegions(Sheet i_FromSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet ,int i_OffsetRow ,boolean i_IsSafe) 
     {
         int v_MergedRegionsCount = i_FromSheet.getNumMergedRegions();
+        MergedRegionsAreaCache v_CacheKey   = new MergedRegionsAreaCache(i_FromSheet ,i_AreaBeginRow ,i_AreaEndRow);
+        List<CellRangeAddress> v_CacheDatas = $MergedRegionsAreaCaches.get(v_CacheKey);
         
-        for (int i=0; i<v_MergedRegionsCount; i++) 
+        if ( Help.isNull(v_CacheDatas) )
         {
-            CellRangeAddress v_CellRangeAddress = i_FromSheet.getMergedRegion(i);
+            v_CacheDatas = new ArrayList<CellRangeAddress>();
             
-            int v_FirstRow    = v_CellRangeAddress.getFirstRow();
-            int v_LastRow     = v_CellRangeAddress.getLastRow();
-            int v_FirstColumn = v_CellRangeAddress.getFirstColumn();
-            int v_LastColumn  = v_CellRangeAddress.getLastColumn();
+            for (int i=0; i<v_MergedRegionsCount; i++) 
+            {
+                CellRangeAddress v_CellRangeAddress = i_FromSheet.getMergedRegion(i);
+                
+                if ( i_AreaBeginRow <= v_CellRangeAddress.getFirstRow() 
+                  && i_AreaEndRow   >= v_CellRangeAddress.getLastRow() )
+                {
+                    // Nothing. 在区域内的
+                }
+                else
+                {
+                    continue;
+                }
+                
+                v_CacheDatas.add(v_CellRangeAddress);
+            }
             
-            if ( i_AreaBeginRow <= v_FirstRow 
-              && i_AreaEndRow   >= v_LastRow )
-            {
-                // Nothing. 在区域内的
-            }
-            else
-            {
-                continue;
-            }
-
+            $MergedRegionsAreaCaches.put(v_CacheKey ,v_CacheDatas ,60);
+        }
+        
+        for (CellRangeAddress v_CellRA : v_CacheDatas) 
+        {
+            int v_FirstRow    = v_CellRA.getFirstRow();
+            int v_LastRow     = v_CellRA.getLastRow();
+            int v_FirstColumn = v_CellRA.getFirstColumn();
+            int v_LastColumn  = v_CellRA.getLastColumn();
+            
             v_FirstRow += i_OffsetRow;
             v_LastRow  += i_OffsetRow;
             
