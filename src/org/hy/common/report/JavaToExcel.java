@@ -198,7 +198,7 @@ public class JavaToExcel
             v_DataWorkbook = createWorkbook(i_RTemplate);
         }
         
-        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,Help.NVL(i_SheetName ,i_RTemplate.getName()));
+        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,Help.NVL(i_SheetName ,i_RTemplate.getTemplateSheet().getSheetName()));
         v_TemplateSheet = i_RTemplate.getTemplateSheet();
         
         ExcelHelp.copySheet(       v_TemplateSheet ,v_DataSheet);
