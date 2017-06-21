@@ -741,12 +741,7 @@ public class JavaToExcel
         for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
-            if ( v_TemplateCell == null ) 
-            {
-                v_TemplateCell = i_TemplateRow.createCell(v_CellIndex);
-            }
-            
-            Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
+            Cell v_DataCell     = i_DataRow.getCell(v_CellIndex);
             if ( v_DataCell == null ) 
             {
                 v_DataCell = i_DataRow.createCell(v_CellIndex);

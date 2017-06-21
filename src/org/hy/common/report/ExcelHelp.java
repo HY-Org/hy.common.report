@@ -518,10 +518,8 @@ public class ExcelHelp
         {
             for (CellRangeAddress v_CellRA : v_CacheDatas) 
             {
-                int v_FirstRow    = v_CellRA.getFirstRow();
-                int v_LastRow     = v_CellRA.getLastRow();
-                int v_FirstColumn = v_CellRA.getFirstColumn();
-                int v_LastColumn  = v_CellRA.getLastColumn();
+                int v_FirstRow = v_CellRA.getFirstRow();
+                int v_LastRow  = v_CellRA.getLastRow();
                 
                 v_FirstRow += i_OffsetRow;
                 v_LastRow  += i_OffsetRow;
@@ -529,18 +527,16 @@ public class ExcelHelp
                 addMergedRegionsSafe(i_ToSheet 
                                     ,v_FirstRow 
                                     ,v_LastRow 
-                                    ,v_FirstColumn 
-                                    ,v_LastColumn);
+                                    ,v_CellRA.getFirstColumn() 
+                                    ,v_CellRA.getLastColumn());
             }
         }
         else
         {
             for (CellRangeAddress v_CellRA : v_CacheDatas) 
             {
-                int v_FirstRow    = v_CellRA.getFirstRow();
-                int v_LastRow     = v_CellRA.getLastRow();
-                int v_FirstColumn = v_CellRA.getFirstColumn();
-                int v_LastColumn  = v_CellRA.getLastColumn();
+                int v_FirstRow = v_CellRA.getFirstRow();
+                int v_LastRow  = v_CellRA.getLastRow();
                 
                 v_FirstRow += i_OffsetRow;
                 v_LastRow  += i_OffsetRow;
@@ -548,8 +544,8 @@ public class ExcelHelp
                 addMergedRegionsUnsafe(i_ToSheet 
                                       ,v_FirstRow 
                                       ,v_LastRow 
-                                      ,v_FirstColumn 
-                                      ,v_LastColumn);
+                                      ,v_CellRA.getFirstColumn() 
+                                      ,v_CellRA.getLastColumn());
             }
         }
         
