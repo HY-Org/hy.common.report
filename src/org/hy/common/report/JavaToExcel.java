@@ -64,25 +64,31 @@ public class JavaToExcel
      */
     public final static RWorkbook createWorkbook(RTemplate i_RTemplate)
     {
+        RWorkbook v_Ret = null;
+        
         if ( "xls".equalsIgnoreCase(i_RTemplate.getExcelVersion()) )
         {
-            return new RWorkbook(new HSSFWorkbook());
+            v_Ret = new RWorkbook(new HSSFWorkbook());
         }
         else if ( "xlsx".equalsIgnoreCase(i_RTemplate.getExcelVersion()) )
         {
             if ( i_RTemplate.getIsBig() )
             {
-                return new RWorkbook(new SXSSFWorkbook(i_RTemplate.getRowAccessWindowSize()));
+                v_Ret = new RWorkbook(new SXSSFWorkbook(i_RTemplate.getRowAccessWindowSize()));
             }
             else
             {
-                return new RWorkbook(new XSSFWorkbook());
+                v_Ret = new RWorkbook(new XSSFWorkbook());
             }
         }
         else
         {
-            return null;
+            return v_Ret;
         }
+        
+        ExcelHelp.copyWorkbook(i_RTemplate.getTemplateSheet().getWorkbook() ,v_Ret.getWorkbook());
+        
+        return v_Ret;
     }
     
     

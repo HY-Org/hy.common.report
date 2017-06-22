@@ -7,12 +7,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.POIXMLProperties.CoreProperties;
+import org.apache.poi.hpsf.DocumentSummaryInformation;
+import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
 import org.apache.poi.hssf.usermodel.HSSFPictureData;
+import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,6 +24,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HeaderFooter;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -34,6 +39,7 @@ import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.apache.poi.xssf.usermodel.XSSFPictureData;
+import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -61,6 +67,7 @@ import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
  *                                优化：合并单元格的图像信息添加缓存中，不用每次都生成一次
  *                                优化：通过isSafe参数控制，放弃一些非必要的效验来提高性能
  *                                优化：启用对SXSSFWorkbook工作薄的支持大数据量
+ *              v3.0  2017-06-22  添加：文档摘要的复制功能
  */
 public class ExcelHelp
 {
@@ -360,6 +367,76 @@ public class ExcelHelp
     
     
     /**
+     * 复制工作薄相关参数
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-22
+     * @version     v1.0
+     *
+     * @param i_FromWB
+     * @param i_ToWB
+     */
+    public final static void copyWorkbook(Workbook i_FromWB ,Workbook i_ToWB)
+    {
+        if ( i_ToWB instanceof HSSFWorkbook )
+        {
+            DocumentSummaryInformation v_FromSummary = ((HSSFWorkbook)i_FromWB).getDocumentSummaryInformation();
+            
+            if ( v_FromSummary == null )
+            {
+                return;
+            }
+            
+            ((HSSFWorkbook)i_ToWB).createInformationProperties();
+            DocumentSummaryInformation v_ToSummary = ((HSSFWorkbook)i_ToWB).getDocumentSummaryInformation();
+            
+            v_ToSummary.setCategory(v_FromSummary.getCategory());  // 类别
+            v_ToSummary.setManager( v_FromSummary.getManager());   // 管理者
+            v_ToSummary.setCompany( v_FromSummary.getCompany());   // 公司
+            
+            SummaryInformation v_FromSummary2 = ((HSSFWorkbook)i_FromWB).getSummaryInformation();
+            SummaryInformation v_ToSummary2   = ((HSSFWorkbook)i_ToWB  ).getSummaryInformation();
+            
+            v_ToSummary2.setSubject( v_FromSummary2.getSubject());  // 主题
+            v_ToSummary2.setTitle(   v_FromSummary2.getTitle());    // 标题
+            v_ToSummary2.setAuthor(  v_FromSummary2.getAuthor());   // 作者
+            v_ToSummary2.setComments(v_FromSummary2.getComments()); // 备注
+        }
+        else if ( i_ToWB instanceof SXSSFWorkbook )
+        {
+            CoreProperties v_FromCP = ((SXSSFWorkbook)i_FromWB).getXSSFWorkbook().getProperties().getCoreProperties();
+            CoreProperties v_ToCP   = ((SXSSFWorkbook)i_ToWB  ).getXSSFWorkbook().getProperties().getCoreProperties();
+            
+            v_ToCP.setCategory(          v_FromCP.getCategory());
+            v_ToCP.setCreator(           v_FromCP.getCreator());
+            v_ToCP.setDescription(       v_FromCP.getDescription());
+            v_ToCP.setIdentifier(        v_FromCP.getIdentifier());
+            v_ToCP.setKeywords(          v_FromCP.getKeywords());
+            v_ToCP.setLastModifiedByUser(v_FromCP.getLastModifiedByUser());
+            v_ToCP.setRevision(          v_FromCP.getRevision());
+            v_ToCP.setSubjectProperty(   v_FromCP.getSubject());
+            v_ToCP.setTitle(             v_FromCP.getTitle());
+        }
+        else if ( i_ToWB instanceof XSSFWorkbook )
+        {
+            CoreProperties v_FromCP = ((XSSFWorkbook)i_FromWB).getProperties().getCoreProperties();
+            CoreProperties v_ToCP   = ((XSSFWorkbook)i_ToWB  ).getProperties().getCoreProperties();
+            
+            v_ToCP.setCategory(          v_FromCP.getCategory());
+            v_ToCP.setCreator(           v_FromCP.getCreator());
+            v_ToCP.setDescription(       v_FromCP.getDescription());
+            v_ToCP.setIdentifier(        v_FromCP.getIdentifier());
+            v_ToCP.setKeywords(          v_FromCP.getKeywords());
+            v_ToCP.setLastModifiedByUser(v_FromCP.getLastModifiedByUser());
+            v_ToCP.setRevision(          v_FromCP.getRevision());
+            v_ToCP.setSubjectProperty(   v_FromCP.getSubject());
+            v_ToCP.setTitle(             v_FromCP.getTitle());
+        }
+    }
+    
+    
+    
+    /**
      * 复制模板工作表的整体(所有)列的列宽到数据工作表中
      * 
      * @author      ZhengWei(HY)
@@ -416,7 +493,7 @@ public class ExcelHelp
     
     
     /**
-     * 复制工作薄相关参数
+     * 复制工作表相关参数
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-20
@@ -427,14 +504,17 @@ public class ExcelHelp
      */
     public final static void copySheet(Sheet i_FromSheet ,Sheet i_ToSheet)
     {
-        // 网格线
-        i_ToSheet.setDisplayGridlines(i_FromSheet.isDisplayGridlines());
-        
         // 打印时显示网格线
-        i_ToSheet.setPrintGridlines(  i_FromSheet.isPrintGridlines());
+        i_ToSheet.setPrintGridlines(           i_FromSheet.isPrintGridlines());
+        i_ToSheet.setPrintRowAndColumnHeadings(i_FromSheet.isPrintRowAndColumnHeadings());
+        i_ToSheet.setFitToPage(                i_FromSheet.getFitToPage());
         
         // Sheet页自适应页面大小
-        i_ToSheet.setAutobreaks(      i_FromSheet.getAutobreaks());
+        i_ToSheet.setAutobreaks(               i_FromSheet.getAutobreaks());
+        i_ToSheet.setDisplayZeros(             i_FromSheet.isDisplayZeros());
+        i_ToSheet.setDisplayGuts(              i_FromSheet.getDisplayGuts());
+        // 网格线
+        i_ToSheet.setDisplayGridlines(         i_FromSheet.isDisplayGridlines());
         
         // 冻结线
         if ( i_FromSheet.getPaneInformation() != null )
@@ -461,7 +541,7 @@ public class ExcelHelp
     public final static void copyPrintSetup(Sheet i_FromSheet ,Sheet i_ToSheet) 
     {
         PrintSetup v_FromPrintSetup = i_FromSheet.getPrintSetup();
-        PrintSetup v_ToPrintSetup   = i_ToSheet    .getPrintSetup();
+        PrintSetup v_ToPrintSetup   = i_ToSheet  .getPrintSetup();
         
         v_ToPrintSetup.setCopies(       v_FromPrintSetup.getCopies());
         v_ToPrintSetup.setDraft(        v_FromPrintSetup.getDraft());          // 值为true时，表示用草稿品质打印
@@ -473,8 +553,8 @@ public class ExcelHelp
         v_ToPrintSetup.setLandscape(    v_FromPrintSetup.getLandscape());      // true，则表示页面方向为横向；否则为纵向
         v_ToPrintSetup.setLeftToRight(  v_FromPrintSetup.getLeftToRight());    // true表示“先行后列”；false表示“先列后行”
         v_ToPrintSetup.setNoColor(      v_FromPrintSetup.getNoColor());        // 值为true时，表示单色打印
-        v_ToPrintSetup.setNoOrientation(v_FromPrintSetup.getNoOrientation());  // 设置打印批注
-        v_ToPrintSetup.setNotes(        v_FromPrintSetup.getNotes());
+        v_ToPrintSetup.setNoOrientation(v_FromPrintSetup.getNoOrientation()); 
+        v_ToPrintSetup.setNotes(        v_FromPrintSetup.getNotes());          // 设置打印批注
         v_ToPrintSetup.setPageStart(    v_FromPrintSetup.getPageStart());      // 设置打印起始页码
         v_ToPrintSetup.setPaperSize(    v_FromPrintSetup.getPaperSize());      // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
         v_ToPrintSetup.setScale(        v_FromPrintSetup.getScale());          // 缩放比例80%(设置为0-100之间的值)
@@ -483,10 +563,61 @@ public class ExcelHelp
         v_ToPrintSetup.setVResolution(  v_FromPrintSetup.getVResolution());
         
         // 设置打印参数
-        i_ToSheet.setMargin(HSSFSheet.TopMargin    ,i_ToSheet.getMargin(HSSFSheet.TopMargin));    // 页边距（上）
-        i_ToSheet.setMargin(HSSFSheet.BottomMargin ,i_ToSheet.getMargin(HSSFSheet.BottomMargin)); // 页边距（下）
-        i_ToSheet.setMargin(HSSFSheet.LeftMargin   ,i_ToSheet.getMargin(HSSFSheet.LeftMargin));   // 页边距（左）
-        i_ToSheet.setMargin(HSSFSheet.RightMargin  ,i_ToSheet.getMargin(HSSFSheet.RightMargin));  // 页边距（右）
+        if ( i_ToSheet instanceof HSSFSheet )
+        {
+            ((HSSFPrintSetup)v_ToPrintSetup).setOptions(((HSSFPrintSetup)v_FromPrintSetup).getOptions());
+            
+            i_ToSheet.setMargin(HSSFSheet.TopMargin     ,i_FromSheet.getMargin(HSSFSheet.TopMargin));     // 页边距（上）
+            i_ToSheet.setMargin(HSSFSheet.BottomMargin  ,i_FromSheet.getMargin(HSSFSheet.BottomMargin));  // 页边距（下）
+            i_ToSheet.setMargin(HSSFSheet.LeftMargin    ,i_FromSheet.getMargin(HSSFSheet.LeftMargin));    // 页边距（左）
+            i_ToSheet.setMargin(HSSFSheet.RightMargin   ,i_FromSheet.getMargin(HSSFSheet.RightMargin));   // 页边距（右）
+            i_ToSheet.setMargin(HSSFSheet.HeaderMargin  ,i_FromSheet.getMargin(HSSFSheet.HeaderMargin));  // 页眉
+            i_ToSheet.setMargin(HSSFSheet.FooterMargin  ,i_FromSheet.getMargin(HSSFSheet.FooterMargin));  // 页脚
+        }
+        else if ( i_ToSheet instanceof SXSSFSheet )
+        {
+            ((XSSFPrintSetup)v_ToPrintSetup).setOrientation(((XSSFPrintSetup)v_FromPrintSetup).getOrientation());  // 设置方向 
+            
+            i_ToSheet.setMargin(SXSSFSheet.TopMargin    ,i_FromSheet.getMargin(SXSSFSheet.TopMargin));     // 页边距（上）
+            i_ToSheet.setMargin(SXSSFSheet.BottomMargin ,i_FromSheet.getMargin(SXSSFSheet.BottomMargin));  // 页边距（下）
+            i_ToSheet.setMargin(SXSSFSheet.LeftMargin   ,i_FromSheet.getMargin(SXSSFSheet.LeftMargin));    // 页边距（左）
+            i_ToSheet.setMargin(SXSSFSheet.RightMargin  ,i_FromSheet.getMargin(SXSSFSheet.RightMargin));   // 页边距（右）
+            i_ToSheet.setMargin(SXSSFSheet.HeaderMargin ,i_FromSheet.getMargin(SXSSFSheet.HeaderMargin));  // 页眉
+            i_ToSheet.setMargin(SXSSFSheet.FooterMargin ,i_FromSheet.getMargin(SXSSFSheet.FooterMargin));  // 页脚
+        }
+        else if ( i_ToSheet instanceof XSSFSheet )
+        {
+            ((XSSFPrintSetup)v_ToPrintSetup).setOrientation(((XSSFPrintSetup)v_FromPrintSetup).getOrientation());  // 设置方向 
+            
+            i_ToSheet.setMargin(XSSFSheet.TopMargin     ,i_FromSheet.getMargin(XSSFSheet.TopMargin));     // 页边距（上）
+            i_ToSheet.setMargin(XSSFSheet.BottomMargin  ,i_FromSheet.getMargin(XSSFSheet.BottomMargin));  // 页边距（下）
+            i_ToSheet.setMargin(XSSFSheet.LeftMargin    ,i_FromSheet.getMargin(XSSFSheet.LeftMargin));    // 页边距（左）
+            i_ToSheet.setMargin(XSSFSheet.RightMargin   ,i_FromSheet.getMargin(XSSFSheet.RightMargin));   // 页边距（右）
+            i_ToSheet.setMargin(XSSFSheet.HeaderMargin  ,i_FromSheet.getMargin(XSSFSheet.HeaderMargin));  // 页眉
+            i_ToSheet.setMargin(XSSFSheet.FooterMargin  ,i_FromSheet.getMargin(XSSFSheet.FooterMargin));  // 页脚
+        }
+        
+        copyHeaderFooter(i_FromSheet.getHeader() ,i_ToSheet.getHeader());
+        copyHeaderFooter(i_FromSheet.getFooter() ,i_ToSheet.getFooter());
+    }
+    
+    
+    
+    /**
+     * 复制页眉、页脚的文字信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-22
+     * @version     v1.0
+     *
+     * @param i_FromHF
+     * @param i_ToHF
+     */
+    public final static void copyHeaderFooter(HeaderFooter i_FromHF ,HeaderFooter i_ToHF)
+    {
+        i_ToHF.setLeft(  i_FromHF.getLeft());
+        i_ToHF.setCenter(i_FromHF.getCenter());
+        i_ToHF.setRight( i_FromHF.getRight());
     }
     
     
