@@ -52,6 +52,7 @@ import org.hy.common.report.bean.CacheSheetInfo;
 import org.hy.common.report.bean.ImageAreaInfo;
 import org.hy.common.report.bean.RCell;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
+import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProperties;
 
 
 
@@ -402,10 +403,40 @@ public class ExcelHelp
             v_ToSummary2.setAuthor(  v_FromSummary2.getAuthor());   // 作者
             v_ToSummary2.setComments(v_FromSummary2.getComments()); // 备注
         }
-        else if ( i_ToWB instanceof SXSSFWorkbook )
+        else if ( i_ToWB instanceof SXSSFWorkbook 
+               || i_ToWB instanceof XSSFWorkbook )
         {
-            CoreProperties v_FromCP = ((SXSSFWorkbook)i_FromWB).getXSSFWorkbook().getProperties().getCoreProperties();
-            CoreProperties v_ToCP   = ((SXSSFWorkbook)i_ToWB  ).getXSSFWorkbook().getProperties().getCoreProperties();
+            XSSFWorkbook v_FromWB = null;
+            XSSFWorkbook v_ToWB   = null;
+            
+            if ( i_FromWB instanceof SXSSFWorkbook )
+            {
+                v_FromWB = ((SXSSFWorkbook)i_FromWB).getXSSFWorkbook();
+            }
+            else if ( i_FromWB instanceof XSSFWorkbook )
+            {
+                v_FromWB = (XSSFWorkbook)i_FromWB;
+            }
+            else
+            {
+                return;
+            }
+            
+            if ( i_ToWB instanceof SXSSFWorkbook )
+            {
+                v_ToWB = ((SXSSFWorkbook)i_ToWB).getXSSFWorkbook();
+            }
+            else if ( i_ToWB instanceof XSSFWorkbook )
+            {
+                v_ToWB = (XSSFWorkbook)i_ToWB;
+            }
+            else
+            {
+                return;
+            }
+            
+            CoreProperties v_FromCP = v_FromWB.getProperties().getCoreProperties();
+            CoreProperties v_ToCP   = v_ToWB  .getProperties().getCoreProperties();
             
             v_ToCP.setCategory(          v_FromCP.getCategory());
             v_ToCP.setCreator(           v_FromCP.getCreator());
@@ -416,21 +447,14 @@ public class ExcelHelp
             v_ToCP.setRevision(          v_FromCP.getRevision());
             v_ToCP.setSubjectProperty(   v_FromCP.getSubject());
             v_ToCP.setTitle(             v_FromCP.getTitle());
-        }
-        else if ( i_ToWB instanceof XSSFWorkbook )
-        {
-            CoreProperties v_FromCP = ((XSSFWorkbook)i_FromWB).getProperties().getCoreProperties();
-            CoreProperties v_ToCP   = ((XSSFWorkbook)i_ToWB  ).getProperties().getCoreProperties();
             
-            v_ToCP.setCategory(          v_FromCP.getCategory());
-            v_ToCP.setCreator(           v_FromCP.getCreator());
-            v_ToCP.setDescription(       v_FromCP.getDescription());
-            v_ToCP.setIdentifier(        v_FromCP.getIdentifier());
-            v_ToCP.setKeywords(          v_FromCP.getKeywords());
-            v_ToCP.setLastModifiedByUser(v_FromCP.getLastModifiedByUser());
-            v_ToCP.setRevision(          v_FromCP.getRevision());
-            v_ToCP.setSubjectProperty(   v_FromCP.getSubject());
-            v_ToCP.setTitle(             v_FromCP.getTitle());
+            CTProperties v_FromCTP = v_FromWB.getProperties().getExtendedProperties().getUnderlyingProperties();
+            CTProperties v_ToCTP   = v_ToWB  .getProperties().getExtendedProperties().getUnderlyingProperties();
+            
+            v_ToCTP.setCompany(      v_FromCTP.getCompany());
+            v_ToCTP.setHyperlinkBase(v_FromCTP.getHyperlinkBase());
+            v_ToCTP.setManager(      v_FromCTP.getManager());
+            v_ToCTP.setTemplate(     v_FromCTP.getTemplate());
         }
     }
     
