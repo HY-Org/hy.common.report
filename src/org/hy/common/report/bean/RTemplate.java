@@ -260,6 +260,7 @@ public class RTemplate implements Comparable<RTemplate>
                     RCell     v_RCell     = new RCell();
                     String    v_ValueName = v_Value.substring(this.valueSign.length());
                     String [] v_Fors      = v_ValueName.split("\\[\\]");
+                    boolean   v_IsPull    = false;
                     
                     if ( v_Fors.length >= 2 )
                     {
@@ -298,6 +299,7 @@ public class RTemplate implements Comparable<RTemplate>
                         try
                         {
                             v_RCell.setValueMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                            v_IsPull = true;
                         }
                         catch (Exception exce)
                         {
@@ -307,6 +309,7 @@ public class RTemplate implements Comparable<RTemplate>
                         try
                         {
                             v_RCell.setValueSetMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
+                            v_IsPull = true;
                         }
                         catch (Exception exce)
                         {
@@ -318,6 +321,7 @@ public class RTemplate implements Comparable<RTemplate>
                         try
                         {
                             v_RCell.setValueMethod(new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                            v_IsPull = true;
                         }
                         catch (Exception exce)
                         {
@@ -327,6 +331,7 @@ public class RTemplate implements Comparable<RTemplate>
                         try
                         {
                             v_RCell.setValueSetMethod(new MethodReflect(v_JavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
+                            v_IsPull = true;
                         }
                         catch (Exception exce)
                         {
@@ -334,7 +339,14 @@ public class RTemplate implements Comparable<RTemplate>
                         }
                     }
                     
-                    this.valueMethods.put(v_Value ,v_RCell);
+                    if ( v_IsPull )
+                    {
+                        this.valueMethods.put(v_Value ,v_RCell);
+                    }
+                    else
+                    {
+                        System.err.println("变量名称或占位符[" + v_Value + "]未匹配到对应数据结构中的属性值。");
+                    }
                 }
             }
         }
@@ -358,7 +370,8 @@ public class RTemplate implements Comparable<RTemplate>
      */
     public boolean isExists(String i_ValueName)
     {
-        return this.valueMethods.containsKey(i_ValueName) || this.valueNames.containsKey(i_ValueName);
+        return i_ValueName.startsWith(this.valueSign);
+        //return this.valueMethods.containsKey(i_ValueName) || this.valueNames.containsKey(i_ValueName);
     }
     
     
