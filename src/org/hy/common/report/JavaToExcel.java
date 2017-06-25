@@ -387,7 +387,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
     
@@ -432,7 +432,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
     
@@ -477,7 +477,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
     
@@ -522,7 +522,8 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addRealDataCount(1);
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
     
@@ -541,9 +542,8 @@ public class JavaToExcel
      * @param io_RSystemValue  系统变量信息
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
-     * @return                 返回数据工作表中已写到哪一行的行号。
      */
-    public final static int writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet            = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountSubtotal = i_RTemplate.getRowCountSubtotal();
@@ -568,10 +568,9 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addRealDataCount(1);
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
-        
-        return v_ExcelRowIndex;
     }
     
     
@@ -615,7 +614,8 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addRealDataCount(1);
+            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
     
@@ -1012,6 +1012,8 @@ public class JavaToExcel
         int     v_ForSize   = 1;
         boolean v_IsFor     = false;
         
+        io_RTotal.addExcelRowIndex(1);
+        
         for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
@@ -1046,6 +1048,7 @@ public class JavaToExcel
                             i_DataRow.getSheet().createRow(v_RowIndex + v_RowNum);
                         }
                     }
+                    io_RTotal.addExcelRowIndex(v_ForSize-1);
                     
                     // 合并
                     for (int v_MergedColIndex=0; v_MergedColIndex<v_CellIndex; v_MergedColIndex++)

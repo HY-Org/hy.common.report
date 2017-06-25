@@ -42,7 +42,7 @@ public class RTotal
      * 
      * @param excelRowIndex 
      */
-    public void setExcelRowIndex(int excelRowIndex)
+    protected void setExcelRowIndex(int excelRowIndex)
     {
         this.excelRowIndex = excelRowIndex;
     }
@@ -73,7 +73,7 @@ public class RTotal
      * 
      * @param realDataCount 
      */
-    public void setRealDataCount(int realDataCount)
+    protected void setRealDataCount(int realDataCount)
     {
         this.realDataCount = realDataCount;
     }
