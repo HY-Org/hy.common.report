@@ -18,7 +18,7 @@
 			<titleBeginRow>0</titleBeginRow>
 			<titleEndRow>1</titleEndRow>
 			
-			<perPageRowSize>10</perPageRowSize>
+			<perPageRowSize>20</perPageRowSize>
 			
 			<!-- 分页页眉标题 -->
 			<titlePageHeaderBeginRow>2</titlePageHeaderBeginRow>

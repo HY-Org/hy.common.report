@@ -16,15 +16,30 @@ public class RTotal
     /** Excel工作表中已写到哪一行的行号（Excel的行号）。下标从 0 开始 */
     private int excelRowIndex;
     
-    /** 当前正在写入真实数据(Excel中的一行)的数据个数（动态行的情况下，最外层的一行会动态的变成多行）到Excel工作表中。有效下标从 1 开始 */
+    /** 
+     * 已写入真实数据(Excel中的一行)的数据个数（动态行的情况下，最外层的一行会动态的变成多行）到Excel工作表中。
+     * 下标从 0 开始。 
+     */
     private int realDataCount;
+    
+    /** 标题的总行数（一次解释多次使用，只为了性能） */
+    private int titleCount;
+    
+    /** 分页页眉标题的总行数（一次解释多次使用，只为了性能） */
+    private int titlePageHeaderCount;
+    
+    /** 分页页脚标题的总行数（一次解释多次使用，只为了性能） */
+    private int titlePageFooterCount;
 
     
     
-    public RTotal()
+    public RTotal(RTemplate i_RTemplate)
     {
-        this.excelRowIndex = 0;
-        this.realDataCount = 0;
+        this.excelRowIndex        = 0;
+        this.realDataCount        = 0;
+        this.titleCount           = i_RTemplate.getRowCountTitle();
+        this.titlePageHeaderCount = i_RTemplate.getRowCountTitlePageHeader();
+        this.titlePageFooterCount = i_RTemplate.getRowCountTitlePageFooter();
     }
     
     
@@ -60,7 +75,7 @@ public class RTotal
     
     
     /**
-     * 获取：当前正在写入真实数据(Excel中的一行)的数据个数（动态行的情况下，最外层的一行会动态的变成多行）到Excel工作表中。有效下标从 1 开始
+     * 获取：已写入真实数据(Excel中的一行)的数据个数（动态行的情况下，最外层的一行会动态的变成多行）到Excel工作表中。下标从 0 开始
      */
     public int getRealDataCount()
     {
@@ -69,7 +84,7 @@ public class RTotal
     
     
     /**
-     * 设置：当前正在写入真实数据(Excel中的一行)的数据个数（动态行的情况下，最外层的一行会动态的变成多行）到Excel工作表中。有效下标从 1 开始
+     * 设置：已写入真实数据(Excel中的一行)的数据个数（动态行的情况下，最外层的一行会动态的变成多行）到Excel工作表中。下标从 0 开始
      * 
      * @param realDataCount 
      */
@@ -80,13 +95,40 @@ public class RTotal
 
 
     /**
-     * 累计设置：当前正在写入真实数据(Excel中的一行)的数据个数（动态行的情况下，最外层的一行会动态的变成多行）到Excel工作表中。有效下标从 1 开始
+     * 累计设置：已写入真实数据(Excel中的一行)的数据个数（动态行的情况下，最外层的一行会动态的变成多行）到Excel工作表中。下标从 0 开始
      * 
      * @param realDataCount
      */
     public void addRealDataCount(int realDataCount)
     {
         this.realDataCount += realDataCount;
+    }
+
+    
+    /**
+     * 获取：标题的总行数（一次解释多次使用，只为了性能）
+     */
+    public int getTitleCount()
+    {
+        return titleCount;
+    }
+    
+    
+    /**
+     * 获取：分页页眉标题的总行数（一次解释多次使用，只为了性能）
+     */
+    public int getTitlePageHeaderCount()
+    {
+        return titlePageHeaderCount;
+    }
+
+    
+    /**
+     * 获取：分页页脚标题的总行数（一次解释多次使用，只为了性能）
+     */
+    public int getTitlePageFooterCount()
+    {
+        return titlePageFooterCount;
     }
     
 }

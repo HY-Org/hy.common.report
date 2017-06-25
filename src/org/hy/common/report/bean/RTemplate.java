@@ -46,10 +46,10 @@ public class RTemplate implements Comparable<RTemplate>
     /** 系统固定变量名称：数据小计总量的变量名称 */
     public final static String         $ValueName_RowSubtotalCount   = "RowSubtotalCount__";
     
-    /** 系统固定变量名称：分页页号的变量名称 */
+    /** 系统固定变量名称：分页页号的变量名称。下标从1开始 */
     public final static String         $ValueName_PageNo             = "PageNo__";
     
-    /** 系统固定变量名称：分页总页数的变量名称 */
+    /** 系统固定变量名称：分页总页数的变量名称。暂时不支持，因为动态行 */
     public final static String         $ValueName_PageSize           = "PageSize__";
     
     
@@ -563,6 +563,10 @@ public class RTemplate implements Comparable<RTemplate>
             else if ( $ValueName_RowSubtotalCount.equalsIgnoreCase(v_ValueName) )
             {
                 v_RValue.setValue(String.valueOf(i_RSystemValue.getRowSubtotalCount()));
+            }
+            else if ( $ValueName_PageNo.equalsIgnoreCase(v_ValueName) )
+            {
+                v_RValue.setValue(String.valueOf(i_RSystemValue.getPageNo()));
             }
         }
         
@@ -1265,6 +1269,7 @@ public class RTemplate implements Comparable<RTemplate>
         this.valueNames.put(this.valueSign + $ValueName_RowIndex         ,$ValueName_RowIndex);
         this.valueNames.put(this.valueSign + $ValueName_RowCount         ,$ValueName_RowCount);
         this.valueNames.put(this.valueSign + $ValueName_RowSubtotalCount ,$ValueName_RowSubtotalCount);
+        this.valueNames.put(this.valueSign + $ValueName_PageNo           ,$ValueName_PageNo);
     }
 
     

@@ -22,6 +22,9 @@ public class RSystemValue
     
     /** 数据小计总量的变量名称 */
     private int rowSubtotalCount;
+    
+    /** 分页页号的变量名称。下标从1开始 */
+    private int pageNo;
 
     
     
@@ -91,6 +94,26 @@ public class RSystemValue
     public void setRowSubtotalCount(int rowSubtotalCount)
     {
         this.rowSubtotalCount = rowSubtotalCount;
+    }
+
+    
+    /**
+     * 获取：分页页号的变量名称。下标从1开始
+     */
+    public int getPageNo()
+    {
+        return pageNo;
+    }
+    
+    
+    /**
+     * 设置：分页页号的变量名称。下标从1开始
+     * 
+     * @param pageNo 
+     */
+    public void setPageNo(int pageNo)
+    {
+        this.pageNo = pageNo;
     }
     
 }
