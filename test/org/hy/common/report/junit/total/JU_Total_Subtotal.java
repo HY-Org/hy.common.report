@@ -8,6 +8,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.junit.JUBase;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
@@ -79,7 +80,7 @@ public class JU_Total_Subtotal implements JUBase<OrgInfo>
     
     
     @Test
-    public void test_Subtotal()
+    public void test_Subtotal() throws RTemplateException
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTotalSubtotal");
         

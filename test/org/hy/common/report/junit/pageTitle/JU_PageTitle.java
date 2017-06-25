@@ -8,6 +8,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.junit.JUBase;
 import org.hy.common.report.junit.total.OrgInfo;
 import org.hy.common.report.junit.total.StaffInfo;
@@ -81,7 +82,7 @@ public class JU_PageTitle implements JUBase<OrgInfo>
     
     
     @Test
-    public void test_PageTitle()
+    public void test_PageTitle() throws RTemplateException
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportPageTitle");
         

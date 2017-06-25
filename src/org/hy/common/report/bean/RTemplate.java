@@ -13,6 +13,7 @@ import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.PartitionMap;
 import org.hy.common.report.ExcelHelp;
+import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.event.ValueListener;
 
 
@@ -27,6 +28,8 @@ import org.hy.common.report.event.ValueListener;
  * @version     v1.0
  *              v2.0  2017-06-21  优化：通过isSafe参数控制，放弃一些非必要的效验来提高性能
  *                                优化：启用对SXSSFWorkbook工作薄的支持大数据量
+ *              v3.0  2017-06-25  优化：通过check()方法，预先在生成报表前，对模板信息检查。
+ *                                     就不用在生成报表时动态检查模板信息。
  */
 public class RTemplate implements Comparable<RTemplate>
 {
@@ -243,6 +246,100 @@ public class RTemplate implements Comparable<RTemplate>
         }
         
         return this.templateSheet;
+    }
+    
+    
+    
+    /**
+     * 检查报表模板中的行数据信息是否存在
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @throws RTemplateException
+     */
+    public void check() throws RTemplateException
+    {
+        this.getTemplateSheet();
+        
+        if ( this.getRowCountTitle() >= 1 )
+        {
+            if ( null == this.templateSheet.getRow(this.titleBeginRow) )
+            {
+                throw new RTemplateException("报表标题的开始行号[" + this.titleBeginRow + "]，在模板文件中不存在");
+            }
+            
+            if ( null == this.templateSheet.getRow(this.titleEndRow) )
+            {
+                throw new RTemplateException("报表标题的结束行号[" + this.titleEndRow + "]，在模板文件中不存在");
+            }
+        }
+        
+        if ( this.getRowCountTitlePageHeader() >= 1 )
+        {
+            if ( null == this.templateSheet.getRow(this.titlePageHeaderBeginRow) )
+            {
+                throw new RTemplateException("报表分页页眉的开始行号[" + this.titlePageHeaderBeginRow + "]，在模板文件中不存在");
+            }
+            
+            if ( null == this.templateSheet.getRow(this.titlePageHeaderEndRow) )
+            {
+                throw new RTemplateException("报表分页页眉的结束行号[" + this.titlePageHeaderEndRow + "]，在模板文件中不存在");
+            }
+        }
+        
+        if ( this.getRowCountTitlePageFooter() >= 1 )
+        {
+            if ( null == this.templateSheet.getRow(this.titlePageFooterBeginRow) )
+            {
+                throw new RTemplateException("报表分页页脚的开始行号[" + this.titlePageFooterBeginRow + "]，在模板文件中不存在");
+            }
+            
+            if ( null == this.templateSheet.getRow(this.titlePageFooterEndRow) )
+            {
+                throw new RTemplateException("报表分页页脚的结束行号[" + this.titlePageFooterEndRow + "]，在模板文件中不存在");
+            }
+        }
+        
+        if ( this.getRowCountData() >= 1 )
+        {
+            if ( null == this.templateSheet.getRow(this.dataBeginRow) )
+            {
+                throw new RTemplateException("报表数据的开始行号[" + this.dataBeginRow + "]，在模板文件中不存在");
+            }
+            
+            if ( null == this.templateSheet.getRow(this.dataEndRow) )
+            {
+                throw new RTemplateException("报表数据的结束行号[" + this.dataEndRow + "]，在模板文件中不存在");
+            }
+        }
+        
+        if ( this.getRowCountSubtotal() >= 1 )
+        {
+            if ( null == this.templateSheet.getRow(this.subtotalBeginRow) )
+            {
+                throw new RTemplateException("报表小计的开始行号[" + this.subtotalBeginRow + "]，在模板文件中不存在");
+            }
+            
+            if ( null == this.templateSheet.getRow(this.subtotalEndRow) )
+            {
+                throw new RTemplateException("报表小计的结束行号[" + this.subtotalEndRow + "]，在模板文件中不存在");
+            }
+        }
+        
+        if ( this.getRowCountTotal() >= 1 )
+        {
+            if ( null == this.templateSheet.getRow(this.totalBeginRow) )
+            {
+                throw new RTemplateException("报表合计的开始行号[" + this.totalBeginRow + "]，在模板文件中不存在");
+            }
+            
+            if ( null == this.templateSheet.getRow(this.totalEndRow) )
+            {
+                throw new RTemplateException("报表合计的结束行号[" + this.totalEndRow + "]，在模板文件中不存在");
+            }
+        }
     }
     
     
@@ -600,7 +697,7 @@ public class RTemplate implements Comparable<RTemplate>
     
     
     /**
-     * 获取数据的总行数
+     * 获取小计的总行数
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-27

@@ -34,6 +34,7 @@ import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RTotal;
 import org.hy.common.report.bean.RValue;
 import org.hy.common.report.bean.RWorkbook;
+import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.event.ValueListener;
 
 
@@ -147,8 +148,9 @@ public class JavaToExcel
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
+     * @throws RTemplateException 
      */
-    public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
         return write(null ,i_SheetName ,i_Datas ,i_RTemplate);
     }
@@ -165,8 +167,9 @@ public class JavaToExcel
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
+     * @throws RTemplateException 
      */
-    public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
         return write(null ,null ,i_Datas ,i_RTemplate);
     }
@@ -185,8 +188,9 @@ public class JavaToExcel
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
+     * @throws RTemplateException 
      */
-    public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
         return write(i_Workbook ,null ,i_Datas ,i_RTemplate);
     }
@@ -205,13 +209,16 @@ public class JavaToExcel
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
+     * @throws RTemplateException 
      */
-    public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
         RWorkbook v_DataWorkbook  = i_Workbook;
         Sheet     v_DataSheet     = null;
         Sheet     v_TemplateSheet = null;
         String    v_SheetName     = null;
+        
+        i_RTemplate.check();
         
         if ( null == v_DataWorkbook )
         {
@@ -375,17 +382,10 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getTitleBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            if ( v_TemplateRow == null ) 
-            {
-                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
-            }
             
             int v_DataRowNo = v_RowNo;
-            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
-            if ( v_DataRow == null ) 
-            {
-                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
-            }
+            Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
+            io_RTotal.addExcelRowIndex(1);
             
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
@@ -420,17 +420,10 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getTitlePageHeaderBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            if ( v_TemplateRow == null ) 
-            {
-                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
-            }
             
             int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
-            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
-            if ( v_DataRow == null ) 
-            {
-                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
-            }
+            Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
+            io_RTotal.addExcelRowIndex(1);
             
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
@@ -465,17 +458,10 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getTitlePageFooterBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            if ( v_TemplateRow == null ) 
-            {
-                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
-            }
             
             int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
-            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
-            if ( v_DataRow == null ) 
-            {
-                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
-            }
+            Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
+            io_RTotal.addExcelRowIndex(1);
             
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
@@ -510,19 +496,12 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            if ( v_TemplateRow == null ) 
-            {
-                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
-            }
             
             int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
-            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
-            if ( v_DataRow == null ) 
-            {
-                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
-            }
-            
+            Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
+            io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
+            
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
@@ -556,19 +535,12 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getSubtotalBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            if ( v_TemplateRow == null ) 
-            {
-                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
-            }
             
             int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
-            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
-            if ( v_DataRow == null ) 
-            {
-                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
-            }
-            
+            Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
+            io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
+            
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
@@ -602,19 +574,12 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getTotalBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            if ( v_TemplateRow == null ) 
-            {
-                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
-            }
             
             int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
-            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
-            if ( v_DataRow == null ) 
-            {
-                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
-            }
-            
+            Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
+            io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
+            
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
         }
     }
@@ -1011,8 +976,6 @@ public class JavaToExcel
         int     v_CellCount = i_TemplateRow.getLastCellNum();
         int     v_ForSize   = 1;
         boolean v_IsFor     = false;
-        
-        io_RTotal.addExcelRowIndex(1);
         
         for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
         {

@@ -7,6 +7,7 @@ import org.hy.common.Date;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.junit.JUBase;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
@@ -67,7 +68,7 @@ public class JU_Report01 implements JUBase<ExcelBean>
     
     
     @Test
-    public void test_Report01()
+    public void test_Report01() throws RTemplateException
     {
         RTemplate v_RTemplate01 = (RTemplate)XJava.getObject("Report01");
         RTemplate v_RTemplate02 = (RTemplate)XJava.getObject("Report02");

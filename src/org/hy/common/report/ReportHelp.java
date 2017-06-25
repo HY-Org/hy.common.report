@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RWorkbook;
+import org.hy.common.report.error.RTemplateException;
 
 
 
@@ -109,8 +110,9 @@ public class ReportHelp
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
+     * @throws RTemplateException 
      */
-    public final static RWorkbook toExcel(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook toExcel(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
         return JavaToExcel.write(null ,i_SheetName ,i_Datas ,i_RTemplate);
     }
@@ -127,8 +129,9 @@ public class ReportHelp
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
+     * @throws RTemplateException 
      */
-    public final static RWorkbook toExcel(List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook toExcel(List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
         return JavaToExcel.write(null ,null ,i_Datas ,i_RTemplate);
     }
@@ -147,8 +150,9 @@ public class ReportHelp
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
+     * @throws RTemplateException 
      */
-    public final static RWorkbook toExcel(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook toExcel(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
         return JavaToExcel.write(i_Workbook ,null ,i_Datas ,i_RTemplate);
     }
@@ -167,8 +171,9 @@ public class ReportHelp
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
+     * @throws RTemplateException 
      */
-    public final static RWorkbook toExcel(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate)
+    public final static RWorkbook toExcel(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
         return JavaToExcel.write(i_Workbook ,i_SheetName ,i_Datas ,i_RTemplate);
     }
