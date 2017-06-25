@@ -43,6 +43,13 @@ public class RTemplate implements Comparable<RTemplate>
     /** 系统固定变量名称：数据小计总量的变量名称 */
     public final static String         $ValueName_RowSubtotalCount   = "RowSubtotalCount__";
     
+    /** 系统固定变量名称：分页页号的变量名称 */
+    public final static String         $ValueName_PageNo             = "PageNo__";
+    
+    /** 系统固定变量名称：分页总页数的变量名称 */
+    public final static String         $ValueName_PageSize           = "PageSize__";
+    
+    
     
     /** 纵深扩展--表示从左到右的方向，一行或多行为一个对象数据 */
     public final static Integer       $Direction_Vertical            = 0;
@@ -77,6 +84,21 @@ public class RTemplate implements Comparable<RTemplate>
     /** 报表标题的结束行号（包括此行）。下标从零开始 */
     private Integer                    titleEndRow;
     
+    /** 报表分页页眉的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用 */
+    private Integer                    titlePageHeaderBeginRow;
+    
+    /** 报表分页页眉的结束行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用 */
+    private Integer                    titlePageHeaderEndRow;
+    
+    /** 报表分页页脚的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用 */
+    private Integer                    titlePageFooterBeginRow;
+    
+    /** 报表分页页脚的结束行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用 */
+    private Integer                    titlePageFooterEndRow;
+    
+    /** 报表分页的每页显示的行记录数 */
+    private Integer                    perPageRowSize;
+    
     /** 报表数据的开始行号（包括此行）。下标从零开始 */
     private Integer                    dataBeginRow;
     
@@ -100,6 +122,8 @@ public class RTemplate implements Comparable<RTemplate>
     
     /** 合计内容的结束行号（包括此行）。下标从零开始 */
     private Integer                    totalEndRow;
+    
+    
     
     /** 报表数据的Java类型 */
     private String                     dataClass;
@@ -502,6 +526,48 @@ public class RTemplate implements Comparable<RTemplate>
     
     
     /**
+     * 获取分页页眉标题的总行数
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @return
+     */
+    public int getRowCountTitlePageHeader()
+    {
+        if ( this.perPageRowSize == null || this.perPageRowSize <= 0 )
+        {
+            return 0;
+        }
+        
+        return this.getRowCount(this.titlePageHeaderBeginRow ,this.titlePageHeaderEndRow);
+    }
+    
+    
+    
+    /**
+     * 获取分页页脚标题的总行数
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @return
+     */
+    public int getRowCountTitlePageFooter()
+    {
+        if ( this.perPageRowSize == null || this.perPageRowSize <= 0 )
+        {
+            return 0;
+        }
+        
+        return this.getRowCount(this.titlePageFooterBeginRow ,this.titlePageFooterEndRow);
+    }
+    
+    
+    
+    /**
      * 获取数据的总行数
      * 
      * @author      ZhengWei(HY)
@@ -784,6 +850,115 @@ public class RTemplate implements Comparable<RTemplate>
     public void setTitleEndRow(Integer titleEndRow)
     {
         this.titleEndRow = titleEndRow;
+    }
+
+    
+    /**
+     * 获取：报表分页页眉的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
+     */
+    public Integer getTitlePageHeaderBeginRow()
+    {
+        return titlePageHeaderBeginRow;
+    }
+
+    
+    /**
+     * 设置：报表分页页眉的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
+     * 
+     * @param titlePageHeaderBeginRow 
+     */
+    public void setTitlePageHeaderBeginRow(Integer titlePageHeaderBeginRow)
+    {
+        this.titlePageHeaderBeginRow = titlePageHeaderBeginRow;
+        this.titlePageHeaderEndRow   = titlePageHeaderBeginRow;
+    }
+
+    
+    /**
+     * 获取：报表分页页眉的结束行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
+     */
+    public Integer getTitlePageHeaderEndRow()
+    {
+        return titlePageHeaderEndRow;
+    }
+
+    
+    /**
+     * 设置：报表分页页眉的结束行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
+     * 
+     * @param titlePageHeaderEndRow 
+     */
+    public void setTitlePageHeaderEndRow(Integer titlePageHeaderEndRow)
+    {
+        this.titlePageHeaderEndRow = titlePageHeaderEndRow;
+    }
+
+    
+    /**
+     * 获取：报表分页页脚的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
+     */
+    public Integer getTitlePageFooterBeginRow()
+    {
+        return titlePageFooterBeginRow;
+    }
+    
+    
+    /**
+     * 设置：报表分页页脚的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
+     * 
+     * @param titlePageFooterBeginRow 
+     */
+    public void setTitlePageFooterBeginRow(Integer titlePageFooterBeginRow)
+    {
+        this.titlePageFooterBeginRow = titlePageFooterBeginRow;
+        this.titlePageFooterEndRow   = titlePageFooterBeginRow;
+    }
+
+    
+    /**
+     * 获取：报表分页页脚的结束行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
+     */
+    public Integer getTitlePageFooterEndRow()
+    {
+        return titlePageFooterEndRow;
+    }
+
+    
+    /**
+     * 设置：报表分页页脚的结束行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
+     * 
+     * @param titlePageFooterEndRow 
+     */
+    public void setTitlePageFooterEndRow(Integer titlePageFooterEndRow)
+    {
+        this.titlePageFooterEndRow = titlePageFooterEndRow;
+    }
+
+
+    /**
+     * 获取：报表分页的每页显示的行记录数
+     */
+    public Integer getPerPageRowSize()
+    {
+        return perPageRowSize;
+    }
+
+    
+    /**
+     * 设置：报表分页的每页显示的行记录数
+     * 
+     * @param perPageRowSize 
+     */
+    public void setPerPageRowSize(Integer perPageRowSize)
+    {
+        if ( perPageRowSize != null )
+        {
+            this.perPageRowSize = Math.abs(perPageRowSize.intValue());
+        }
+        else
+        {
+            this.perPageRowSize = null;
+        }
     }
 
 

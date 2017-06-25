@@ -31,6 +31,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Help;
 import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.bean.RTotal;
 import org.hy.common.report.bean.RValue;
 import org.hy.common.report.bean.RWorkbook;
 import org.hy.common.report.event.ValueListener;
@@ -230,8 +231,8 @@ public class JavaToExcel
         // 数据工作表的整体(所有)列的样式，复制于模板
         copyColumnsStyle(i_RTemplate ,v_TemplateSheet ,v_DataWorkbook ,v_DataSheet);
         
-        RSystemValue v_RSystemValue = new RSystemValue();
-        int          v_DataRowIndex = 0;
+        RSystemValue v_RSystemValue  = new RSystemValue();
+        RTotal       v_RTotal        = new RTotal();
         
         v_RSystemValue.setRowNo(           1);
         v_RSystemValue.setRowCount(        i_Datas.size());
@@ -239,38 +240,108 @@ public class JavaToExcel
         
         if ( i_RTemplate.getRowCountTitle() >= 1 )
         {
-            writeTitle(v_DataWorkbook ,v_DataSheet ,v_RSystemValue ,i_Datas.get(0) ,i_RTemplate);
+            writeTitle(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(0) ,i_RTemplate);
         }
         
         if ( i_RTemplate.getRowCountData() >= 1 )
         {
-            v_DataRowIndex = i_RTemplate.getRowCountTitle();
-
             if ( i_RTemplate.getRowCountSubtotal() >= 1 )
             {
                 // 模板中有小计的
                 for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
                 {
-                    v_DataRowIndex = writeData(    v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
-                    v_DataRowIndex = writeSubtotal(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                    writeData(    v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                    writeSubtotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
                     
                     v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
                 }
             }
             else
             {
-                for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
+                // 为了减少IF语句的执行次数，分开写成多种情况下的IF大分支
+                if ( i_RTemplate.getRowCountTitlePageHeader() >= 1 
+                  && i_RTemplate.getRowCountTitlePageFooter() >= 1  )
                 {
-                    v_DataRowIndex = writeData(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                    int v_PageIndex = 0;
                     
-                    v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
+                    for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
+                    {
+                        v_PageIndex = v_RSystemValue.getRowNo() % i_RTemplate.getPerPageRowSize();
+                        
+                        if ( v_PageIndex == 1 )
+                        {
+                            writeTitlePageHeader(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        }
+                        
+                        writeData(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        
+                        if ( v_PageIndex == i_RTemplate.getPerPageRowSize() )
+                        {
+                            writeTitlePageFooter(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        }
+                        
+                        v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
+                    }
+                    
+                    v_PageIndex = v_RSystemValue.getRowNo() % i_RTemplate.getPerPageRowSize();
+                    for (int v_Index=v_PageIndex; v_Index<i_RTemplate.getPerPageRowSize(); v_Index++)
+                    {
+                        
+                    }
+                    
+                    // v_ExcelRowIndex = writeTitlePageFooter(v_DataWorkbook ,v_DataSheet ,v_ExcelRowIndex ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                }
+                else if ( i_RTemplate.getRowCountTitlePageHeader() >= 1 )
+                {
+                    int v_PageIndex = 0;
+                    
+                    for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
+                    {
+                        v_PageIndex = v_RSystemValue.getRowNo() % i_RTemplate.getPerPageRowSize();
+                        
+                        if ( v_PageIndex == 1 )
+                        {
+                            writeTitlePageHeader(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        }
+                        
+                        writeData(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        
+                        v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
+                    }
+                }
+                else if ( i_RTemplate.getRowCountTitlePageFooter() >= 1 )
+                {
+                    int v_PageIndex = 0;
+                    
+                    for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
+                    {
+                        v_PageIndex = v_RSystemValue.getRowNo() % i_RTemplate.getPerPageRowSize();
+                        
+                        writeData(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        
+                        if ( v_PageIndex == i_RTemplate.getPerPageRowSize() )
+                        {
+                            writeTitlePageFooter(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        }
+                        
+                        v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
+                    }
+                }
+                else
+                {
+                    for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
+                    {
+                        writeData(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        
+                        v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
+                    }
                 }
             }
         }
         
         if ( i_RTemplate.getRowCountTotal() >= 1 )
         {
-            writeTotal(v_DataWorkbook ,v_DataSheet ,v_DataRowIndex ,v_RSystemValue ,i_Datas ,i_RTemplate);
+            writeTotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas ,i_RTemplate);
         }
         
         return v_DataWorkbook;
@@ -287,17 +358,18 @@ public class JavaToExcel
      *
      * @param i_DataWorkbook  数据工作薄
      * @param i_DataSheet     数据工作表
+     * @param i_RTotal        将数据写入Excel时的辅助统计信息
      * @param i_RSystemValue  系统变量信息
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RSystemValue i_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountTitle();
 
-        copyMergedRegionsTitle(i_RTemplate ,i_DataSheet ,0);  // 按模板合并单元格
-        copyImagesTitle(       i_RTemplate ,i_DataSheet ,0);  // 按模板复制图片
+        copyMergedRegionsTitle(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
+        copyImagesTitle(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
@@ -315,9 +387,99 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RSystemValue ,v_DataRow ,i_Datas);
+            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
         }
-    } 
+    }
+    
+    
+    
+    /**
+     * 按报表模板格式写分页页眉标题
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @param i_DataWorkbook   数据工作薄
+     * @param i_DataSheet      数据工作表
+     * @param i_RTotal         将数据写入Excel时的辅助统计信息
+     * @param i_RSystemValue   系统变量信息
+     * @param i_Datas          数据
+     * @param i_RTemplate      报表模板对象
+     */
+    public final static void writeTitlePageHeader(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    {
+        Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
+        int   v_TemplateRowCount = i_RTemplate.getRowCountTitlePageHeader();
+        int   v_ExcelRowIndex    = i_RTotal.getExcelRowIndex();
+
+        copyMergedRegionsTitlePageHeader(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
+        copyImagesTitlePageHeader(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
+        
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
+        {
+            int v_TemplateRowNo = i_RTemplate.getTitlePageHeaderBeginRow() + v_RowNo;
+            Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
+            if ( v_TemplateRow == null ) 
+            {
+                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
+            }
+            
+            int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
+            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
+            if ( v_DataRow == null ) 
+            {
+                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
+            }
+            
+            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
+        }
+    }
+    
+    
+    
+    /**
+     * 按报表模板格式写分页页脚标题
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @param i_DataWorkbook   数据工作薄
+     * @param i_DataSheet      数据工作表
+     * @param i_RTotal         将数据写入Excel时的辅助统计信息
+     * @param i_RSystemValue   系统变量信息
+     * @param i_Datas          数据
+     * @param i_RTemplate      报表模板对象
+     */
+    public final static void writeTitlePageFooter(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    {
+        Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
+        int   v_TemplateRowCount = i_RTemplate.getRowCountTitlePageFooter();
+        int   v_ExcelRowIndex    = i_RTotal.getExcelRowIndex();
+
+        copyMergedRegionsTitlePageFooter(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
+        copyImagesTitlePageFooter(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
+        
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
+        {
+            int v_TemplateRowNo = i_RTemplate.getTitlePageFooterBeginRow() + v_RowNo;
+            Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
+            if ( v_TemplateRow == null ) 
+            {
+                v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
+            }
+            
+            int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
+            Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
+            if ( v_DataRow == null ) 
+            {
+                v_DataRow = i_DataSheet.createRow(v_DataRowNo);
+            }
+            
+            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
+        }
+    }
     
     
     
@@ -328,22 +490,21 @@ public class JavaToExcel
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_DataWorkbook  数据工作薄
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
-     * @param i_RSystemValue  系统变量信息
-     * @param i_Datas         数据
-     * @param i_RTemplate     报表模板对象
-     * @param                 返回数据工作表中已写到哪一行的行号。
+     * @param i_DataWorkbook   数据工作薄
+     * @param i_DataSheet      数据工作表
+     * @param i_RTotal         将数据写入Excel时的辅助统计信息
+     * @param i_RSystemValue   系统变量信息
+     * @param i_Datas          数据
+     * @param i_RTemplate      报表模板对象
      */
-    public final static int writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
-        int   v_DataRowIndex     = i_DataRowIndex;
+        int   v_ExcelRowIndex    = i_RTotal.getExcelRowIndex();
         
-        copyMergedRegionsData(i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板合并单元格
-        copyImagesData(       i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板复制图片
+        copyMergedRegionsData(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
+        copyImagesData(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
         {
@@ -354,18 +515,15 @@ public class JavaToExcel
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int v_DataRowNo = v_RowNo + i_DataRowIndex;
+            int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
             Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            v_DataRowIndex ++;
-            v_DataRowIndex += copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RSystemValue ,v_DataRow ,i_Datas);
+            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
         }
-        
-        return v_DataRowIndex;
     }
     
     
@@ -377,23 +535,22 @@ public class JavaToExcel
      * @createDate  2017-03-27
      * @version     v1.0
      *
-     * @param i_DataWorkbook  数据工作薄
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
-     * @param i_RSystemValue  系统变量信息
-     * @param i_Datas         数据
-     * @param i_RTemplate     报表模板对象
-     * 
-     * @param                 返回数据工作表中已写到哪一行的行号。
+     * @param i_DataWorkbook   数据工作薄
+     * @param i_DataSheet      数据工作表
+     * @param i_RTotal         将数据写入Excel时的辅助统计信息
+     * @param i_RSystemValue   系统变量信息
+     * @param i_Datas          数据
+     * @param i_RTemplate      报表模板对象
+     * @return                 返回数据工作表中已写到哪一行的行号。
      */
-    public final static int writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static int writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet            = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountSubtotal = i_RTemplate.getRowCountSubtotal();
-        int   v_DataRowIndex             = i_DataRowIndex;
+        int   v_ExcelRowIndex            = i_RTotal.getExcelRowIndex();
         
-        copyMergedRegionsSubtotal(i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板合并单元格
-        copyImagesSubtotal(       i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板复制图片
+        copyMergedRegionsSubtotal(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
+        copyImagesSubtotal(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCountSubtotal; v_RowNo++) 
         {
@@ -404,18 +561,17 @@ public class JavaToExcel
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int v_DataRowNo = v_RowNo + i_DataRowIndex;
+            int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
             Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            v_DataRowIndex ++;
-            v_DataRowIndex += copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RSystemValue ,v_DataRow ,i_Datas);
+            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
         }
         
-        return v_DataRowIndex;
+        return v_ExcelRowIndex;
     }
     
     
@@ -427,20 +583,21 @@ public class JavaToExcel
      * @createDate  2017-03-18
      * @version     v1.0
      *
-     * @param i_DataWorkbook  数据工作薄
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
-     * @param i_RSystemValue  系统变量信息
-     * @param i_Datas         数据
-     * @param i_RTemplate     报表模板对象
+     * @param i_DataWorkbook   数据工作薄
+     * @param i_DataSheet      数据工作表
+     * @param i_RTotal         将数据写入Excel时的辅助统计信息
+     * @param i_RSystemValue   系统变量信息
+     * @param i_Datas          数据
+     * @param i_RTemplate      报表模板对象
      */
-    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,int i_DataRowIndex ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet         = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
+        int   v_ExcelRowIndex         = i_RTotal.getExcelRowIndex();
         
-        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板合并单元格
-        copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_DataRowIndex);  // 按模板复制图片
+        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
+        copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCountTotal; v_RowNo++) 
         {
@@ -451,14 +608,14 @@ public class JavaToExcel
                 v_TemplateRow = v_TemplateSheet.createRow(v_TemplateRowNo);
             }
             
-            int v_DataRowNo = v_RowNo + i_DataRowIndex;
+            int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
             Row v_DataRow   = i_DataSheet.getRow(v_DataRowNo);
             if ( v_DataRow == null ) 
             {
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RSystemValue ,v_DataRow ,i_Datas);
+            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
         }
     }
     
@@ -471,15 +628,55 @@ public class JavaToExcel
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate     模板信息对象
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
     {
-        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTitleBeginRow();
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitleBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的分页页眉标题区域中所有图片到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     */
+    public final static void copyImagesTitlePageHeader(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    {
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageHeaderBeginRow();
+        
+        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitlePageHeaderBeginRow() ,i_RTemplate.getTitlePageHeaderEndRow() ,i_DataSheet ,v_OffsetRow);
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的分页页脚标题区域中所有图片到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     */
+    public final static void copyImagesTitlePageFooter(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    {
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageFooterBeginRow();
+        
+        ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitlePageFooterBeginRow() ,i_RTemplate.getTitlePageFooterEndRow() ,i_DataSheet ,v_OffsetRow);
     }
     
     
@@ -491,13 +688,13 @@ public class JavaToExcel
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate     模板信息对象
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
     {
-        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getDataBeginRow();
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getDataBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -511,13 +708,13 @@ public class JavaToExcel
      * @createDate  2017-03-27
      * @version     v1.0
      *
-     * @param i_RTemplate     模板信息对象
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    public final static void copyImagesSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
     {
-        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getSubtotalBeginRow();
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getSubtotalBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getSubtotalBeginRow() ,i_RTemplate.getSubtotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -531,13 +728,13 @@ public class JavaToExcel
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate     模板信息对象
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
     {
-        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTotalBeginRow();
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTotalBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -551,15 +748,55 @@ public class JavaToExcel
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate     模板信息对象
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
     {
-        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTitleBeginRow();
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitleBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的分页页眉标题区域中合并单元格到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     */
+    public final static void copyMergedRegionsTitlePageHeader(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    {
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageHeaderBeginRow();
+        
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitlePageHeaderBeginRow() ,i_RTemplate.getTitlePageHeaderEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
+    }
+    
+    
+    
+    /**
+     * 复制模板工作表的分页页脚标题区域中合并单元格到数据工作表中
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-25
+     * @version     v1.0
+     *
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     */
+    public final static void copyMergedRegionsTitlePageFooter(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    {
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageFooterBeginRow();
+        
+        ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitlePageFooterBeginRow() ,i_RTemplate.getTitlePageFooterEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
     
     
@@ -571,13 +808,13 @@ public class JavaToExcel
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate     模板信息对象
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
     {
-        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getDataBeginRow();
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getDataBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -591,13 +828,13 @@ public class JavaToExcel
      * @createDate  2017-03-27
      * @version     v1.0
      *
-     * @param i_RTemplate     模板信息对象
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    public final static void copyMergedRegionsSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
     {
-        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getSubtotalBeginRow();
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getSubtotalBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getSubtotalBeginRow() ,i_RTemplate.getSubtotalEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -611,13 +848,13 @@ public class JavaToExcel
      * @createDate  2017-03-17
      * @version     v1.0
      *
-     * @param i_RTemplate     模板信息对象
-     * @param i_DataSheet     数据工作表
-     * @param i_DataRowIndex  数据工作表中已写到哪一行的行号。下标从 0 开始。
+     * @param i_RTemplate  模板信息对象
+     * @param i_DataSheet  数据工作表
+     * @param i_RTotal     将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, int i_DataRowIndex)
+    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
     {
-        int v_OffsetRow = i_DataRowIndex - i_RTemplate.getTotalBeginRow();
+        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTotalBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -758,21 +995,23 @@ public class JavaToExcel
      * @param i_RTemplate      模板
      * @param i_TemplateRow    模板中的行对象
      * @param i_DataWorkbook   数据工作薄
+     * @param i_RTotal         将数据写入Excel时的辅助统计信息。
      * @param i_RSystemValue   系统变量信息
      * @param i_DataRow        数据中的行对象
      * @param i_Datas          本行对应的数据
      * 
      * @return                 返回本方法内一共生成多少新行。
      */
-    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RSystemValue i_RSystemValue ,Row i_DataRow ,Object i_Datas) 
+    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal i_RTotal ,RSystemValue i_RSystemValue ,Row i_DataRow ,Object i_Datas) 
     {
         i_DataRow.setHeight(    i_TemplateRow.getHeight());
         i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
         
         int     v_RowNum    = i_DataRow.getRowNum();
         int     v_CellCount = i_TemplateRow.getLastCellNum();
-        int     v_ForSize   = 0;
+        int     v_ForSize   = 1;
         boolean v_IsFor     = false;
+        
         for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
@@ -873,7 +1112,7 @@ public class JavaToExcel
             }
         }
         
-        return v_ForSize == 0 ? v_ForSize : v_ForSize - 1;
+        return v_ForSize;
     }
     
     

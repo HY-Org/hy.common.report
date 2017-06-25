@@ -1,4 +1,4 @@
-package org.hy.common.report.junit.total;
+package org.hy.common.report.junit.pageTitle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,8 @@ import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.junit.JUBase;
+import org.hy.common.report.junit.total.OrgInfo;
+import org.hy.common.report.junit.total.StaffInfo;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -21,26 +23,26 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：小计、分组数据的报表演示
+ * 测试单元：分页标题的报表演示
  *
  * @author      ZhengWei(HY)
- * @createDate  2017-03-21
+ * @createDate  2017-06-25
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_Total_Subtotal implements JUBase<OrgInfo>
+public class JU_PageTitle implements JUBase<OrgInfo>
 {
     private static boolean $isInit = false;
     
     
     
-    public JU_Total_Subtotal() throws Exception
+    public JU_PageTitle() throws Exception
     {
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_Total_Subtotal.class.getName());
+            XJava.parserAnnotation(JU_PageTitle.class.getName());
         }
     }
     
@@ -79,11 +81,11 @@ public class JU_Total_Subtotal implements JUBase<OrgInfo>
     
     
     @Test
-    public void test_Subtotal()
+    public void test_PageTitle()
     {
-        RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTotalSubtotal");
+        RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportPageTitle");
         
-        ExcelHelp.save(ReportHelp.toExcel("小计、分组数据的报表演示" ,getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\TotalSubtotal.xlsx");
+        ExcelHelp.save(ReportHelp.toExcel(getDatas(21) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.xlsx");
     }
     
 }

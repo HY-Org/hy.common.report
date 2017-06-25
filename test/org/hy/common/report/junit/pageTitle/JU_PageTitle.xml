@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportPageTitle">
+			<name>分页标题的报表演示</name>
+			<excelFileName>classpath:JU_PageTitle.xlsx</excelFileName>
+			
+			<!-- 总标题 -->
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>1</titleEndRow>
+			
+			<perPageRowSize>10</perPageRowSize>
+			
+			<!-- 分页页眉标题 -->
+			<titlePageHeaderBeginRow>2</titlePageHeaderBeginRow>
+			<titlePageHeaderEndRow>3</titlePageHeaderEndRow>
+			
+			<!-- 数据内容 -->
+			<dataBeginRow>4</dataBeginRow>
+			<dataEndRow>4</dataEndRow>
+			
+			<!-- 分页页脚标题 -->
+			<titlePageFooterBeginRow>5</titlePageFooterBeginRow>
+			<titlePageFooterEndRow>6</titlePageFooterEndRow>
+			
+			<!-- 小计 -->
+			<!-- subtotalBeginRow>7</subtotalBeginRow>
+			<subtotalEndRow>8</subtotalEndRow -->
+			
+			<!-- 合计 -->
+			<totalBeginRow>9</totalBeginRow>
+			<totalEndRow>10</totalEndRow>
+			
+			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>
