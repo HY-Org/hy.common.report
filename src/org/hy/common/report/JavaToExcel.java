@@ -358,18 +358,18 @@ public class JavaToExcel
      *
      * @param i_DataWorkbook  数据工作薄
      * @param i_DataSheet     数据工作表
-     * @param i_RTotal        将数据写入Excel时的辅助统计信息
-     * @param i_RSystemValue  系统变量信息
+     * @param io_RTotal       将数据写入Excel时的辅助统计信息
+     * @param io_RSystemValue 系统变量信息
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountTitle();
 
-        copyMergedRegionsTitle(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
-        copyImagesTitle(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
+        copyMergedRegionsTitle(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
+        copyImagesTitle(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
@@ -387,7 +387,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
         }
     }
     
@@ -402,19 +402,19 @@ public class JavaToExcel
      *
      * @param i_DataWorkbook   数据工作薄
      * @param i_DataSheet      数据工作表
-     * @param i_RTotal         将数据写入Excel时的辅助统计信息
-     * @param i_RSystemValue   系统变量信息
+     * @param io_RTotal        将数据写入Excel时的辅助统计信息
+     * @param io_RSystemValue  系统变量信息
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeTitlePageHeader(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitlePageHeader(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountTitlePageHeader();
-        int   v_ExcelRowIndex    = i_RTotal.getExcelRowIndex();
+        int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
 
-        copyMergedRegionsTitlePageHeader(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
-        copyImagesTitlePageHeader(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
+        copyMergedRegionsTitlePageHeader(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
+        copyImagesTitlePageHeader(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
@@ -432,7 +432,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
         }
     }
     
@@ -447,19 +447,19 @@ public class JavaToExcel
      *
      * @param i_DataWorkbook   数据工作薄
      * @param i_DataSheet      数据工作表
-     * @param i_RTotal         将数据写入Excel时的辅助统计信息
-     * @param i_RSystemValue   系统变量信息
+     * @param io_RTotal        将数据写入Excel时的辅助统计信息
+     * @param io_RSystemValue  系统变量信息
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeTitlePageFooter(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitlePageFooter(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountTitlePageFooter();
-        int   v_ExcelRowIndex    = i_RTotal.getExcelRowIndex();
+        int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
 
-        copyMergedRegionsTitlePageFooter(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
-        copyImagesTitlePageFooter(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
+        copyMergedRegionsTitlePageFooter(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
+        copyImagesTitlePageFooter(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
@@ -477,7 +477,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
         }
     }
     
@@ -492,19 +492,19 @@ public class JavaToExcel
      *
      * @param i_DataWorkbook   数据工作薄
      * @param i_DataSheet      数据工作表
-     * @param i_RTotal         将数据写入Excel时的辅助统计信息
-     * @param i_RSystemValue   系统变量信息
+     * @param io_RTotal        将数据写入Excel时的辅助统计信息
+     * @param io_RSystemValue  系统变量信息
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
-        int   v_ExcelRowIndex    = i_RTotal.getExcelRowIndex();
+        int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
         
-        copyMergedRegionsData(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
-        copyImagesData(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
+        copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
+        copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
         {
@@ -522,7 +522,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
         }
     }
     
@@ -537,20 +537,20 @@ public class JavaToExcel
      *
      * @param i_DataWorkbook   数据工作薄
      * @param i_DataSheet      数据工作表
-     * @param i_RTotal         将数据写入Excel时的辅助统计信息
-     * @param i_RSystemValue   系统变量信息
+     * @param io_RTotal        将数据写入Excel时的辅助统计信息
+     * @param io_RSystemValue  系统变量信息
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      * @return                 返回数据工作表中已写到哪一行的行号。
      */
-    public final static int writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static int writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet            = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountSubtotal = i_RTemplate.getRowCountSubtotal();
-        int   v_ExcelRowIndex            = i_RTotal.getExcelRowIndex();
+        int   v_ExcelRowIndex            = io_RTotal.getExcelRowIndex();
         
-        copyMergedRegionsSubtotal(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
-        copyImagesSubtotal(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
+        copyMergedRegionsSubtotal(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
+        copyImagesSubtotal(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCountSubtotal; v_RowNo++) 
         {
@@ -568,7 +568,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
         }
         
         return v_ExcelRowIndex;
@@ -585,19 +585,19 @@ public class JavaToExcel
      *
      * @param i_DataWorkbook   数据工作薄
      * @param i_DataSheet      数据工作表
-     * @param i_RTotal         将数据写入Excel时的辅助统计信息
-     * @param i_RSystemValue   系统变量信息
+     * @param io_RTotal        将数据写入Excel时的辅助统计信息
+     * @param io_RSystemValue  系统变量信息
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal i_RTotal ,RSystemValue i_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet         = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
-        int   v_ExcelRowIndex         = i_RTotal.getExcelRowIndex();
+        int   v_ExcelRowIndex         = io_RTotal.getExcelRowIndex();
         
-        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板合并单元格
-        copyImagesTotal(       i_RTemplate ,i_DataSheet ,i_RTotal);  // 按模板复制图片
+        copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
+        copyImagesTotal(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCountTotal; v_RowNo++) 
         {
@@ -615,7 +615,7 @@ public class JavaToExcel
                 v_DataRow = i_DataSheet.createRow(v_DataRowNo);
             }
             
-            i_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,i_RTotal ,i_RSystemValue ,v_DataRow ,i_Datas));
+            io_RTotal.addExcelRowIndex(copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas));
         }
     }
     
@@ -630,11 +630,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyImagesTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitleBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getTitleBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -650,11 +650,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesTitlePageHeader(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyImagesTitlePageHeader(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageHeaderBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageHeaderBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitlePageHeaderBeginRow() ,i_RTemplate.getTitlePageHeaderEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -670,11 +670,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesTitlePageFooter(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyImagesTitlePageFooter(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageFooterBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageFooterBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitlePageFooterBeginRow() ,i_RTemplate.getTitlePageFooterEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -690,11 +690,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyImagesData(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getDataBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getDataBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -710,11 +710,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyImagesSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getSubtotalBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getSubtotalBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getSubtotalBeginRow() ,i_RTemplate.getSubtotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -730,11 +730,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyImagesTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTotalBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getTotalBeginRow();
         
         ExcelHelp.copyImages(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow);
     }
@@ -750,11 +750,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyMergedRegionsTitle(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitleBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getTitleBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitleBeginRow() ,i_RTemplate.getTitleEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -770,11 +770,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsTitlePageHeader(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyMergedRegionsTitlePageHeader(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageHeaderBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageHeaderBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitlePageHeaderBeginRow() ,i_RTemplate.getTitlePageHeaderEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -790,11 +790,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsTitlePageFooter(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyMergedRegionsTitlePageFooter(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageFooterBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getTitlePageFooterBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTitlePageFooterBeginRow() ,i_RTemplate.getTitlePageFooterEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -810,11 +810,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyMergedRegionsData(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getDataBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getDataBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getDataBeginRow() ,i_RTemplate.getDataEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -830,11 +830,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyMergedRegionsSubtotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getSubtotalBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getSubtotalBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getSubtotalBeginRow() ,i_RTemplate.getSubtotalEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -850,11 +850,11 @@ public class JavaToExcel
      *
      * @param i_RTemplate  模板信息对象
      * @param i_DataSheet  数据工作表
-     * @param i_RTotal     将数据写入Excel时的辅助统计信息
+     * @param io_RTotal    将数据写入Excel时的辅助统计信息
      */
-    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal i_RTotal)
+    public final static void copyMergedRegionsTotal(RTemplate i_RTemplate ,Sheet i_DataSheet, RTotal io_RTotal)
     {
-        int v_OffsetRow = i_RTotal.getExcelRowIndex() - i_RTemplate.getTotalBeginRow();
+        int v_OffsetRow = io_RTotal.getExcelRowIndex() - i_RTemplate.getTotalBeginRow();
         
         ExcelHelp.copyMergedRegions(i_RTemplate.getTemplateSheet() ,i_RTemplate.getTotalBeginRow() ,i_RTemplate.getTotalEndRow() ,i_DataSheet ,v_OffsetRow ,i_RTemplate.getIsSafe());
     }
@@ -995,14 +995,14 @@ public class JavaToExcel
      * @param i_RTemplate      模板
      * @param i_TemplateRow    模板中的行对象
      * @param i_DataWorkbook   数据工作薄
-     * @param i_RTotal         将数据写入Excel时的辅助统计信息。
-     * @param i_RSystemValue   系统变量信息
+     * @param io_RTotal        将数据写入Excel时的辅助统计信息。
+     * @param io_RSystemValue  系统变量信息
      * @param i_DataRow        数据中的行对象
      * @param i_Datas          本行对应的数据
      * 
      * @return                 返回本方法内一共生成多少新行。
      */
-    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal i_RTotal ,RSystemValue i_RSystemValue ,Row i_DataRow ,Object i_Datas) 
+    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
     {
         i_DataRow.setHeight(    i_TemplateRow.getHeight());
         i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
@@ -1026,7 +1026,7 @@ public class JavaToExcel
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
             
-            RValue v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,i_RSystemValue ,i_Datas ,null);
+            RValue v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,io_RSystemValue ,i_Datas ,null);
             
             if ( v_RValue.getIteratorSize() > 0 )
             {
@@ -1036,7 +1036,7 @@ public class JavaToExcel
                     v_ForSize = v_RValue.getIteratorSize();
                     v_IsFor   = true;
                     
-                    i_RSystemValue.setRowSubtotalCount(i_RSystemValue.getRowSubtotalCount() + v_ForSize - 1);
+                    io_RSystemValue.setRowSubtotalCount(io_RSystemValue.getRowSubtotalCount() + v_ForSize - 1);
                     
                     // 创建待合并的新行
                     for (int v_RowIndex=1; v_RowIndex<=v_ForSize-1; v_RowIndex++)
@@ -1084,7 +1084,7 @@ public class JavaToExcel
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
                     
-                    v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,i_RSystemValue ,i_Datas ,v_RValue);
+                    v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,io_RSystemValue ,i_Datas ,v_RValue);
                 }
             }
             else if ( v_IsFor )
@@ -1128,12 +1128,12 @@ public class JavaToExcel
      * @param i_TemplateCell   模板中的单元格对象
      * @param i_DataWorkbook   数据工作薄
      * @param i_DataCell       数据中的单元格对象
-     * @param i_RSystemValue   系统变量信息
+     * @param io_RSystemValue 系统变量信息
      * @param i_Datas          本行对应的数据
      * @param io_RValue        小计循环的迭代器
      * @return                 
      */
-    public final static RValue copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,RSystemValue i_RSystemValue ,Object i_Datas ,RValue io_RValue)
+    public final static RValue copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,RSystemValue io_RSystemValue ,Object i_Datas ,RValue io_RValue)
     {
         // 复制样式
         i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
@@ -1163,12 +1163,12 @@ public class JavaToExcel
             
             if ( i_RTemplate.isExists(v_ValueName) )
             {
-                RValue        v_RValue   = i_RTemplate.getValue(v_ValueName ,i_Datas ,i_RSystemValue ,io_RValue);
+                RValue        v_RValue   = i_RTemplate.getValue(v_ValueName ,i_Datas ,io_RSystemValue ,io_RValue);
                 ValueListener v_Listener = i_RTemplate.getListener(v_ValueName);
                 
                 if ( v_Listener != null )
                 {
-                    v_RValue.setValue(Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_RSystemValue ,i_Datas ,v_RValue.getValue())));
+                    v_RValue.setValue(Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,io_RSystemValue ,i_Datas ,v_RValue.getValue())));
                 }
                 
                 if ( null != v_RValue.getValue() )
