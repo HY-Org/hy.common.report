@@ -39,8 +39,8 @@ __Excel模板文件中定义变量名称__，格式为 ":xx.yy.zz" ，通过反�
 ------
 * Java对象转Excel报表
 	* [一行数据一页的模板举例](#一行数据一页的模板举例)
-	* [Excel动态行+小计的模板举例](#Excel动态行+小计模板举例)
-	* [分页页眉、分页页脚的模板举例](#分页页眉、分页页脚模板举例)
+	* [动态行+小计的模板举例](#动态行+小计的模板举例)
+	* [分页页眉、分页页脚的模板举例](#分页页眉、分页页脚的模板举例)
 * Excel报表转Java对象
 	* [常规的纵深扩展的模板举例](#常规的纵深扩展的模板举例)
 	* [横向扩展的模板举例](#横向扩展的模板举例)
@@ -117,7 +117,7 @@ ExcelHelp.save(ReportHelp.toExcel("Excel工作表名称" ,数据集合 ,v_RTempl
 
 
 
-Excel动态行+小计模板举例
+动态行+小计的模板举例
 ------
 
 ![image](images/Subtotal.png)
@@ -132,7 +132,7 @@ __动态行+小计报表的生成结果__
 
 
 
-__XML小计配置举例__
+__动态行+小计报表的XML配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -162,6 +162,75 @@ __XML小计配置举例__
 	
 </config>
 ```
+
+
+
+
+
+分页页眉、分页页脚的模板举例
+------
+
+![image](images/PageTitle.png)
+
+	1. []：方括号表示前面的方法名称的返回类型是集合对象。目前支持List、Set、Map三种集合。并须对集合遍历动态生成数据。
+	
+	2. $：美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
+
+__分页页眉、分页页脚的生成结果__
+
+![image](images/PageTitle_Result.png)
+
+
+
+__分页页眉、分页页脚的XML配置举例__
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportPageTitle">
+			<name>分页标题的报表演示</name>
+			<excelFileName>classpath:JU_PageTitle.xlsx</excelFileName>
+			
+			<!-- 总标题 -->
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>1</titleEndRow>
+			
+			<perPageRowSize>20</perPageRowSize>
+			
+			<!-- 分页页眉标题 -->
+			<titlePageHeaderBeginRow>2</titlePageHeaderBeginRow>
+			<titlePageHeaderEndRow>3</titlePageHeaderEndRow>
+			
+			<!-- 数据内容 -->
+			<dataBeginRow>4</dataBeginRow>
+			<dataEndRow>4</dataEndRow>
+			
+			<!-- 分页页脚标题 -->
+			<titlePageFooterBeginRow>5</titlePageFooterBeginRow>
+			<titlePageFooterEndRow>6</titlePageFooterEndRow>
+			
+			<!-- 合计 -->
+			<totalBeginRow>7</totalBeginRow>
+			<totalEndRow>8</totalEndRow>
+			
+			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```
+
+
 
 
 
