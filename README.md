@@ -36,13 +36,14 @@ __Excel模板文件中定义变量名称__，格式为 ":xx.yy.zz" ，通过反�
   
 * 报表演示
 	* Java对象转Excel报表
-		* 一行数据一页的Excel模板举例(#一行数据一页的Excel模板举例)
-		* Excel动态行+小计模板举例(#Excel动态行+小计模板举例)
+		* [一行数据一页的Excel模板举例](#一行数据一页的Excel模板举例)
+		* [Excel动态行+小计模板举例](#Excel动态行+小计模板举例)
 	* Excel报表转Java对象
   
   
 
 __一行数据一页的Excel模板举例__  
+------
 
 ![image](images/Excel.png)
 
