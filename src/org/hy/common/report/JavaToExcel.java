@@ -491,6 +491,7 @@ public class JavaToExcel
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
             int v_PageIndex     = (io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
             
+            // 分页页眉
             if ( v_PageIndex == 1 || io_RTotal.getRealDataCount() == 0 )
             {
                 writeTitlePageHeader(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
@@ -504,6 +505,7 @@ public class JavaToExcel
             
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
             
+            // 分页页脚
             v_PageIndex = (io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
             if ( v_PageIndex == i_RTemplate.getPerPageRowSize() )
             {

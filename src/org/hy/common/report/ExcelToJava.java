@@ -26,7 +26,8 @@ import org.hy.common.report.bean.RTemplate;
  * @author      ZhengWei(HY)
  * @createDate  2017-05-08
  * @version     v1.0
- *              v1.1  修复：在读取单位格时，支持对公式表达式的计算结果的读取
+ *              v1.1              修复：在读取单位格时，支持对公式表达式的计算结果的读取
+ *              v2.0  2017-06-26  添加：对与 readVertical(...) 方法，如果有标题信息的话，将保存在首个对象中
  */
 public class ExcelToJava
 {
@@ -151,6 +152,8 @@ public class ExcelToJava
     /**
      * 按RTemplate.direction=0的方向垂直读取数据（一行或多行是一个Java对象）
      * 
+     * 注：如果有标题信息的话，将保存在首个对象中
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2017-05-08
      * @version     v1.0
@@ -163,15 +166,54 @@ public class ExcelToJava
      */
     private final static List<Object> readVertical(RTemplate i_RTemplate ,Map<String ,String> i_RowColDatas ,Sheet i_Sheet ,boolean i_IsAddNull)
     {
-        int          v_RowCount     = i_Sheet.getPhysicalNumberOfRows();
-        int          v_RowCountData = i_RTemplate.getRowCountData();
-        boolean      v_IsHaveData   = false;
-        List<Object> v_Ret          = new ArrayList<Object>();   
+        int          v_RowCount      = i_Sheet.getPhysicalNumberOfRows();
+        int          v_RowCountTitle = i_RTemplate.getRowCountTitle();
+        int          v_RowCountData  = i_RTemplate.getRowCountData();
+        boolean      v_IsHaveData    = false;
+        Object       v_TitleObj      = null;
+        List<Object> v_Ret           = new ArrayList<Object>();   
+        
+        // 读取标题信息
+        if ( i_RTemplate.getRowCountTitle() >= 1 )
+        {
+            v_TitleObj = i_RTemplate.newObject();
+            
+            for (int v_RowNo=i_RTemplate.getTitleBeginRow(); v_RowNo<v_RowCountTitle; v_RowNo++)
+            {
+                Row v_Row = i_Sheet.getRow(v_RowNo);
+                
+                for (int v_ColumnNo=0; v_ColumnNo<=v_Row.getPhysicalNumberOfCells(); v_ColumnNo++)
+                {
+                    Cell v_Cell = v_Row.getCell(v_ColumnNo);
+                    if ( v_Cell == null )
+                    {
+                        continue;
+                    }
+                    
+                    Object v_Value = readCellValue(v_Cell);
+                    if ( null != v_Value )
+                    {
+                        i_RTemplate.setValue(i_RowColDatas.get((i_RTemplate.getTitleBeginRow() + v_RowNo) + "," + v_ColumnNo) ,v_Value ,v_TitleObj);
+                    }
+                }
+            }
+        }
         
         // 纵深扩展
         for (int v_RowNo=i_RTemplate.getDataBeginRow(); v_RowNo<v_RowCount; v_RowNo+=v_RowCountData)
         {
-            Object v_RowObj = i_RTemplate.newObject();
+            Object v_RowObj = null;
+            if ( v_TitleObj == null )
+            {
+                v_RowObj = i_RTemplate.newObject();
+            }
+            else
+            {
+                // 将标题信息与第一行对象合并在一起
+                v_RowObj     = v_TitleObj;
+                v_TitleObj   = null;
+                v_IsHaveData = true;
+            }
             
             // 一行或多行表示一个对象数据
             for (int v_RowDataNo=0; v_RowDataNo<v_RowCountData; v_RowDataNo++)
