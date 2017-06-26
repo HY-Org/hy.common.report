@@ -86,7 +86,7 @@ public class JU_PageTitle implements JUBase<OrgInfo>
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportPageTitle");
         
-        ExcelHelp.save(ReportHelp.toExcel(getDatas(21) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.xlsx");
+        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.xlsx");
     }
     
 }

@@ -489,9 +489,9 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            int v_PageIndex     = (io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+            int v_PageIndex     = (1 + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
             
-            // 分页页眉
+            // 创建分页页眉
             if ( v_PageIndex == 1 || io_RTotal.getRealDataCount() == 0 )
             {
                 writeTitlePageHeader(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
@@ -505,9 +505,9 @@ public class JavaToExcel
             
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
             
-            // 分页页脚
-            v_PageIndex = (io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-            if ( v_PageIndex == i_RTemplate.getPerPageRowSize() )
+            // 创建分页页脚
+            v_PageIndex = (1 + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+            if ( v_PageIndex == 0 && io_RTotal.getRealDataCount() >= 1 )
             {
                 writeTitlePageFooter(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
                 v_ExcelRowIndex += io_RTotal.getTitlePageFooterCount();
@@ -518,7 +518,7 @@ public class JavaToExcel
     
     
     /**
-     * 按报表模板格式写入小计
+     * 按报表模板格式写入小计（暂时不支持分页功能）
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-27
@@ -557,7 +557,7 @@ public class JavaToExcel
     
     
     /**
-     * 按报表模板格式写入合计
+     * 按报表模板格式写入合计（暂时不支持分页功能）
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-18
@@ -1028,6 +1028,14 @@ public class JavaToExcel
                             
                             i_DataRow.getSheet().createRow(v_RowIndex + v_RowNum + v_PageCount);
                             io_RTotal.addExcelRowIndex(1);
+                            
+                            // 创建分页页脚
+                            v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                            if ( v_PageIndex == 0 )
+                            {
+                                writeTitlePageFooter(i_DataWorkbook ,i_DataRow.getSheet() ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
+                                v_PageCount += io_RTotal.getTitlePageFooterCount();
+                            }
                         }
                     }
                     
@@ -1061,33 +1069,32 @@ public class JavaToExcel
                             }
                             
                             v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
+                            
+                            // 跳过分页页脚，并记录前后位置
+                            v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                            if ( v_PageIndex == 0 )
+                            {
+                                v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount);
+                                v_RPositions.add(v_RPosition);
+                                v_RPosition = new RPosition(v_RPosition.getEndNo() + io_RTotal.getTitlePageHeaderCount() + 1 ,0);
+                                
+                                v_PageCount += io_RTotal.getTitlePageFooterCount();
+                            }
                         }
                         
                         v_RPosition.setEndNo(v_RowNum + v_ForSize + v_PageCount - 1);
                         v_RPositions.add(v_RPosition);
                         
-                        if ( v_PageCount <= 0 )
+                        for (RPosition v_RP : v_RPositions)
                         {
-                            ExcelHelp.addMergedRegions(i_DataRow.getSheet() 
-                                                      ,v_RowNum 
-                                                      ,v_RowNum + v_ForSize - 1 
-                                                      ,v_MergedColIndex 
-                                                      ,v_MergedColIndex 
-                                                      ,i_RTemplate.getIsSafe());
-                        }
-                        else
-                        {
-                            for (RPosition v_RP : v_RPositions)
+                            if ( v_RP.getBeginNo() < v_RP.getEndNo() )
                             {
-                                if ( v_RP.getBeginNo() < v_RP.getEndNo() )
-                                {
-                                    ExcelHelp.addMergedRegions(i_DataRow.getSheet() 
-                                                              ,v_RP.getBeginNo() 
-                                                              ,v_RP.getEndNo()
-                                                              ,v_MergedColIndex 
-                                                              ,v_MergedColIndex 
-                                                              ,i_RTemplate.getIsSafe());
-                                }
+                                ExcelHelp.addMergedRegions(i_DataRow.getSheet() 
+                                                          ,v_RP.getBeginNo() 
+                                                          ,v_RP.getEndNo()
+                                                          ,v_MergedColIndex 
+                                                          ,v_MergedColIndex 
+                                                          ,i_RTemplate.getIsSafe());
                             }
                         }
                     }
@@ -1113,6 +1120,13 @@ public class JavaToExcel
                     }
                     
                     v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,io_RSystemValue ,i_Datas ,v_RValue);
+                
+                    // 跳过分页页脚
+                    v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                    if ( v_PageIndex == 0 )
+                    {
+                        v_PageCount += io_RTotal.getTitlePageFooterCount();
+                    }
                 }
             }
             else if ( v_IsFor )
@@ -1124,7 +1138,7 @@ public class JavaToExcel
                 v_PageCount = 0;
                 for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                 {
-                    // 跳过分页页眉
+                    // 跳过分页页眉，并记录前后位置
                     int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
                     if ( v_PageIndex == 1 )
                     {
@@ -1144,6 +1158,17 @@ public class JavaToExcel
                     }
                     
                     v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
+                    
+                    // 跳过分页页脚，并记录前后位置
+                    v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                    if ( v_PageIndex == 0 )
+                    {
+                        v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount);
+                        v_RPositions.add(v_RPosition);
+                        v_RPosition = new RPosition(v_RPosition.getEndNo() + io_RTotal.getTitlePageHeaderCount() + 1 ,0);
+                        
+                        v_PageCount += io_RTotal.getTitlePageFooterCount();
+                    }
                 }
                 
                 v_RPosition.setEndNo(v_RowNum + v_ForSize + v_PageCount - 1);
