@@ -15,6 +15,7 @@ import org.hy.common.PartitionMap;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.event.ValueListener;
+import org.hy.common.xml.SerializableDef;
 
 
 
@@ -31,9 +32,12 @@ import org.hy.common.report.event.ValueListener;
  *              v3.0  2017-06-25  优化：通过check()方法，预先在生成报表前，对模板信息检查。
  *                                     就不用在生成报表时动态检查模板信息。
  */
-public class RTemplate implements Comparable<RTemplate>
+public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
     
+    private static final long serialVersionUID = 6269939315364526275L;
+    
+
     /** 系统固定变量名称：数据行号的变量名称。下标从1开始 */
     public final static String         $ValueName_RowNo              = "RowNo__";
     
@@ -187,6 +191,14 @@ public class RTemplate implements Comparable<RTemplate>
         this.isBig               = true;
         this.rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
         this.setValueSign(":");
+    }
+    
+    
+    
+    public RTemplate(RTemplate i_Other)
+    {
+        this();
+        this.init(i_Other);
     }
     
     

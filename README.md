@@ -30,10 +30,19 @@ __Excel模板文件中定义变量名称__，格式为 ":xx.yy.zz" ，通过反�
 	3. :RowCount__          数据总量的变量名称
 	
 	4. :RowSubtotalCount__  数据小计总量的变量名称
+	
+	5. :PageNo__            分页页号的变量名称
 
   
+* 报表演示
+	* Java对象转Excel报表
+		* 一行数据一页的Excel模板举例(#一行数据一页的Excel模板举例)
+		* Excel动态行+小计模板举例(#Excel动态行+小计模板举例)
+	* Excel报表转Java对象
+  
+  
 
-__Excel常规模板举例__  
+__一行数据一页的Excel模板举例__  
 
 ![image](images/Excel.png)
 
@@ -41,14 +50,14 @@ __Excel常规模板举例__
 	
 	2. 单元格颜色问题：在使用2003版本的模板时，单元格颜色最好设置为标准颜色，否则会出现颜色的失真。   
   
-__常规报表的生成结果__
+__一行数据一页的的生成结果__
   
 ![image](images/Excel_Result.png)
   
   
   
   
-__XML常规配置举例__
+__一行数据一页的XML配置__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -92,7 +101,7 @@ __XML常规配置举例__
   
   
   
-__报表生成及保存的Java代码举例__
+__一行数据一页报表生成及保存的Java代码举例__
 ```java
 // 获取报表模板对象
 RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTemplate");

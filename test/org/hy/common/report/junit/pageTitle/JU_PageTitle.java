@@ -85,8 +85,24 @@ public class JU_PageTitle implements JUBase<OrgInfo>
     public void test_PageTitle() throws RTemplateException
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportPageTitle");
+        RTemplate v_Clone     = new RTemplate(v_RTemplate);
         
-        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.xlsx");
+        // 分页页眉、分页页脚的演示
+        //ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Page.xlsx");
+        
+        // 仅分页页眉的演示
+        v_RTemplate.setTitlePageFooterBeginRow(null);
+        //ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Header.xlsx");
+        
+        // 仅分页页脚的演示
+        v_RTemplate.init(v_Clone);
+        v_RTemplate.setTitlePageHeaderBeginRow(null);
+        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Footer.xlsx");
+        
+        // 无分页的演示
+        v_RTemplate.setTitlePageHeaderBeginRow(null);
+        v_RTemplate.setTitlePageFooterBeginRow(null);
+        //ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Normal.xlsx");
     }
     
 }
