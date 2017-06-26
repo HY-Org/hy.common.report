@@ -42,7 +42,7 @@ __Excel模板文件中定义变量名称__，格式为 ":xx.yy.zz" ，通过反�
   
   
 
-__一行数据一页的Excel模板举例__  
+一行数据一页的Excel模板举例
 ------
 
 ![image](images/Excel.png)
@@ -112,7 +112,8 @@ ExcelHelp.save(ReportHelp.toExcel("Excel工作表名称" ,数据集合 ,v_RTempl
 
 
 
-__Excel动态行+小计模板举例__  
+Excel动态行+小计模板举例
+------
 
 ![image](images/Subtotal.png)
 
