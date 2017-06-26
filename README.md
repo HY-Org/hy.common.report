@@ -234,7 +234,8 @@ __分页页眉、分页页脚的XML配置举例__
 
 
 
-__Excel转为Java对象：模板举例(常规的纵深扩展)__
+Excel转为Java对象：模板举例(常规的纵深扩展)
+------
  
 ![image](images/ReadVertical.png)
 
@@ -279,7 +280,10 @@ Help.print(v_Datas);
 
 
 
-__Excel转为Java对象：模板举例(横向扩展)__
+
+
+Excel转为Java对象：模板举例(横向扩展)
+------
  
 ![image](images/ReadHorizontal.png)
 
