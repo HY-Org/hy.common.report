@@ -11,8 +11,8 @@
 	* [动态行和小计的模板举例](#动态行和小计的模板举例)
 	* [分页页眉和分页页脚的模板举例](#分页页眉和分页页脚的模板举例)
 * Excel报表转Java对象
-	* [常规的纵深扩展的模板举例](#Excel转为Java对象的常规的纵深扩展的模板举例)
-	* [横向扩展的模板举例](#Excel转为Java对象的横向扩展的模板举例)
+	* [常规的纵深扩展的模板举例](#转为Java对象的常规的纵深扩展的模板举例)
+	* [横向扩展的模板举例](#转为Java对象的横向扩展的模板举例)
 
 
 
@@ -219,16 +219,16 @@ __分页页眉和分页页脚的XML配置举例__
 
 
 
-Excel转为Java对象的常规的纵深扩展的模板举例
+转为Java对象的常规的纵深扩展的模板举例
 ------
  
 ![image](images/ReadVertical.png)
 
-__Excel转为Java对象的常规的纵深扩展的数据举例__
+__转为Java对象的常规的纵深扩展的数据举例__
 
 ![image](images/ReadVertical_Datas.png)
 
-__Excel转为Java对象的常规的纵深扩展的XML配置举例__
+__转为Java对象的常规的纵深扩展的XML配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -254,7 +254,7 @@ __Excel转为Java对象的常规的纵深扩展的XML配置举例__
 </config>
 ```
 
-__Excel转为Java对象的常规的纵深扩展的Java代码举例__
+__转为Java对象的常规的纵深扩展的Java代码举例__
 ```java
 // 获取报表模板对象
 RTemplate    v_RTemplate = (RTemplate)XJava.getObject("ReadVertical");
@@ -267,16 +267,16 @@ Help.print(v_Datas);
 
 
 
-Excel转为Java对象的横向扩展的模板举例
+转为Java对象的横向扩展的模板举例
 ------
  
 ![image](images/ReadHorizontal.png)
 
-__Excel转为Java对象的横向扩展的数据举例__
+__转为Java对象的横向扩展的数据举例__
 
 ![image](images/ReadHorizontal_Datas.png)
 
-__Excel转为Java对象的横向扩展的XML配置举例__
+__转为Java对象的横向扩展的XML配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -305,7 +305,7 @@ __Excel转为Java对象的横向扩展的XML配置举例__
 </config>
 ```
 
-__Excel转为Java对象的横向扩展的Java代码举例__
+__转为Java对象的横向扩展的Java代码举例__
 ```java
 // 获取报表模板对象
 RTemplate    v_RTemplate = (RTemplate)XJava.getObject("ReadHorizontal");
