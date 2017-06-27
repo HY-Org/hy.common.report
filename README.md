@@ -13,6 +13,7 @@
 * Excel报表转Java对象
 	* [常规的纵深扩展的模板举例](#常规的纵深扩展的模板举例)
 	* [横向扩展的模板举例](#横向扩展的模板举例)
+* [特别鸣谢](#特别鸣谢)
 
 
 
@@ -239,6 +240,8 @@ __分页页眉和分页页脚的XML配置举例__
 
 常规的纵深扩展的模板举例
 ------
+Excel数据文件转为Java对象
+
  
 ![image](images/ReadVertical.png)
 
@@ -287,6 +290,8 @@ Help.print(v_Datas);
 
 横向扩展的模板举例
 ------
+Excel数据文件转为Java对象
+
  
 ![image](images/ReadHorizontal.png)
 
@@ -336,8 +341,10 @@ Help.print(v_Datas);
 
 
 
----
-#### 十分感谢以下朋友支持与建议
+特别鸣谢
+------
+十分感谢以下朋友支持与建议
+
   1. [邹德福](https://github.com/dirful)：建议使用简单的反射规则，如 :staffs[].staffName ，而非之前的 :staffs.$get(index).staffName 完整Java方法路径形式。
   
   2. [李　浩](https://github.com/343136848)：建议对动态数据及小计功能的支持。
