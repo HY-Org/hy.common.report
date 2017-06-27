@@ -55,7 +55,7 @@ __Excel模板文件中定义变量名称__，格式为 ":xx.yy.zz" ，通过反�
 常规列表加合计的模板举例
 ------
  
-[查看测试代码](test/org.hy.common.report.junit)
+[查看测试代码](test/org/hy/common/report/junit/normal)
   
 ![image](images/Normal.png)
 
@@ -110,6 +110,8 @@ __常规列表加合计的XML配置__
 
 一行数据一页的模板举例
 ------
+
+[查看测试代码](test/org/hy/common/report/junit/versionCompare)
 
 ![image](images/Excel.png)
 
@@ -181,6 +183,8 @@ ExcelHelp.save(ReportHelp.toExcel("Excel工作表名称" ,数据集合 ,v_RTempl
 动态行和小计的模板举例
 ------
 
+[查看测试代码](test/org/hy/common/report/junit/total)
+
 ![image](images/Subtotal.png)
 
 	1. []：方括号表示前面的方法名称的返回类型是集合对象。目前支持List、Set、Map三种集合。并须对集合遍历动态生成数据。
@@ -230,6 +234,8 @@ __动态行和小计报表的XML配置举例__
 
 分页页眉和分页页脚的模板举例
 ------
+
+[查看测试代码](test/org/hy/common/report/junit/pageTitle)
 
 ![image](images/PageTitle.png)
 
@@ -299,6 +305,7 @@ __分页页眉和分页页脚的XML配置举例__
 ------
 Excel数据文件转为Java对象
 
+[查看测试代码](test/org/hy/common/report/junit/readVertical)
  
 ![image](images/ReadVertical.png)
 
@@ -349,6 +356,7 @@ Help.print(v_Datas);
 ------
 Excel数据文件转为Java对象
 
+[查看测试代码](test/org/hy/common/report/junit/readHorizontal)
  
 ![image](images/ReadHorizontal.png)
 
