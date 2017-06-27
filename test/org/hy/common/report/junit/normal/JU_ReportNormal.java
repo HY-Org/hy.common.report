@@ -82,7 +82,7 @@ public class JU_ReportNormal implements JUBase<OrgInfo>
     
     
     @Test
-    public void test_Subtotal() throws RTemplateException
+    public void test_Normal() throws RTemplateException
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportNormal");
         

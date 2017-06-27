@@ -77,11 +77,11 @@ __常规列表加合计的XML配置__
 	<!-- 报表模板配置信息 -->
 	<xconfig>
 	
-		<template id="ReportNoraml">
+		<template id="ReportNormal">
 			<name>常规列表加合计的报表演示</name>
 			
 			<!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
-			<excelFileName>classpath:JU_ReportNoraml.xlsx</excelFileName>
+			<excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
 			
 			<!-- 定义报表标题在模板中位置 -->
 			<titleBeginRow>0</titleBeginRow>
@@ -92,8 +92,8 @@ __常规列表加合计的XML配置__
 			<dataEndRow>2</dataEndRow>
 			
 			<!-- 定义报表合计在模板中位置 -->
-			<totalBeginRow>5</totalBeginRow>
-			<totalEndRow>6</totalEndRow>
+			<totalBeginRow>3</totalBeginRow>
+			<totalEndRow>4</totalEndRow>
 			
 			<!-- 定义报表数据对应的Java类型 -->
 			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
