@@ -8,11 +8,11 @@
 * [主导思想](#主导思想)
 * Java对象转Excel报表
 	* [一行数据一页的模板举例](#一行数据一页的模板举例)
-	* [动态行+小计的模板举例](#动态行和小计的模板举例)
-	* [分页页眉、分页页脚的模板举例](#分页页眉和分页页脚的模板举例)
+	* [动态行和小计的模板举例](#动态行和小计的模板举例)
+	* [分页页眉和分页页脚的模板举例](#分页页眉和分页页脚的模板举例)
 * Excel报表转Java对象
-	* [常规的纵深扩展的模板举例](#Excel转为Java对象-常规的纵深扩展的模板举例)
-	* [横向扩展的模板举例](#Excel转为Java对象-横向扩展的模板举例)
+	* [常规的纵深扩展的模板举例](#Excel转为Java对象的常规的纵深扩展的模板举例)
+	* [横向扩展的模板举例](#Excel转为Java对象的横向扩展的模板举例)
 
 
 
@@ -111,13 +111,13 @@ ExcelHelp.save(ReportHelp.toExcel("Excel工作表名称" ,数据集合 ,v_RTempl
 	
 	2. $：美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
 
-__动态行+小计报表的生成结果__
+__动态行和小计报表的生成结果__
 
 ![image](images/Subtotal_Result.png)
 
 
 
-__动态行+小计报表的XML配置举例__
+__动态行和小计报表的XML配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -161,13 +161,13 @@ __动态行+小计报表的XML配置举例__
 	
 	2. $：美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
 
-__分页页眉、分页页脚的生成结果__
+__分页页眉和分页页脚的生成结果__
 
 ![image](images/PageTitle_Result.png)
 
 
 
-__分页页眉、分页页脚的XML配置举例__
+__分页页眉和分页页脚的XML配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -219,16 +219,16 @@ __分页页眉、分页页脚的XML配置举例__
 
 
 
-Excel转为Java对象-常规的纵深扩展的模板举例
+Excel转为Java对象的常规的纵深扩展的模板举例
 ------
  
 ![image](images/ReadVertical.png)
 
-__Excel转为Java对象：常规的纵深扩展的数据举例__
+__Excel转为Java对象的常规的纵深扩展的数据举例__
 
 ![image](images/ReadVertical_Datas.png)
 
-__Excel转为Java对象：常规的纵深扩展的XML配置举例__
+__Excel转为Java对象的常规的纵深扩展的XML配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -254,7 +254,7 @@ __Excel转为Java对象：常规的纵深扩展的XML配置举例__
 </config>
 ```
 
-__Excel转为Java对象：常规的纵深扩展的Java代码举例__
+__Excel转为Java对象的常规的纵深扩展的Java代码举例__
 ```java
 // 获取报表模板对象
 RTemplate    v_RTemplate = (RTemplate)XJava.getObject("ReadVertical");
@@ -267,16 +267,16 @@ Help.print(v_Datas);
 
 
 
-Excel转为Java对象：横向扩展的模板举例
+Excel转为Java对象的横向扩展的模板举例
 ------
  
 ![image](images/ReadHorizontal.png)
 
-__Excel转为Java对象：横向扩展的数据举例__
+__Excel转为Java对象的横向扩展的数据举例__
 
 ![image](images/ReadHorizontal_Datas.png)
 
-__Excel转为Java对象：横向扩展的XML配置举例__
+__Excel转为Java对象的横向扩展的XML配置举例__
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -305,7 +305,7 @@ __Excel转为Java对象：横向扩展的XML配置举例__
 </config>
 ```
 
-__Excel转为Java对象：横向扩展的Java代码举例__
+__Excel转为Java对象的横向扩展的Java代码举例__
 ```java
 // 获取报表模板对象
 RTemplate    v_RTemplate = (RTemplate)XJava.getObject("ReadHorizontal");
