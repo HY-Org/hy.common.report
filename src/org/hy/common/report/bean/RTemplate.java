@@ -31,6 +31,7 @@ import org.hy.common.xml.SerializableDef;
  *                                优化：启用对SXSSFWorkbook工作薄的支持大数据量
  *              v3.0  2017-06-25  优化：通过check()方法，预先在生成报表前，对模板信息检查。
  *                                     就不用在生成报表时动态检查模板信息。
+ *              v4.0  2017-06-28  添加：支持分页功能。比原Excel页眉、页脚更高级、内容更丰富的分页页眉、分页页脚功能。
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -84,6 +85,15 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 1：横向扩展--表示从上到下的方向，一列或多列为一个对象数据
      */
     private Integer                    direction;
+    
+    /** 
+     * 报表标题占用一整页。默认为：false。即第一页的数据量按标题行数是动态的，第二页及其后是固定的数据量。
+     * 只用于：分页页眉、分页页脚的情况下
+     */
+    private boolean                    titleUseOnePage;
+    
+    /** 标题系数。当 titleUseOnePage=true 时，titleRatio=0 ，当 titleUseOnePage=false 时，titleRatio=1*/
+    private int                        titleRatio;
     
     /** 报表标题的开始行号（包括此行）。下标从零开始 */
     private Integer                    titleBeginRow;
@@ -139,7 +149,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     private String                     valueSign;
     
     /** 是要安全？还是要性能（默认为：性能） */
-    private Boolean                    isSafe;
+    private boolean                    isSafe;
     
     /** 
      * 当为大数据量导出时，建议使用 SXSSFWorkbook
@@ -149,7 +159,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 
      * 默认为：true
      */
-    private Boolean                    isBig;
+    private boolean                    isBig;
 
     /** 
      * 当使用 SXSSFWorkbook 时（this.isBig=true），创建对象new SXSSFWorkbook(rowAccessWindowSize)入参。
@@ -191,6 +201,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.isBig               = true;
         this.rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
         this.setValueSign(":");
+        this.setTitleUseOnePage(false);
     }
     
     
@@ -926,6 +937,44 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     
     /**
+     * 获取：报表标题占用一整页。默认为：false。即第一页的数据量按标题行数是动态的，第二页及其后是固定的数据量
+     */
+    public boolean isTitleUseOnePage()
+    {
+        return titleUseOnePage;
+    }
+
+    
+    /**
+     * 设置：报表标题占用一整页。默认为：false。即第一页的数据量按标题行数是动态的，第二页及其后是固定的数据量
+     * 
+     * @param titleUseOnePage 
+     */
+    public void setTitleUseOnePage(boolean titleUseOnePage)
+    {
+        this.titleUseOnePage = titleUseOnePage;
+        
+        if ( this.titleUseOnePage )
+        {
+            this.titleRatio = 0;
+        }
+        else
+        {
+            this.titleRatio = 1;
+        }
+    }
+
+    
+    /**
+     * 获取：标题系数。当 titleUseOnePage=true 时，titleRatio=0 ，当 titleUseOnePage=false 时，titleRatio=1
+     */
+    public int getTitleRatio()
+    {
+        return titleRatio;
+    }
+    
+
+    /**
      * 获取：报表标题的开始行号（包括此行）。下标从零开始
      */
     public Integer getTitleBeginRow()
@@ -1288,7 +1337,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 获取：是要安全？还是要性能（默认为：性能）
      */
-    public Boolean getIsSafe()
+    public boolean getIsSafe()
     {
         return isSafe;
     }
@@ -1299,7 +1348,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 
      * @param isSafe 
      */
-    public void setIsSafe(Boolean isSafe)
+    public void setIsSafe(boolean isSafe)
     {
         this.isSafe = isSafe;
     }
@@ -1313,7 +1362,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 
      * 默认为：false
      */
-    public Boolean getIsBig()
+    public boolean getIsBig()
     {
         return isBig;
     }
@@ -1329,7 +1378,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 
      * @param isBig 
      */
-    public void setIsBig(Boolean isBig)
+    public void setIsBig(boolean isBig)
     {
         this.isBig = isBig;
     }

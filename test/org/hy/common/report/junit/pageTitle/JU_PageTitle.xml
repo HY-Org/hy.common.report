@@ -16,25 +16,25 @@
 			
 			<!-- 总标题 -->
 			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
+			<titleEndRow>3</titleEndRow>
 			
 			<perPageRowSize>20</perPageRowSize>
 			
 			<!-- 分页页眉标题 -->
-			<titlePageHeaderBeginRow>2</titlePageHeaderBeginRow>
-			<titlePageHeaderEndRow>3</titlePageHeaderEndRow>
+			<titlePageHeaderBeginRow>4</titlePageHeaderBeginRow>
+			<titlePageHeaderEndRow>6</titlePageHeaderEndRow>
 			
 			<!-- 数据内容 -->
-			<dataBeginRow>4</dataBeginRow>
-			<dataEndRow>4</dataEndRow>
+			<dataBeginRow>7</dataBeginRow>
+			<dataEndRow>7</dataEndRow>
 			
 			<!-- 分页页脚标题 -->
-			<titlePageFooterBeginRow>5</titlePageFooterBeginRow>
-			<titlePageFooterEndRow>6</titlePageFooterEndRow>
+			<titlePageFooterBeginRow>8</titlePageFooterBeginRow>
+			<titlePageFooterEndRow>9</titlePageFooterEndRow>
 			
 			<!-- 合计 -->
-			<totalBeginRow>7</totalBeginRow>
-			<totalEndRow>8</totalEndRow>
+			<totalBeginRow>10</totalBeginRow>
+			<totalEndRow>11</totalEndRow>
 			
 			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
 		</template>

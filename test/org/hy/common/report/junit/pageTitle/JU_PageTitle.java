@@ -88,11 +88,11 @@ public class JU_PageTitle implements JUBase<OrgInfo>
         RTemplate v_Clone     = new RTemplate(v_RTemplate);
         
         // 分页页眉、分页页脚的演示
-        //ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Page.xlsx");
+        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Page.xlsx");
         
         // 仅分页页眉的演示
         v_RTemplate.setTitlePageFooterBeginRow(null);
-        //ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Header.xlsx");
+        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Header.xlsx");
         
         // 仅分页页脚的演示
         v_RTemplate.init(v_Clone);
@@ -102,7 +102,7 @@ public class JU_PageTitle implements JUBase<OrgInfo>
         // 无分页的演示
         v_RTemplate.setTitlePageHeaderBeginRow(null);
         v_RTemplate.setTitlePageFooterBeginRow(null);
-        //ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Normal.xlsx");
+        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportPageTitle.Normal.xlsx");
     }
     
 }

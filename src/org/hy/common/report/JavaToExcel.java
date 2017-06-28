@@ -3,8 +3,8 @@ package org.hy.common.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFComment;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
@@ -21,10 +21,12 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -55,6 +57,7 @@ import org.hy.common.report.event.ValueListener;
  *                                     这种做的好处是：支持0.123456789数字的写入单元格的同时还将只表面显示n位小数(n也在模板是设置)
  *              v3.0  2017-06-25  优化：通过RTemplate.check()方法，预先在生成报表前，对模板信息检查。
  *                                     就不用在生成报表时动态检查模板信息。
+ *              v4.0  2017-06-28  添加：支持分页功能。比原Excel页眉、页脚更高级、内容更丰富的分页页眉、分页页脚功能。
  */
 public class JavaToExcel
 {
@@ -370,7 +373,7 @@ public class JavaToExcel
     public final static void writeTitlePageHeader(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
-        int   v_TemplateRowCount = i_RTemplate.getRowCountTitlePageHeader();
+        int   v_TemplateRowCount = io_RTotal.getTitlePageHeaderCount();
         int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
 
         copyMergedRegionsTitlePageHeader(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
@@ -410,7 +413,7 @@ public class JavaToExcel
     public final static void writeTitlePageFooter(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
-        int   v_TemplateRowCount = i_RTemplate.getRowCountTitlePageFooter();
+        int   v_TemplateRowCount = io_RTotal.getTitlePageFooterCount();
         int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
 
         copyMergedRegionsTitlePageFooter(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
@@ -489,6 +492,14 @@ public class JavaToExcel
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
         int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
+        int   v_PageIndex        = (io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+        
+        // 创建分页页眉。模板的"行（可对应Excel中的多行）"按一个不可再被分割的整体对待，固没有写在下面的For语句中。
+        if ( v_PageIndex == 0 || io_RTotal.getRealDataCount() == 0 )
+        {
+            writeTitlePageHeader(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
+            v_ExcelRowIndex += io_RTotal.getTitlePageHeaderCount();
+        }
         
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
@@ -497,29 +508,21 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            int v_PageIndex     = (1 + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-            
-            // 创建分页页眉
-            if ( v_PageIndex == 1 || io_RTotal.getRealDataCount() == 0 )
-            {
-                writeTitlePageHeader(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
-                v_ExcelRowIndex += io_RTotal.getTitlePageHeaderCount();
-            }
             
             int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
             Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
             io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
             
-            copyRowPage(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
-            
-            // 创建分页页脚
-            v_PageIndex = (1 + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-            if ( v_PageIndex == 0 && io_RTotal.getRealDataCount() >= 1 )
-            {
-                writeTitlePageFooter(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
-                v_ExcelRowIndex += io_RTotal.getTitlePageFooterCount();
-            }
+            copyRowPageFooter(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+        }
+        
+        // 创建分页页脚。模板的"行（可对应Excel中的多行）"按一个不可再被分割的整体对待，固没有写在下面的For语句中。
+        v_PageIndex = (io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+        if ( v_PageIndex == 0 && io_RTotal.getRealDataCount() >= 1 )
+        {
+            writeTitlePageFooter(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
+            v_ExcelRowIndex += io_RTotal.getTitlePageFooterCount();
         }
     }
     
@@ -544,6 +547,14 @@ public class JavaToExcel
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
         int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
+        int   v_PageIndex        = (io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+        
+        // 创建分页页眉。模板的"行（可对应Excel中的多行）"按一个不可再被分割的整体对待，固没有写在下面的For语句中。
+        if ( v_PageIndex == 0 || io_RTotal.getRealDataCount() == 0 )
+        {
+            writeTitlePageHeader(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
+            v_ExcelRowIndex += io_RTotal.getTitlePageHeaderCount();
+        }
         
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
@@ -552,14 +563,6 @@ public class JavaToExcel
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
-            int v_PageIndex     = (1 + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-            
-            // 创建分页页眉
-            if ( v_PageIndex == 1 || io_RTotal.getRealDataCount() == 0 )
-            {
-                writeTitlePageHeader(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
-                v_ExcelRowIndex += io_RTotal.getTitlePageHeaderCount();
-            }
             
             int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
             Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
@@ -606,14 +609,14 @@ public class JavaToExcel
             io_RTotal.addRealDataCount(1);
             
             copyRowPageFooter(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
-            
-            // 创建分页页脚
-            int v_PageIndex = (1 + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-            if ( v_PageIndex == 0 && io_RTotal.getRealDataCount() >= 1 )
-            {
-                writeTitlePageFooter(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
-                v_ExcelRowIndex += io_RTotal.getTitlePageFooterCount();
-            }
+        }
+        
+        // 创建分页页脚。模板的"行（可对应Excel中的多行）"按一个不可再被分割的整体对待，固没有写在下面的For语句中。
+        int v_PageIndex = (io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+        if ( v_PageIndex == 0 && io_RTotal.getRealDataCount() >= 1 )
+        {
+            writeTitlePageFooter(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
+            v_ExcelRowIndex += io_RTotal.getTitlePageFooterCount();
         }
     }    
     
@@ -960,7 +963,7 @@ public class JavaToExcel
         ClientAnchor v_TemplateAnchor  = v_TemplateComment.getClientAnchor();
         Comment      v_DataComment     = null;
         
-        if ( v_TemplateComment instanceof HSSFComment )
+        if ( i_DataCell instanceof HSSFCell )
         {
             HSSFPatriarch v_Patriarch = (HSSFPatriarch) i_DataCell.getSheet().createDrawingPatriarch();
             v_DataComment = v_Patriarch.createCellComment(new HSSFClientAnchor(v_TemplateAnchor.getDx1() 
@@ -972,7 +975,19 @@ public class JavaToExcel
                                                                               ,v_TemplateAnchor.getCol2()
                                                                               ,i_DataCell.getRowIndex() + v_TemplateAnchor.getRow2() - v_TemplateAnchor.getRow1()));
         }
-        else if ( v_TemplateComment instanceof XSSFComment )
+        else if ( i_DataCell instanceof SXSSFCell )
+        {
+            SXSSFDrawing v_Patriarch = (SXSSFDrawing) i_DataCell.getSheet().createDrawingPatriarch();
+            v_DataComment = v_Patriarch.createCellComment(new XSSFClientAnchor(v_TemplateAnchor.getDx1() 
+                                                                              ,v_TemplateAnchor.getDy1()
+                                                                              ,v_TemplateAnchor.getDx2() 
+                                                                              ,v_TemplateAnchor.getDy2() 
+                                                                              ,v_TemplateAnchor.getCol1()
+                                                                              ,i_DataCell.getRowIndex()
+                                                                              ,v_TemplateAnchor.getCol2()
+                                                                              ,i_DataCell.getRowIndex() + v_TemplateAnchor.getRow2() - v_TemplateAnchor.getRow1()));
+        }
+        else if ( i_DataCell instanceof XSSFCell )
         {
             XSSFDrawing v_Patriarch = (XSSFDrawing) i_DataCell.getSheet().createDrawingPatriarch();
             v_DataComment = v_Patriarch.createCellComment(new XSSFClientAnchor(v_TemplateAnchor.getDx1() 
@@ -1256,8 +1271,8 @@ public class JavaToExcel
                         if ( i_DataRow.getSheet().getRow(v_RowIndex + v_RowNum + v_PageCount) == null )
                         {
                             // 创建分页页眉
-                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-                            if ( v_PageIndex == 1 )
+                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+                            if ( v_PageIndex == 0 )
                             {
                                 writeTitlePageHeader(i_DataWorkbook ,i_DataRow.getSheet() ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
                                 v_PageCount += io_RTotal.getTitlePageHeaderCount();
@@ -1267,7 +1282,7 @@ public class JavaToExcel
                             io_RTotal.addExcelRowIndex(1);
                             
                             // 创建分页页脚
-                            v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                            v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
                             if ( v_PageIndex == 0 )
                             {
                                 writeTitlePageFooter(i_DataWorkbook ,i_DataRow.getSheet() ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
@@ -1287,8 +1302,8 @@ public class JavaToExcel
                         for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                         {
                             // 跳过分页页眉，并记录前后位置
-                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-                            if ( v_PageIndex == 1 )
+                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+                            if ( v_PageIndex == 0 )
                             {
                                 v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount - 1);
                                 v_RPositions.add(v_RPosition);
@@ -1308,7 +1323,7 @@ public class JavaToExcel
                             v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
                             
                             // 跳过分页页脚，并记录前后位置
-                            v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                            v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
                             if ( v_PageIndex == 0 )
                             {
                                 v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount);
@@ -1342,8 +1357,8 @@ public class JavaToExcel
                 for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                 {
                     // 跳过分页页眉
-                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-                    if ( v_PageIndex == 1 )
+                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+                    if ( v_PageIndex == 0 )
                     {
                         v_PageCount += io_RTotal.getTitlePageHeaderCount();
                     }
@@ -1359,7 +1374,7 @@ public class JavaToExcel
                     v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,io_RSystemValue ,i_Datas ,v_RValue);
                 
                     // 跳过分页页脚
-                    v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                    v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
                     if ( v_PageIndex == 0 )
                     {
                         v_PageCount += io_RTotal.getTitlePageFooterCount();
@@ -1376,8 +1391,8 @@ public class JavaToExcel
                 for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                 {
                     // 跳过分页页眉，并记录前后位置
-                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-                    if ( v_PageIndex == 1 )
+                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+                    if ( v_PageIndex == 0 )
                     {
                         v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount - 1);
                         v_RPositions.add(v_RPosition);
@@ -1397,7 +1412,7 @@ public class JavaToExcel
                     v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
                     
                     // 跳过分页页脚，并记录前后位置
-                    v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                    v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
                     if ( v_PageIndex == 0 )
                     {
                         v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount);
@@ -1493,8 +1508,8 @@ public class JavaToExcel
                         if ( i_DataRow.getSheet().getRow(v_RowIndex + v_RowNum + v_PageCount) == null )
                         {
                             // 创建分页页眉
-                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-                            if ( v_PageIndex == 1 )
+                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+                            if ( v_PageIndex == 0 )
                             {
                                 writeTitlePageHeader(i_DataWorkbook ,i_DataRow.getSheet() ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
                                 v_PageCount += io_RTotal.getTitlePageHeaderCount();
@@ -1516,8 +1531,8 @@ public class JavaToExcel
                         for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                         {
                             // 跳过分页页眉，并记录前后位置
-                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-                            if ( v_PageIndex == 1 )
+                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+                            if ( v_PageIndex == 0 )
                             {
                                 v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount - 1);
                                 v_RPositions.add(v_RPosition);
@@ -1560,8 +1575,8 @@ public class JavaToExcel
                 for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                 {
                     // 跳过分页页眉
-                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-                    if ( v_PageIndex == 1 )
+                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+                    if ( v_PageIndex == 0 )
                     {
                         v_PageCount += io_RTotal.getTitlePageHeaderCount();
                     }
@@ -1587,8 +1602,8 @@ public class JavaToExcel
                 for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                 {
                     // 跳过分页页眉，并记录前后位置
-                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
-                    if ( v_PageIndex == 1 )
+                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
+                    if ( v_PageIndex == 0 )
                     {
                         v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount - 1);
                         v_RPositions.add(v_RPosition);
@@ -1696,7 +1711,7 @@ public class JavaToExcel
                             io_RTotal.addExcelRowIndex(1);
                             
                             // 创建分页页脚
-                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
                             if ( v_PageIndex == 0 )
                             {
                                 writeTitlePageFooter(i_DataWorkbook ,i_DataRow.getSheet() ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
@@ -1726,7 +1741,7 @@ public class JavaToExcel
                             v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
                             
                             // 跳过分页页脚，并记录前后位置
-                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                            int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
                             if ( v_PageIndex == 0 )
                             {
                                 v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount);
@@ -1770,7 +1785,7 @@ public class JavaToExcel
                     v_RValue = copyCell(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataForCell ,io_RSystemValue ,i_Datas ,v_RValue);
                 
                     // 跳过分页页脚
-                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
                     if ( v_PageIndex == 0 )
                     {
                         v_PageCount += io_RTotal.getTitlePageFooterCount();
@@ -1797,7 +1812,7 @@ public class JavaToExcel
                     v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
                     
                     // 跳过分页页脚，并记录前后位置
-                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount()) % i_RTemplate.getPerPageRowSize();
+                    int v_PageIndex = (v_RowIndex + io_RTotal.getRealDataCount() + io_RTotal.getTitleCount() * i_RTemplate.getTitleRatio()) % i_RTemplate.getPerPageRowSize();
                     if ( v_PageIndex == 0 )
                     {
                         v_RPosition.setEndNo(v_RowNum + v_RowIndex + v_PageCount);
