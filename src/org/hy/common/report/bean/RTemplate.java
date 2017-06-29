@@ -104,6 +104,20 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 报表标题的结束行号（包括此行）。下标从零开始 */
     private Integer                    titleEndRow;
     
+    /** 
+     * 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0 
+     * 
+     * 主要用于：首个分页页眉与第二行分页页眉样式不一样的情况。
+     *          在此情况下，可将首个分页页眉与总标题合并后，当总标题写入。
+     */
+    private int                        titlePageHeaderFirstWriteByRow;
+    
+    /** 通过 titlePageHeaderFirstWriteByRow 计算出来的首个分页页眉前已写入了多少行的真实数据。默认为：0 */
+    private int                        titlePageHeaderFirstWriteByRealDataCount;
+    
+    /** 通过 titlePageHeaderFirstWriteByRow 计算出来的分页页眉系数。默认为：0 */
+    private int                        titlePageHeaderRate;
+    
     /** 报表分页页眉的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用 */
     private Integer                    titlePageHeaderBeginRow;
     
@@ -211,6 +225,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.isBig               = true;
         this.isCheck             = true;
         this.rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
+        this.titlePageHeaderFirstWriteByRow           = 0;
+        this.titlePageHeaderFirstWriteByRealDataCount = 0;
+        this.titlePageHeaderRate                      = 0;
         this.setValueSign(":");
         this.setTitleUseOnePage(false);
     }
@@ -279,6 +296,17 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             this.init();
             
             this.getExcelVersion();
+            
+            if ( this.getTitlePageHeaderFirstWriteByRow() >= 1 )
+            {
+                this.titlePageHeaderFirstWriteByRealDataCount = this.getTitlePageHeaderFirstWriteByRow() - this.getRowCountTitlePageFooter() - this.getRowCountTitle();
+                this.titlePageHeaderRate                      = this.getRowCountTitlePageHeader();
+            }
+            else
+            {
+                this.titlePageHeaderFirstWriteByRealDataCount = 0;
+                this.titlePageHeaderRate                      = 0;
+            }
         }
         
         return this.templateSheet;
@@ -511,7 +539,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     {
                         if ( !this.valueListeners.containsKey(v_Value) )
                         {
-                            System.err.println("变量名称或占位符[" + v_Value + "]未匹配到对应数据结构中的属性值。");
+                            System.err.println(Help.NVL(this.getName() ,this.getExcelFileName()) + "：变量名称或占位符[" + v_Value + "]未匹配到对应数据结构中的属性值。");
                         }
                     }
                 }
@@ -867,7 +895,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * @param i_TemplateCell  模板单元格对象
      * @param i_RSystemValue  系统变量信息
      */
-    public void fireSheetListener(Sheet i_DataSheet ,Object i_Datas ,RTemplate i_RTemplate ,RSystemValue i_RSystemValue)
+    public void fireSheetListener(Sheet i_DataSheet ,List<?> i_Datas ,RTemplate i_RTemplate ,RSystemValue i_RSystemValue)
     {
         for (SheetListener v_SheetListener : this.sheetListeners)
         {
@@ -1109,6 +1137,50 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     }
 
     
+    /**
+     * 获取：* 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0 
+     * 
+     * 主要用于：首个分页页眉与第二行分页页眉样式不一样的情况。
+     *          在此情况下，可将首个分页页眉与总标题合并后，当总标题写入。
+     */
+    public int getTitlePageHeaderFirstWriteByRow()
+    {
+        return titlePageHeaderFirstWriteByRow;
+    }
+    
+    
+    /**
+     * 设置：* 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0 
+     * 
+     * 主要用于：首个分页页眉与第二行分页页眉样式不一样的情况。
+     *          在此情况下，可将首个分页页眉与总标题合并后，当总标题写入。
+     * 
+     * @param titlePageHeaderFirstWriteByRow 
+     */
+    public void setTitlePageHeaderFirstWriteByRow(int titlePageHeaderFirstWriteByRow)
+    {
+        this.titlePageHeaderFirstWriteByRow = titlePageHeaderFirstWriteByRow;
+    }
+
+    
+    /**
+     * 获取：通过 titlePageHeaderFirstWriteByRow 计算出来的首个分页页眉前已写入了多少行的真实数据
+     */
+    public int getTitlePageHeaderFirstWriteByRealDataCount()
+    {
+        return titlePageHeaderFirstWriteByRealDataCount;
+    }
+
+    
+    /**
+     * 获取：通过 titlePageHeaderFirstWriteByRow 计算出来的分页页眉系数。默认为：0
+     */
+    public int getTitlePageHeaderRate()
+    {
+        return titlePageHeaderRate;
+    }
+    
+
     /**
      * 获取：报表分页页眉的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
      */

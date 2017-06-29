@@ -1,6 +1,7 @@
 package org.hy.common.report.event;
 
 import java.util.EventListener;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.hy.common.report.bean.RSystemValue;
@@ -28,12 +29,11 @@ public interface SheetListener extends EventListener
      * @version     v1.0
      *
      * @param i_DataSheet     数据的工作表
-     * @param i_Datas         本行对应的数据
+     * @param i_Datas         数据
      * @param i_RTemplate     模板
-     * @param i_TemplateCell  模板单元格对象
      * @param i_RSystemValue  系统变量信息
      * @return 
      */
-    public void writeDatafinish(Sheet i_DataSheet ,Object i_Datas ,RTemplate i_RTemplate ,RSystemValue i_RSystemValue);
+    public void writeDatafinish(Sheet i_DataSheet ,List<?> i_Datas ,RTemplate i_RTemplate ,RSystemValue i_RSystemValue);
     
 }
