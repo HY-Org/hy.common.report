@@ -34,6 +34,6 @@ public interface SheetListener extends EventListener
      * @param i_RSystemValue  系统变量信息
      * @return 
      */
-    public String writeDatafinish(Sheet i_DataSheet ,Object i_Datas ,RTemplate i_RTemplate ,RSystemValue i_RSystemValue);
+    public void writeDatafinish(Sheet i_DataSheet ,Object i_Datas ,RTemplate i_RTemplate ,RSystemValue i_RSystemValue);
     
 }
