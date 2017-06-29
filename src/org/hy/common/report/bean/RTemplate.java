@@ -1,5 +1,6 @@
 package org.hy.common.report.bean;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -14,6 +15,7 @@ import org.hy.common.MethodReflect;
 import org.hy.common.PartitionMap;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.error.RTemplateException;
+import org.hy.common.report.event.SheetListener;
 import org.hy.common.report.event.ValueListener;
 import org.hy.common.xml.SerializableDef;
 
@@ -32,6 +34,7 @@ import org.hy.common.xml.SerializableDef;
  *              v3.0  2017-06-25  优化：通过check()方法，预先在生成报表前，对模板信息检查。
  *                                     就不用在生成报表时动态检查模板信息。
  *              v4.0  2017-06-28  添加：支持分页功能。比原Excel页眉、页脚更高级、内容更丰富的分页页眉、分页页脚功能。
+ *              v4.1  2017-06-29  添加：工作表写入数据完成的自定义事件机制，方便用户做后续操作。
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -175,6 +178,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     private Map<String ,ValueListener> valueListeners;
     
+    /** 工作表整体的自定义处理事件 */
+    private List<SheetListener>        sheetListeners;
+    
     
     
     /** 报表模板信息对应的工作表对象(一般只初始加载一次) */
@@ -200,6 +206,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.valueMethods        = new LinkedHashMap<String ,RCell>();
         this.valueNames          = new Hashtable<String ,String>();
         this.valueListeners      = new Hashtable<String ,ValueListener>();
+        this.sheetListeners      = new ArrayList<SheetListener>();
         this.isSafe              = false;
         this.isBig               = true;
         this.isCheck             = true;
@@ -843,6 +850,73 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     public ValueListener getListener(String i_ValueName)
     {
         return this.valueListeners.get(i_ValueName);
+    }
+    
+    
+    
+    /**
+     * 触发所有工作表事件
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-29
+     * @version     v1.0
+     * 
+     * @param i_DataSheet     数据的工作表
+     * @param i_Datas         本行对应的数据
+     * @param i_RTemplate     模板
+     * @param i_TemplateCell  模板单元格对象
+     * @param i_RSystemValue  系统变量信息
+     */
+    public void fireSheetListener(Sheet i_DataSheet ,Object i_Datas ,RTemplate i_RTemplate ,RSystemValue i_RSystemValue)
+    {
+        for (SheetListener v_SheetListener : this.sheetListeners)
+        {
+            try
+            {
+                v_SheetListener.writeDatafinish(i_DataSheet ,i_Datas ,i_RTemplate ,i_RSystemValue);
+            }
+            catch (Exception exce)
+            {
+                exce.printStackTrace();
+            }
+        }
+    }
+    
+    
+    
+    /**
+     * 添加自定义工作表的监听事件的监听者
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-29
+     * @version     v1.0
+     *
+     * @param i_Listener
+     */
+    public void addSheetListener(SheetListener i_Listener)
+    {
+        if ( i_Listener == null )
+        {
+            throw new NullPointerException("SheetListener is null.");
+        }
+        
+        this.sheetListeners.add(i_Listener);
+    }
+    
+    
+    
+    /**
+     * 获取自定义工作表的监听事件的监听者
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-29
+     * @version     v1.0
+     *
+     * @return
+     */
+    public List<SheetListener> getSheetListeners()
+    {
+        return this.sheetListeners;
     }
     
     

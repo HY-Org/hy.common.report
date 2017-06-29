@@ -58,6 +58,7 @@ import org.hy.common.report.event.ValueListener;
  *              v3.0  2017-06-25  优化：通过RTemplate.check()方法，预先在生成报表前，对模板信息检查。
  *                                     就不用在生成报表时动态检查模板信息。
  *              v4.0  2017-06-28  添加：支持分页功能。比原Excel页眉、页脚更高级、内容更丰富的分页页眉、分页页脚功能。
+ *              v4.1  2017-06-29  添加：工作表写入数据完成的自定义事件机制，方便用户做后续操作。
  */
 public class JavaToExcel
 {
@@ -352,6 +353,10 @@ public class JavaToExcel
         {
             writeTotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas ,i_RTemplate);
         }
+        
+        
+        // 触发所有工作表事件
+        i_RTemplate.fireSheetListener(v_DataSheet ,i_Datas ,i_RTemplate ,v_RSystemValue);
         
         return v_DataWorkbook;
     }
