@@ -23,7 +23,7 @@
 			
 			<call name="addListener">
 				<listener class="org.hy.common.report.event.ImageListener">
-					<valueName>:image</valueName>
+					<valueName>image</valueName>
 					<beginRow>4</beginRow>
 					<endRow>18</endRow>
 					<beginColumn>0</beginColumn>
@@ -47,7 +47,7 @@
 			
 			<call name="addListener">
 				<listener class="org.hy.common.report.event.ImageListener">
-					<valueName>:image</valueName>
+					<valueName>image</valueName>
 					<beginRow>4</beginRow>
 					<endRow>18</endRow>
 					<beginColumn>0</beginColumn>

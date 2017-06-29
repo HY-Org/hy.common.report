@@ -186,6 +186,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 按 this.valueSign 生成的系统变量名称 */
     private Map<String ,String>        valueNames;
     
+    /** 是否需要检查 */
+    private boolean                    isCheck;
+    
     
     
     public RTemplate()
@@ -199,6 +202,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.valueListeners      = new Hashtable<String ,ValueListener>();
         this.isSafe              = false;
         this.isBig               = true;
+        this.isCheck             = true;
         this.rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
         this.setValueSign(":");
         this.setTitleUseOnePage(false);
@@ -252,6 +256,8 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     {
         if ( null == this.templateSheet )
         {
+            this.isCheck = true;
+            
             List<Sheet> v_Sheets = ExcelHelp.read(this.excelFileName);
             
             if ( Help.isNull(v_Sheets) )
@@ -282,9 +288,14 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      *
      * @throws RTemplateException
      */
-    public void check() throws RTemplateException
+    public synchronized void check() throws RTemplateException
     {
         this.getTemplateSheet();
+        
+        if ( !this.isCheck )
+        {
+            return;
+        }
         
         if ( this.getRowCountTitle() >= 1 )
         {
@@ -363,6 +374,8 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                 throw new RTemplateException("报表合计的结束行号[" + this.totalEndRow + "]，在模板文件中不存在");
             }
         }
+        
+        this.isCheck = false;
     }
     
     
@@ -489,7 +502,10 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     }
                     else
                     {
-                        System.err.println("变量名称或占位符[" + v_Value + "]未匹配到对应数据结构中的属性值。");
+                        if ( !this.valueListeners.containsKey(v_Value) )
+                        {
+                            System.err.println("变量名称或占位符[" + v_Value + "]未匹配到对应数据结构中的属性值。");
+                        }
                     }
                 }
             }
@@ -590,6 +606,10 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             else if ( $ValueName_PageNo.equalsIgnoreCase(v_ValueName) )
             {
                 v_RValue.setValue(String.valueOf(i_RSystemValue.getPageNo()));
+            }
+            else if ( $ValueName_PageSize.equalsIgnoreCase(v_ValueName) )
+            {
+                v_RValue.setValue(String.valueOf(i_RSystemValue.getPageSize()));
             }
         }
         
@@ -805,7 +825,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             throw new NullPointerException("ValueListener.getValueName() is null.");
         }
         
-        this.valueListeners.put(i_Listener.getValueName() ,i_Listener);
+        this.valueListeners.put(this.getValueSign() + i_Listener.getValueName() ,i_Listener);
     }
     
     
@@ -1331,6 +1351,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.valueNames.put(this.valueSign + $ValueName_RowCount         ,$ValueName_RowCount);
         this.valueNames.put(this.valueSign + $ValueName_RowSubtotalCount ,$ValueName_RowSubtotalCount);
         this.valueNames.put(this.valueSign + $ValueName_PageNo           ,$ValueName_PageNo);
+        this.valueNames.put(this.valueSign + $ValueName_PageSize         ,$ValueName_PageSize);
     }
 
     

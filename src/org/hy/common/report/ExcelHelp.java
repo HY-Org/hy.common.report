@@ -1,5 +1,6 @@
 package org.hy.common.report;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -7,9 +8,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.apache.poi.POIXMLProperties.CoreProperties;
 import org.apache.poi.hpsf.DocumentSummaryInformation;
 import org.apache.poi.hpsf.SummaryInformation;
+import org.apache.poi.hslf.usermodel.HSLFSlideShow;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -20,6 +24,12 @@ import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackagePart;
+import org.apache.poi.openxml4j.opc.PackagePartName;
+import org.apache.poi.openxml4j.opc.PackageRelationship;
+import org.apache.poi.openxml4j.opc.PackageRelationshipTypes;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -27,27 +37,37 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HeaderFooter;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.ShapeTypes;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xslf.usermodel.XSLFSlideShow;
 import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFObjectData;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.apache.poi.xssf.usermodel.XSSFPictureData;
 import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFShape;
+import org.apache.poi.xssf.usermodel.XSSFShapeGroup;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
+import org.apache.poi.xssf.usermodel.XSSFTextBox;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.xmlbeans.XmlCursor;
 import org.hy.common.Date;
 import org.hy.common.ExpireMap;
 import org.hy.common.Help;
 import org.hy.common.PartitionMap;
 import org.hy.common.TablePartition;
+import org.hy.common.file.FileHelp;
 import org.hy.common.report.bean.CacheSheetInfo;
 import org.hy.common.report.bean.ImageAreaInfo;
 import org.hy.common.report.bean.RCell;
@@ -297,10 +317,17 @@ public class ExcelHelp
             }
         }
         
-        FileOutputStream v_Output   = null;
+        FileOutputStream v_Output = null;
         
         try
         {            
+            File v_File = new File(v_SaveFile);
+            v_File = v_File.getParentFile();
+            
+            if ( !v_File.exists() )
+            {
+                v_File.mkdirs();
+            }
             
             v_Output = new FileOutputStream(v_SaveFile);
             i_Workbook.write(v_Output);
@@ -906,7 +933,7 @@ public class ExcelHelp
                 {
                     for (XSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getShapes()) 
                     {
-                        if ( v_Shape instanceof XSSFPicture) 
+                        if ( v_Shape instanceof XSSFPicture ) 
                         {
                             XSSFPicture      v_Picture       = (XSSFPicture) v_Shape;
                             XSSFClientAnchor v_Anchor        = v_Picture.getClientAnchor();
@@ -923,6 +950,88 @@ public class ExcelHelp
                             }
                             
                             v_CacheDatas.add(new ImageAreaInfo(v_Anchor ,v_PictureData));
+                        }
+                        else
+                        {
+//                            XSSFClientAnchor v_Anchor = (XSSFClientAnchor)v_Shape.getAnchor();
+//                            
+//                            if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+//                              && i_AreaEndRow   >= v_Anchor.getRow2() )
+//                            {
+//                                // Nothing.
+//                            }
+//                            else
+//                            {
+//                                continue;
+//                            }
+                            
+//                            if ( v_Shape instanceof XSSFSimpleShape )
+//                            {
+//                                XSSFSimpleShape v_XShape = (XSSFSimpleShape)v_Shape;
+//                                
+//                                System.out.println(v_XShape.getText());
+//                                
+//                              XSSFClientAnchor v_ToAnchor    = new XSSFClientAnchor(v_Anchor.getDx1()
+//                              ,v_Anchor.getDy1()
+//                              ,v_Anchor.getDx2()
+//                              ,v_Anchor.getDy2()
+//                              ,v_Anchor.getCol1()
+//                              ,v_Anchor.getRow1() + i_OffsetRow
+//                              ,v_Anchor.getCol2()
+//                              ,v_Anchor.getRow2() + i_OffsetRow);
+//                              
+//                              
+//                              SXSSFDrawing     v_ToPatriarch = ((SXSSFSheet)i_ToSheet).createDrawingPatriarch();
+//                              XSSFChart v_Chart = (XSSFChart)(v_ToPatriarch.createChart(v_ToAnchor));
+//                              v_Chart.setTitle(v_XShape.getText());
+//                              XSSFDrawing      v_ToDrawing   = (XSSFDrawing)(i_ToSheet.getWorkbook().getSheetAt(0).createDrawingPatriarch());
+//                              XSSFTextBox v_XSSFTextBox = v_ToDrawing.createTextbox(v_ToAnchor);
+//                              v_XSSFTextBox.setText(v_XShape.getText());
+//                            }
+                            
+//                            if ( !(v_Shape instanceof XSSFObjectData) )
+//                            {
+//                                continue;
+//                            }
+//                            
+//                            XSSFObjectData   v_XObjectData = (XSSFObjectData) v_Shape;
+//                            
+//                            SXSSFDrawing     v_ToPatriarch = ((SXSSFSheet)i_ToSheet).createDrawingPatriarch();
+//                            
+//                            XSSFClientAnchor v_ToAnchor    = new XSSFClientAnchor(v_Anchor.getDx1()
+//                                                                                 ,v_Anchor.getDy1()
+//                                                                                 ,v_Anchor.getDx2()
+//                                                                                 ,v_Anchor.getDy2()
+//                                                                                 ,v_Anchor.getCol1()
+//                                                                                 ,v_Anchor.getRow1() + i_OffsetRow
+//                                                                                 ,v_Anchor.getCol2()
+//                                                                                 ,v_Anchor.getRow2() + i_OffsetRow);
+//                            
+//                            v_ToAnchor.setAnchorType(v_Anchor.getAnchorType());
+//                            
+//                            copyClientAnchor(v_Anchor ,v_ToAnchor ,i_OffsetRow);
+//                            
+//                            try
+//                            {
+//                            int v_OleIdx = i_ToSheet.getWorkbook().addOlePackage(v_XObjectData.getObjectData() ,v_XObjectData.getFileName() ,v_XObjectData.getFileName() ,v_XObjectData.getFileName());
+//                            
+//                            FileHelp v_FileHelp = new FileHelp();
+//                            File     v_File     = new File("C:\\Users\\ZhengWei\\Desktop\\qq.png");
+//                            v_FileHelp.copyFile(v_XObjectData.getObjectPart().getInputStream() ,v_File);
+//                            byte [] v_PictureDatas = v_FileHelp.getContentByte(v_XObjectData.getObjectPart().getInputStream());
+//                            int v_PictureIndex = i_ToSheet.getWorkbook().addPicture(v_PictureDatas ,Workbook.PICTURE_TYPE_DIB);
+//                            
+//                            XSSFObjectData v_ToXObjectData = (XSSFObjectData)v_ToPatriarch.createObjectData(v_ToAnchor
+//                                                          ,v_OleIdx
+//                                                          ,v_PictureIndex);
+//                            
+//                            v_ToXObjectData.getObjectPart().load(v_XObjectData.getObjectPart().getInputStream());
+//                            }
+//                            catch (Exception exce)
+//                            {
+//                                exce.printStackTrace();
+//                            }
+//                                                          
                         }
                     }
                 }
@@ -982,6 +1091,137 @@ public class ExcelHelp
                             
                             v_CacheDatas.add(new ImageAreaInfo(v_Anchor ,v_PictureData));
                         }
+//                        else
+//                        {
+//                            if ( v_Shape instanceof XSSFObjectData )
+//                            {
+//                                XSSFObjectData   v_XShape = (XSSFObjectData)   v_Shape;
+//                                XSSFClientAnchor v_Anchor = (XSSFClientAnchor) v_Shape.getAnchor();
+//                                // v_XShape.getDrawing().createObjectData(anchor ,storageId ,pictureIndex)
+//                                if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+//                                  && i_AreaEndRow   >= v_Anchor.getRow2() )
+//                                {
+//                                    // Nothing. 在数据区域内的图片
+//                                }
+//                                else
+//                                {
+//                                    continue;
+//                                }
+//                                
+//                                
+//                                try
+//                                {
+//                                for (PackagePart pPart : v_FromSheet.getWorkbook().getAllEmbedds()) {
+//                                    String contentType = pPart.getContentType();
+//                                    // Excel Workbook - either binary or OpenXML
+//                                    if (contentType.equals("application/vnd.ms-excel")) {
+//                                        HSSFWorkbook embeddedWorkbook = new HSSFWorkbook(pPart.getInputStream());
+//                                    }
+//                                    // Excel Workbook - OpenXML file format
+//                                    else if (contentType.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+//                                        OPCPackage docPackage = OPCPackage.open(pPart.getInputStream());
+//                                        XSSFWorkbook embeddedWorkbook = new XSSFWorkbook(docPackage);
+//                                    }
+//                                    // Word Document - binary (OLE2CDF) file format
+//                                    else if (contentType.equals("application/msword")) {
+//                                        HWPFDocument document = new HWPFDocument(pPart.getInputStream());
+//                                    }
+//                                    // Word Document - OpenXML file format
+//                                    else if (contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+//                                        OPCPackage docPackage = OPCPackage.open(pPart.getInputStream());
+//                                        XWPFDocument document = new XWPFDocument(docPackage);
+//                                    }
+//                                    // PowerPoint Document - binary file format
+//                                    else if (contentType.equals("application/vnd.ms-powerpoint")) {
+//                                        HSLFSlideShow slideShow = new HSLFSlideShow(pPart.getInputStream());
+//                                    }
+//                                    // PowerPoint Document - OpenXML file format
+//                                    else if (contentType.equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")) {
+//                                        OPCPackage docPackage = OPCPackage.open(pPart.getInputStream());
+//                                        XSLFSlideShow slideShow = new XSLFSlideShow(docPackage);
+//                                    }
+//                                    // Any other type of embedded object.
+//                                    else {
+//                                        System.out.println("Unknown Embedded Document: " + contentType);
+//                                        InputStream inputStream = pPart.getInputStream();
+//                                    }
+//                                }
+//                                }
+//                                catch (Exception exce)
+//                                {
+//                                    
+//                                }
+//                                
+//                                
+//                                XmlCursor v_XmlCursor = null;
+//                                QName v_QName = new QName(PackageRelationshipTypes.CORE_PROPERTIES_ECMA376_NS ,"id");
+//                                String v_ = v_XmlCursor.getAttributeText(v_QName);
+//                                
+//                                for (XSSFPictureData v_Pic : v_FromSheet.getWorkbook().getAllPictures())
+//                                {
+//                                    PackagePartName     v_ImgPN      = v_Pic.getPackagePart().getPartName();
+//                                    PackageRelationship v_ImgSheetPR = v_FromSheet.getPackagePart().getRelationship(v_ImgPN.getName());
+//                                    
+//                                    
+//                                    String ext = v_Pic.toString();
+//                                }
+//                            }
+//                            else if ( v_Shape instanceof XSSFSimpleShape )
+//                            {
+//                                XSSFSimpleShape  v_XShape = (XSSFSimpleShape)  v_Shape;
+//                                XSSFClientAnchor v_Anchor = (XSSFClientAnchor) v_Shape.getAnchor();
+//                                
+//                                if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+//                                  && i_AreaEndRow >= v_Anchor.getRow2() )
+//                                {
+//                                    // Nothing. 在数据区域内的图片
+//                                }
+//                                else
+//                                {
+//                                    continue;
+//                                }
+//                                
+//                                FileHelp v_FileHelp = new FileHelp();
+//                                int i=0;
+//                                for (XSSFPictureData v_Pic : v_FromSheet.getWorkbook().getAllPictures())
+//                                {
+//                                    String ext = v_Pic.suggestFileExtension();  
+//                                    
+//                                    try
+//                                    {
+//                                        FileOutputStream out = new FileOutputStream(  
+//                                                "C:\\Users\\ZhengWei\\Desktop\\" + (i++) + "." + ext);  
+//                                        out.write(v_Pic.getData());  
+//                                        out.close(); 
+//                                    }
+//                                    catch (Exception exce)
+//                                    {
+//                                        exce.printStackTrace();
+//                                    }
+//                                }
+//                                
+//                                XSSFClientAnchor v_ToAnchor = new XSSFClientAnchor();
+//                                copyClientAnchor(v_Anchor ,v_ToAnchor ,i_OffsetRow);
+//                                
+//                                if ( ShapeTypes.RECT == v_XShape.getShapeType() )
+//                                {
+//                                    if ( !Help.isNull(v_XShape.getText()) )
+//                                    {
+//                                        XSSFDrawing v_ToPatriarch = ((XSSFSheet) i_ToSheet).createDrawingPatriarch();
+//                                        XSSFTextBox v_TextBox = v_ToPatriarch.createTextbox(v_ToAnchor);
+//                                        v_TextBox.setText(v_XShape.getText());
+//                                    }
+//                                    else
+//                                    {
+//                                        XSSFDrawing v_ToPatriarch = ((XSSFSheet) i_ToSheet).createDrawingPatriarch();
+//                                        
+//                                        
+//                                    }
+//                                }
+//                            }
+//                        }
+                        
+                        
                     }
                 }
                 

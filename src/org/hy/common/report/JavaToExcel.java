@@ -252,8 +252,47 @@ public class JavaToExcel
         v_RSystemValue.setRowCount(        i_Datas.size());
         v_RSystemValue.setRowSubtotalCount(i_Datas.size());
         
-        if ( i_RTemplate.getRowCountTitle() >= 1 )
+        
+        // 计算分页总数量
+        if ( i_RTemplate.getPerPageRowSize() != null && i_RTemplate.getPerPageRowSize() > 0 )
         {
+            if ( v_RTotal.getTitleCount() <= 0 || i_RTemplate.isTitleUseOnePage() )
+            {
+                v_RSystemValue.setPageSize(i_Datas.size());
+            }
+            else
+            {
+                v_RSystemValue.setPageSize(i_Datas.size() - (i_RTemplate.getPerPageRowSize() - v_RTotal.getTitleCount()));
+            }
+            
+            v_RSystemValue.setPageSize((int)Help.division(v_RSystemValue.getPageSize() ,i_RTemplate.getPerPageRowSize()));
+            if ( (i_Datas.size() % i_RTemplate.getPerPageRowSize()) != 0 )
+            {
+                v_RSystemValue.setPageSize(v_RSystemValue.getPageSize() + 1);
+            }
+            
+            if ( v_RTotal.getTitleCount() >= 1 )
+            {
+                v_RSystemValue.setPageSize(v_RSystemValue.getPageSize() + 1);
+            }
+        }
+        else
+        {
+            v_RSystemValue.setPageSize(i_Datas.size());
+        }
+        if ( i_RTemplate.getRowCountSubtotal() >= 1 )
+        {
+            v_RSystemValue.setPageSize(i_Datas.size());
+        }
+        
+        
+        // 写入标题
+        if ( v_RTotal.getTitleCount() >= 1 )
+        {
+            if ( i_RTemplate.isTitleUseOnePage() )
+            {
+                v_RSystemValue.setPageNo(v_RSystemValue.getPageNo() + 1);
+            }
             writeTitle(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(0) ,i_RTemplate);
         }
         
@@ -273,8 +312,8 @@ public class JavaToExcel
             else
             {
                 // 为了减少IF语句的执行次数，分开写成多种情况下的IF大分支
-                if ( i_RTemplate.getRowCountTitlePageHeader() >= 1 
-                  && i_RTemplate.getRowCountTitlePageFooter() >= 1  )
+                if ( v_RTotal.getTitlePageHeaderCount() >= 1 
+                  && v_RTotal.getTitlePageFooterCount() >= 1  )
                 {
                     for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
                     {
@@ -282,7 +321,7 @@ public class JavaToExcel
                         v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
                     }
                 }
-                else if ( i_RTemplate.getRowCountTitlePageHeader() >= 1 )
+                else if ( v_RTotal.getTitlePageHeaderCount() >= 1 )
                 {
                     for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
                     {
@@ -290,7 +329,7 @@ public class JavaToExcel
                         v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
                     }
                 }
-                else if ( i_RTemplate.getRowCountTitlePageFooter() >= 1 )
+                else if ( v_RTotal.getTitlePageFooterCount() >= 1 )
                 {
                     for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
                     {

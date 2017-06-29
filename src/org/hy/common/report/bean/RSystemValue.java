@@ -25,7 +25,10 @@ public class RSystemValue
     
     /** 分页页号的变量名称。下标从1开始 */
     private int pageNo;
-
+    
+    /** 分页总页数的变量名称 */
+    private int pageSize;
+    
     
     
     /**
@@ -114,6 +117,26 @@ public class RSystemValue
     public void setPageNo(int pageNo)
     {
         this.pageNo = pageNo;
+    }
+
+    
+    /**
+     * 获取：分页总页数的变量名称
+     */
+    public int getPageSize()
+    {
+        return pageSize;
+    }
+    
+    
+    /**
+     * 设置：分页总页数的变量名称
+     * 
+     * @param pageSize 
+     */
+    public void setPageSize(int pageSize)
+    {
+        this.pageSize = pageSize;
     }
     
 }
