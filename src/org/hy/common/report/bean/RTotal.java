@@ -30,6 +30,9 @@ public class RTotal
     
     /** 分页页脚标题的总行数（一次解释多次使用，只为了性能） */
     private int titlePageFooterCount;
+    
+    /** 有分页页脚时，最后一页数据量没有填充够一页数据时的填充数据 */
+    private int fillInCount;
 
     
     
@@ -40,6 +43,7 @@ public class RTotal
         this.titleCount           = i_RTemplate.getRowCountTitle();
         this.titlePageHeaderCount = i_RTemplate.getRowCountTitlePageHeader();
         this.titlePageFooterCount = i_RTemplate.getRowCountTitlePageFooter();
+        this.fillInCount          = 0;
     }
     
     
@@ -129,6 +133,26 @@ public class RTotal
     public int getTitlePageFooterCount()
     {
         return titlePageFooterCount;
+    }
+
+    
+    /**
+     * 获取：有分页页脚时，最后一页数据量没有填充够一页数据时的填充数据
+     */
+    public int getFillInCount()
+    {
+        return fillInCount;
+    }
+    
+
+    /**
+     * 设置：有分页页脚时，最后一页数据量没有填充够一页数据时的填充数据
+     * 
+     * @param fillInCount 
+     */
+    public void setFillInCount(int fillInCount)
+    {
+        this.fillInCount = fillInCount;
     }
     
 }

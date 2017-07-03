@@ -59,6 +59,8 @@ import org.hy.common.report.event.ValueListener;
  *                                     就不用在生成报表时动态检查模板信息。
  *              v4.0  2017-06-28  添加：支持分页功能。比原Excel页眉、页脚更高级、内容更丰富的分页页眉、分页页脚功能。
  *              v4.1  2017-06-29  添加：工作表写入数据完成的自定义事件机制，方便用户做后续操作。
+ *                                添加：支持首个分页页眉与其后分页页眉的差异化内容及样式的功能。通过RTemplate.titlePageHeaderFirstWriteByRow参数调节。
+ *              v4.2  2017-07-03  添加：在有分页页脚的情况下，通过填充空白行的方法，将最后一页填充完整，好将分页页脚放在页脚的位置上。
  */
 public class JavaToExcel
 {
@@ -255,7 +257,11 @@ public class JavaToExcel
         
         
         // 计算分页总数量
-        if ( i_RTemplate.getPerPageRowSize() != null && i_RTemplate.getPerPageRowSize() > 0 )
+        if ( i_RTemplate.getRowCountSubtotal() >= 1 )
+        {
+            v_RSystemValue.setPageSize(i_Datas.size());
+        }
+        else if ( v_RTotal.getTitlePageHeaderCount() + v_RTotal.getTitlePageFooterCount() >= 1 )
         {
             if ( v_RTotal.getTitleCount() <= 0 || i_RTemplate.isTitleUseOnePage() )
             {
@@ -263,13 +269,20 @@ public class JavaToExcel
             }
             else if ( i_RTemplate.getTitlePageHeaderFirstWriteByRow() >= 1 )
             {
-                int v_FirstPageDataCount = i_RTemplate.getTitlePageHeaderFirstWriteByRow() + 1 - v_RTotal.getTitlePageFooterCount() - v_RTotal.getTitleCount();
+                int v_FirstPageDataCount = i_RTemplate.getTitlePageHeaderFirstWriteByRow() - v_RTotal.getTitlePageFooterCount() - v_RTotal.getTitleCount();
                 
                 v_RSystemValue.setPageSize(i_Datas.size() - v_FirstPageDataCount);
             }
             else
             {
                 v_RSystemValue.setPageSize(i_Datas.size() - (i_RTemplate.getPerPageRowSize() - v_RTotal.getTitleCount()));
+            }
+            
+            // 计算补填最后一个分页的数量
+            int v_FillInCount = v_RSystemValue.getPageSize() % i_RTemplate.getPerPageRowSize();
+            if ( v_FillInCount >= 1 )
+            {
+                v_RTotal.setFillInCount(i_RTemplate.getPerPageRowSize() - v_FillInCount);
             }
             
             v_RSystemValue.setPageSize((int)Help.division(v_RSystemValue.getPageSize() ,i_RTemplate.getPerPageRowSize()));
@@ -284,10 +297,6 @@ public class JavaToExcel
             }
         }
         else
-        {
-            v_RSystemValue.setPageSize(i_Datas.size());
-        }
-        if ( i_RTemplate.getRowCountSubtotal() >= 1 )
         {
             v_RSystemValue.setPageSize(i_Datas.size());
         }
@@ -360,6 +369,17 @@ public class JavaToExcel
                         writeData(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
                         v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
                     }
+                }
+                
+                // 将一页填充完整，好将分页页脚放在页脚的位置上
+                if ( v_RTotal.getTitlePageFooterCount() >= 1 && v_RTotal.getFillInCount() >= 1 )
+                {
+                    for (int v_RowIndex=0; v_RowIndex<v_RTotal.getFillInCount(); v_RowIndex++)
+                    {
+                        writeDataByBlankSpace(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue, i_RTemplate);
+                    }
+                    
+                    writeTitlePageFooter(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(i_Datas.size() - 1) ,i_RTemplate);
                 }
             }
         }
@@ -488,6 +508,44 @@ public class JavaToExcel
             io_RTotal.addExcelRowIndex(1);
             
             copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+        }
+    }
+    
+    
+    
+    /**
+     * 按报表模板格式写入“空白”数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-07-03
+     * @version     v1.0
+     *
+     * @param i_DataWorkbook   数据工作薄
+     * @param i_DataSheet      数据工作表
+     * @param io_RTotal        将数据写入Excel时的辅助统计信息
+     * @param io_RSystemValue  系统变量信息
+     * @param i_Datas          数据
+     * @param i_RTemplate      报表模板对象
+     */
+    public final static void writeDataByBlankSpace(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, RTemplate i_RTemplate) 
+    {
+        Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
+        int   v_TemplateRowCount = i_RTemplate.getRowCountData();
+        int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
+        
+        copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
+        copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
+        
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
+        {
+            int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
+            Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
+            
+            int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
+            Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
+            io_RTotal.addExcelRowIndex(1);
+            
+            copyRowByBlankSpace(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow);
         }
     }
     
@@ -1131,6 +1189,52 @@ public class JavaToExcel
                 }
             }
         }
+    }
+    
+    
+    
+    /**
+     * 行复制功能（空白行的复制，即只复制格式和固定文字，不填充数据）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-07-03
+     * @version     v1.0
+     *
+     * @param i_RTemplate      模板
+     * @param i_TemplateRow    模板中的行对象
+     * @param i_DataWorkbook   数据工作薄
+     * @param io_RTotal        将数据写入Excel时的辅助统计信息。
+     * @param io_RSystemValue  系统变量信息
+     * @param i_DataRow        数据中的行对象
+     * @param i_Datas          本行对应的数据
+     * 
+     * @return                 返回本方法内一共生成多少新行。
+     */
+    public final static int copyRowByBlankSpace(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow) 
+    {
+        i_DataRow.setHeight(    i_TemplateRow.getHeight());
+        i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
+        
+        int v_CellCount = i_TemplateRow.getLastCellNum();
+        
+        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
+        {
+            Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
+            if ( v_TemplateCell == null )
+            {
+                continue;
+            }
+            
+            Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
+            if ( v_DataCell == null ) 
+            {
+                v_DataCell = i_DataRow.createCell(v_CellIndex);
+            }
+            
+            copyCellByBlankSpace(i_RTemplate ,v_TemplateCell ,i_DataWorkbook ,v_DataCell ,io_RSystemValue);
+        }
+        
+        return 0;
     }
     
     
@@ -1908,6 +2012,82 @@ public class JavaToExcel
     
     
     /**
+     * 复制单位格（空白行的复制，即只复制格式和固定文字，不填充数据）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-07-03
+     * @version     v1.0
+     *
+     * @param i_RTemplate      模板对象
+     * @param i_TemplateCell   模板中的单元格对象
+     * @param i_DataWorkbook   数据工作薄
+     * @param i_DataCell       数据中的单元格对象
+     * @param io_RSystemValue 系统变量信息
+     * @param i_Datas          本行对应的数据
+     * @param io_RValue        小计循环的迭代器
+     * @return                 
+     */
+    public final static void copyCellByBlankSpace(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,RSystemValue io_RSystemValue)
+    {
+        // 复制样式
+        i_DataCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,i_TemplateCell.getCellStyle().getIndex()));
+        
+        // 复制评论
+        copyComment(i_RTemplate ,i_TemplateCell ,i_DataWorkbook ,i_DataCell);
+        
+        // 复制数据类型
+        CellType v_CellType = i_TemplateCell.getCellTypeEnum();
+        // i_DataCell.setCellType(v_CellType);  不能在此统一设置，原因是：下面代码对类型是有浮动的
+        
+        if ( v_CellType == CellType.NUMERIC ) 
+        {
+            i_DataCell.setCellType(v_CellType);
+            
+            if ( HSSFDateUtil.isCellDateFormatted(i_TemplateCell) ) 
+            {
+                i_DataCell.setCellValue(i_TemplateCell.getDateCellValue());
+            } 
+            else 
+            {
+                i_DataCell.setCellValue(i_TemplateCell.getNumericCellValue());
+            }
+        }
+        else if ( v_CellType == CellType.STRING ) 
+        {
+            RichTextString v_TemplateRichText = i_TemplateCell.getRichStringCellValue();
+            String         v_ValueName        = v_TemplateRichText.toString();
+            
+            if ( i_RTemplate.isExists(v_ValueName) )
+            {
+                i_DataCell.setCellType(v_CellType);
+                i_DataCell.setCellValue("");
+            }
+            else 
+            {
+                i_DataCell.setCellType(v_CellType);
+                copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell);
+            }
+        } 
+        else if ( v_CellType == CellType.BOOLEAN ) 
+        {
+            i_DataCell.setCellType(v_CellType);
+            i_DataCell.setCellValue(i_TemplateCell.getBooleanCellValue());
+        } 
+        else if ( v_CellType == CellType.FORMULA) 
+        {
+            i_DataCell.setCellType(v_CellType);
+            i_DataCell.setCellFormula(i_TemplateCell.getCellFormula());
+        } 
+        else 
+        {
+            // Nothing.
+            i_DataCell.setCellType(v_CellType);
+        }
+    }
+    
+    
+    
+    /**
      * 复制单位格
      * 
      * @author      ZhengWei(HY)
@@ -1933,10 +2113,12 @@ public class JavaToExcel
         
         // 复制数据类型
         CellType v_CellType = i_TemplateCell.getCellTypeEnum();
-        i_DataCell.setCellType(v_CellType);
+        // i_DataCell.setCellType(v_CellType);  不能在此统一设置，原因是：下面代码对类型是有浮动的
         
         if ( v_CellType == CellType.NUMERIC ) 
         {
+            i_DataCell.setCellType(v_CellType);
+            
             if ( HSSFDateUtil.isCellDateFormatted(i_TemplateCell) ) 
             {
                 i_DataCell.setCellValue(i_TemplateCell.getDateCellValue());
@@ -1973,16 +2155,19 @@ public class JavaToExcel
                         }
                         else
                         {
+                            i_DataCell.setCellType(v_CellType);
                             i_DataCell.setCellValue(v_RValue.getValue().toString());
                         }
                     }
                     else
                     {
+                        i_DataCell.setCellType(v_CellType);
                         i_DataCell.setCellValue(v_RValue.getValue().toString());
                     }
                 }
                 else
                 {
+                    i_DataCell.setCellType(v_CellType);
                     i_DataCell.setCellValue("");
                 }
                 
@@ -1990,20 +2175,24 @@ public class JavaToExcel
             }
             else 
             {
+                i_DataCell.setCellType(v_CellType);
                 copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell);
             }
         } 
         else if ( v_CellType == CellType.BOOLEAN ) 
         {
+            i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellValue(i_TemplateCell.getBooleanCellValue());
         } 
         else if ( v_CellType == CellType.FORMULA) 
         {
+            i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellFormula(i_TemplateCell.getCellFormula());
         } 
         else 
         {
             // Nothing.
+            i_DataCell.setCellType(v_CellType);
         }
         
         return io_RValue == null ? new RValue() : io_RValue;

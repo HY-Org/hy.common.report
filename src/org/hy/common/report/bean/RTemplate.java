@@ -35,6 +35,7 @@ import org.hy.common.xml.SerializableDef;
  *                                     就不用在生成报表时动态检查模板信息。
  *              v4.0  2017-06-28  添加：支持分页功能。比原Excel页眉、页脚更高级、内容更丰富的分页页眉、分页页脚功能。
  *              v4.1  2017-06-29  添加：工作表写入数据完成的自定义事件机制，方便用户做后续操作。
+ *                                添加：支持首个分页页眉与其后分页页眉的差异化内容及样式的功能。通过RTemplate.titlePageHeaderFirstWriteByRow参数调节。
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
