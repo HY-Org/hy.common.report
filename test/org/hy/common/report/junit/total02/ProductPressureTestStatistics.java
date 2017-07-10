@@ -26,11 +26,6 @@ public class ProductPressureTestStatistics
 {
 
     /**
-     * 注释内容
-     */
-    private static final long serialVersionUID = -850368071175133003L;
-
-    /**
      * 操作者
      */
     private String operator;
