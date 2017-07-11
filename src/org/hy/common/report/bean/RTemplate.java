@@ -42,6 +42,7 @@ import org.hy.common.xml.SerializableDef;
  *                                添加：支持首个分页页眉与其后分页页眉的差异化内容及样式的功能。通过RTemplate.titlePageHeaderFirstWriteByRow参数调节。
  *              v4.3  2017-07-11  发现：copyRow(...)方法中，当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况。
  *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
+ *                                     因此将rowAccessWindowSize的默认值扩大10倍，如果还不够大，请自行设置rowAccessWindowSize的大小。
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {

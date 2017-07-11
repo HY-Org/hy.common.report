@@ -1293,6 +1293,15 @@ public class JavaToExcel
                     v_ForSize = v_RValue.getIteratorSize();
                     v_IsFor   = true;
                     
+                    if ( v_ForSize > i_RTemplate.getRowAccessWindowSize() )
+                    {
+                        if ( v_DataSheet instanceof SXSSFSheet )
+                        {
+                            // 当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况
+                            throw new RuntimeException("RTemplate.RowAccessWindowSize(" + i_RTemplate.getRowAccessWindowSize() + ") too small. Please expand it.");
+                        }
+                    }
+                    
                     io_RSystemValue.setRowSubtotalCount(io_RSystemValue.getRowSubtotalCount() + v_ForSize - 1);
                     
                     // 创建待合并的新行
