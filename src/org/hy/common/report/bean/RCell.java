@@ -16,6 +16,9 @@ import org.hy.common.MethodReflect;
 public class RCell
 {
     
+    /** 变量名称 */
+    private String        valueName;
+    
     /** 反射单元格值的方法 */
     private MethodReflect valueMethod;
     
@@ -39,6 +42,14 @@ public class RCell
     public RCell()
     {
         this(null ,null ,null);
+    }
+    
+    
+    public RCell(String i_ValueName)
+    {
+        this(null ,null ,null);
+        
+        this.valueName = i_ValueName;
     }
     
     
@@ -70,6 +81,27 @@ public class RCell
     }
     
     
+    
+    /**
+     * 获取：变量名称
+     */
+    public String getValueName()
+    {
+        return valueName;
+    }
+
+    
+    /**
+     * 设置：变量名称
+     * 
+     * @param valueName 
+     */
+    public void setValueName(String valueName)
+    {
+        this.valueName = valueName;
+    }
+
+
     /**
      * 是否为For循环
      */

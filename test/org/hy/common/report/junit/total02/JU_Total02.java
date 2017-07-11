@@ -73,7 +73,7 @@ public class JU_Total02 implements JUBase<ProductPressureTestStatisticsGroup>
             v_Org.setOtherTestNum("" + i);
             v_Org.setOtherWorkhourTotal("" + i);
             
-            for (int x=1; x<=i*2; x++)
+            for (int x=1; x<=i; x++)
             {
                 ProductPressureTestStatistics v_Staff = new ProductPressureTestStatistics();
                 
@@ -102,7 +102,14 @@ public class JU_Total02 implements JUBase<ProductPressureTestStatisticsGroup>
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTotalSubtotal");
         
-        ExcelHelp.save(ReportHelp.toExcel("小计、分组数据的报表演示" ,getDatas(10) ,v_RTemplate).getWorkbook() ,"/Users/hy/Downloads/TotalSubtotal");
+        
+        List<ProductPressureTestStatisticsGroup> v_Datas = getDatas(500);
+        
+        Date v_BeginTime = new Date();
+        ExcelHelp.save(ReportHelp.toExcel("小计、分组数据的报表演示" ,v_Datas ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\TotalSubtotal");
+        Date v_EndTime  = new Date();
+        
+        System.out.println(v_EndTime.getTime() - v_BeginTime.getTime());
     }
     
 }

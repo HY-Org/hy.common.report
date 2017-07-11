@@ -61,6 +61,8 @@ import org.hy.common.report.event.ValueListener;
  *              v4.1  2017-06-29  添加：工作表写入数据完成的自定义事件机制，方便用户做后续操作。
  *                                添加：支持首个分页页眉与其后分页页眉的差异化内容及样式的功能。通过RTemplate.titlePageHeaderFirstWriteByRow参数调节。
  *              v4.2  2017-07-03  添加：在有分页页脚的情况下，通过填充空白行的方法，将最后一页填充完整，好将分页页脚放在页脚的位置上。
+ *              v4.3  2017-07-11  发现：copyRow(...)方法中，当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况。
+ *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
  */
 public class JavaToExcel
 {
@@ -1265,6 +1267,7 @@ public class JavaToExcel
         int     v_CellCount = i_TemplateRow.getLastCellNum();
         int     v_ForSize   = 1;
         boolean v_IsFor     = false;
+        Sheet   v_DataSheet = i_DataRow.getSheet();
         
         for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
         {
@@ -1295,9 +1298,11 @@ public class JavaToExcel
                     // 创建待合并的新行
                     for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                     {
-                        if ( i_DataRow.getSheet().getRow(v_RowIndex + v_RowNum) == null )
+                        Row v_Row = v_DataSheet.getRow(v_RowNum + v_RowIndex);
+                        
+                        if ( v_Row == null )
                         {
-                            i_DataRow.getSheet().createRow(v_RowIndex + v_RowNum);
+                            v_Row = v_DataSheet.createRow(v_RowNum + v_RowIndex);
                             io_RTotal.addExcelRowIndex(1);
                         }
                     }
@@ -1308,7 +1313,8 @@ public class JavaToExcel
                         // 创建待合并的新列，并设置单元格的格式
                         for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                         {
-                            Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex);
+                            // 当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况
+                            Row  v_DataForRow  = v_DataSheet.getRow(v_RowNum + v_RowIndex);
                             Cell v_DataForCell = v_DataForRow.getCell(v_MergedColIndex);
                             
                             if ( v_DataForCell == null ) 
@@ -1319,7 +1325,7 @@ public class JavaToExcel
                             v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
                         }
                         
-                        ExcelHelp.addMergedRegions(i_DataRow.getSheet() 
+                        ExcelHelp.addMergedRegions(v_DataSheet
                                                   ,v_RowNum 
                                                   ,v_RowNum + v_ForSize - 1 
                                                   ,v_MergedColIndex 
@@ -1331,7 +1337,7 @@ public class JavaToExcel
                 // 填充小计分项数据
                 for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                 {
-                    Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex);
+                    Row  v_DataForRow  = v_DataSheet.getRow(v_RowNum + v_RowIndex);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
                     if ( v_DataForCell == null ) 
@@ -1347,7 +1353,7 @@ public class JavaToExcel
                 // 创建待合并的新列，并设置单元格的格式
                 for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
                 {
-                    Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex);
+                    Row  v_DataForRow  = v_DataSheet.getRow(v_RowNum + v_RowIndex);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
                     if ( v_DataForCell == null ) 
@@ -1358,7 +1364,7 @@ public class JavaToExcel
                     v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
                 }
                 
-                ExcelHelp.addMergedRegions(i_DataRow.getSheet()
+                ExcelHelp.addMergedRegions(v_DataSheet
                                           ,v_RowNum
                                           ,v_RowNum + v_ForSize - 1
                                           ,v_CellIndex

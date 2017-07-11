@@ -89,6 +89,7 @@ import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProp
  *                                优化：通过isSafe参数控制，放弃一些非必要的效验来提高性能
  *                                优化：启用对SXSSFWorkbook工作薄的支持大数据量
  *              v3.0  2017-06-22  添加：文档摘要的复制功能
+ *              v3.1  2017-07-11  修正：分组统计合并单位格时，当待合并的单位格是一个时，其实是无须合并的。发现人：李浩
  */
 public class ExcelHelp
 {
@@ -776,6 +777,11 @@ public class ExcelHelp
      */
     public final static void addMergedRegions(Sheet i_Sheet ,int i_FirstRow ,int i_LastRow ,int i_FirstColumn ,int i_LastColumn ,boolean i_IsSafe)
     {
+        if ( i_FirstRow == i_LastRow && i_FirstColumn == i_LastColumn )
+        {
+            return;
+        }
+        
         CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow 
                                                         ,i_LastRow 
                                                         ,i_FirstColumn
@@ -809,6 +815,11 @@ public class ExcelHelp
      */
     public final static void addMergedRegionsSafe(Sheet i_Sheet ,int i_FirstRow ,int i_LastRow ,int i_FirstColumn ,int i_LastColumn)
     {
+        if ( i_FirstRow == i_LastRow && i_FirstColumn == i_LastColumn )
+        {
+            return;
+        }
+        
         CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow 
                                                         ,i_LastRow 
                                                         ,i_FirstColumn
@@ -835,6 +846,11 @@ public class ExcelHelp
      */
     public final static void addMergedRegionsUnsafe(Sheet i_Sheet ,int i_FirstRow ,int i_LastRow ,int i_FirstColumn ,int i_LastColumn)
     {
+        if ( i_FirstRow == i_LastRow && i_FirstColumn == i_LastColumn )
+        {
+            return;
+        }
+        
         CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow 
                                                         ,i_LastRow 
                                                         ,i_FirstColumn

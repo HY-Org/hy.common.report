@@ -1,18 +1,22 @@
 package org.hy.common.report.bean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.PartitionMap;
+import org.hy.common.StringHelp;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.event.SheetListener;
@@ -36,6 +40,8 @@ import org.hy.common.xml.SerializableDef;
  *              v4.0  2017-06-28  添加：支持分页功能。比原Excel页眉、页脚更高级、内容更丰富的分页页眉、分页页脚功能。
  *              v4.1  2017-06-29  添加：工作表写入数据完成的自定义事件机制，方便用户做后续操作。
  *                                添加：支持首个分页页眉与其后分页页眉的差异化内容及样式的功能。通过RTemplate.titlePageHeaderFirstWriteByRow参数调节。
+ *              v4.3  2017-07-11  发现：copyRow(...)方法中，当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况。
+ *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -68,6 +74,20 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     /** 横向扩展--表示从上到下的方向，一列或多列为一个对象数据 */
     public final static Integer       $Direction_Horizontal          = 1;
+    
+    
+    
+    /** 变量名称的前置限定符 */
+    private final static String       $Value_LimitBefore             = "{";
+    
+    /** 变量名称的后置限定符 */
+    private final static String       $Value_LimitEnd                = "}";
+    
+    /** 通过正则表达式解释变量名的前半部分。整体格式如：{:Key} */
+    private final static String       $Pattern_Values_Before         = "\\" + $Value_LimitBefore;
+    
+    /** 通过正则表达式解释变量名的后半部分。整体格式如：{:Key} */
+    private final static String       $Pattern_Values_End            = "[\\w\\._\\[\\]$]+\\" + $Value_LimitEnd;
     
     
     
@@ -202,7 +222,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     private Sheet                      templateSheet; 
     
     /** 解释的值的反射方法集合(一般只初始加载一次) */
-    private Map<String ,RCell>         valueMethods;
+    private Map<String ,RCellGroup>    valueMethods;
     
     /** 按 this.valueSign 生成的系统变量名称 */
     private Map<String ,String>        valueNames;
@@ -218,14 +238,14 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.direction           = 0;
         this.templateSheet       = null;
         this.excelVersion        = null;
-        this.valueMethods        = new LinkedHashMap<String ,RCell>();
+        this.valueMethods        = new LinkedHashMap<String ,RCellGroup>();
         this.valueNames          = new Hashtable<String ,String>();
         this.valueListeners      = new Hashtable<String ,ValueListener>();
         this.sheetListeners      = new ArrayList<SheetListener>();
         this.isSafe              = false;
         this.isBig               = true;
         this.isCheck             = true;
-        this.rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
+        this.rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE * 10;
         this.titlePageHeaderFirstWriteByRow           = 0;
         this.titlePageHeaderFirstWriteByRealDataCount = 0;
         this.titlePageHeaderRate                      = 0;
@@ -431,6 +451,8 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             PartitionMap<String ,RCell> v_ExcelDatas = ExcelHelp.readDatas(this.getTemplateSheet());
             List<String>                v_TempDatas  = Help.toListKeys(v_ExcelDatas);
             Class<?>                    v_JavaClass  = Help.forName(this.dataClass);
+            String                      v_PatternKey = $Pattern_Values_Before + this.valueSign + $Pattern_Values_End;
+            Pattern                     v_Pattern    = Pattern.compile(v_PatternKey);
             
             for (int i=v_TempDatas.size()-1; i>=0; i--)
             {
@@ -448,12 +470,39 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     continue;
                 }
                 
+                
+                List<String> v_Values = new ArrayList<String>();
+                RCellGroup   v_RCellG = null;
                 if ( v_Value.length() >= this.valueSign.length() + 1 && v_Value.startsWith(this.valueSign) )
                 {
-                    RCell     v_RCell     = new RCell();
-                    String    v_ValueName = v_Value.substring(this.valueSign.length());
+                    v_Values.add(v_Value);
+                    v_RCellG = new RCellGroup(v_Value ,false);
+                }
+                else
+                {
+                    Matcher v_Matcher = v_Pattern.matcher(v_Value);
+                    while( v_Matcher.find() )
+                    {  
+                        v_Values.add(v_Value.substring(v_Matcher.start() ,v_Matcher.end()));
+                    }
+                    
+                    v_RCellG = new RCellGroup(v_Value ,true);
+                }
+                
+                for (String v_ItemValue : v_Values)
+                {
+                    String v_ValueName = "";
+                    if ( v_RCellG.isReplaceMode() )
+                    {
+                        v_ValueName = v_ItemValue.substring($Value_LimitBefore.length() + this.valueSign.length() ,v_ItemValue.length() - $Value_LimitEnd.length());
+                    }
+                    else
+                    {
+                        v_ValueName = v_ItemValue.substring(this.valueSign.length());
+                    }
                     String [] v_Fors      = v_ValueName.split("\\[\\]");
                     boolean   v_IsPull    = false;
+                    RCell     v_RCell     = new RCell(v_ItemValue);
                     
                     if ( v_Fors.length >= 2 )
                     {
@@ -534,7 +583,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     
                     if ( v_IsPull )
                     {
-                        this.valueMethods.put(v_Value ,v_RCell);
+                        v_RCellG.add(v_RCell);
                     }
                     else
                     {
@@ -543,6 +592,11 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                             System.err.println(Help.NVL(this.getName() ,this.getExcelFileName()) + "：变量名称或占位符[" + v_Value + "]未匹配到对应数据结构中的属性值。");
                         }
                     }
+                }
+                
+                if ( v_RCellG.size() >= 1 )
+                {
+                    this.valueMethods.put(v_Value ,v_RCellG);
                 }
             }
         }
@@ -587,31 +641,69 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     public RValue getValue(String i_ValueName ,Object i_Datas ,RSystemValue i_RSystemValue ,RValue io_RValue)
     {
-        RCell  v_RCell  = this.valueMethods.get(i_ValueName);
-        RValue v_RValue = io_RValue != null ? io_RValue : new RValue();
+        RCellGroup  v_RCellG = this.valueMethods.get(i_ValueName);
+        RValue      v_RValue = io_RValue != null ? io_RValue : new RValue();
         
-        if ( null != v_RCell && null != v_RCell.getValueMethod() )
+        if ( !Help.isNull(v_RCellG) )
         {
             try
             {
-                if ( v_RCell.isFor() )
+                // 替换模式
+                if ( v_RCellG.isReplaceMode() )
                 {
-                    if ( v_RValue.getIterator() == null )
+                    Map<String ,Object> v_Replaces  = new HashMap<String ,Object>();
+                    int                 v_PlusValue = 0;
+                    
+                    for (RCell v_RCell : v_RCellG)
                     {
-                        v_RValue.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
-                        v_RValue.setIteratorSize(    (int)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
+                        if ( v_RCell.isFor() )
+                        {
+                            if ( v_RValue.getIterator() == null )
+                            {
+                                v_RValue.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
+                                v_RValue.setIteratorSize(    (int)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
+                            }
+                            
+                            if ( v_RValue.getIterator().hasNext() )
+                            {
+                                Object v_ForElement = v_RValue.getIterator().next();
+                                v_Replaces.put(v_RCell.getValueName() ,v_RCell.getValueMethod().invokeForInstance(v_ForElement));
+                                v_PlusValue = 1;
+                            }
+                        }
+                        else
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,v_RCell.getValueMethod().invokeForInstance(i_Datas));
+                        }
                     }
                     
-                    if ( v_RValue.getIterator().hasNext() )
-                    {
-                        Object v_ForElement = v_RValue.getIterator().next();
-                        v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(v_ForElement));
-                        v_RValue.setIteratorIndex(v_RValue.getIteratorIndex() + 1);
-                    }
+                    v_RValue.setIteratorIndex(v_RValue.getIteratorIndex() + v_PlusValue);
+                    v_RValue.setValue(StringHelp.replaceAll(v_RCellG.getCellInfo() ,v_Replaces));
                 }
+                // 填充模式
                 else
                 {
-                    v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(i_Datas));
+                    RCell v_RCell = v_RCellG.get(0);
+                    
+                    if ( v_RCell.isFor() )
+                    {
+                        if ( v_RValue.getIterator() == null )
+                        {
+                            v_RValue.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
+                            v_RValue.setIteratorSize(    (int)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
+                        }
+                        
+                        if ( v_RValue.getIterator().hasNext() )
+                        {
+                            Object v_ForElement = v_RValue.getIterator().next();
+                            v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(v_ForElement));
+                            v_RValue.setIteratorIndex(v_RValue.getIteratorIndex() + 1);
+                        }
+                    }
+                    else
+                    {
+                        v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(i_Datas));
+                    }
                 }
             }
             catch (Exception exce)
@@ -668,7 +760,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     public boolean setValue(String i_ValueName ,Object i_Value ,Object io_RowObj)
     {
-        RCell v_RCell = this.valueMethods.get(i_ValueName);
+        RCell v_RCell = this.valueMethods.get(i_ValueName).get(0);
         
         if ( null != v_RCell && null != v_RCell.getValueSetMethod() )
         {

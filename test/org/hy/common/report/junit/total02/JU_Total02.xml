@@ -19,6 +19,7 @@
             <dataEndRow>4</dataEndRow>
             <subtotalBeginRow>5</subtotalBeginRow>   <!-- 报表小计的开始行号（包括此行）。下标从零开始 -->
             <subtotalEndRow>5</subtotalEndRow>       <!-- 报表小计的结束行号（包括此行）。下标从零开始 -->
+            <rowAccessWindowSize>10000</rowAccessWindowSize>
             <dataClass>org.hy.common.report.junit.total02.ProductPressureTestStatisticsGroup</dataClass>
         </template>
 

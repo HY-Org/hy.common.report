@@ -13,15 +13,12 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
-	<classpathentry kind="lib" path="lib/poi-3.16-beta2.jar" sourcepath="E:/迅雷下载/poi-src-3.16-20170419.zip"/>
-	<classpathentry kind="lib" path="lib/poi-excelant-3.16-beta2.jar"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-3.16-beta2.jar" sourcepath="E:/迅雷下载/poi-src-3.16-20170419.zip"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.16-beta2.jar" sourcepath="E:/迅雷下载/poi-src-3.16-20170419.zip">
-		<attributes>
-			<attribute name="source_encoding" value="UTF-8"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/poi-scratchpad-3.16-beta2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/XJava"/>
+	<classpathentry kind="lib" path="lib/poi-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-examples-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-excelant-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-scratchpad-3.17-beta1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
