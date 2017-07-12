@@ -54,6 +54,10 @@ public class JU_Total02 implements JUBase<ProductPressureTestStatisticsGroup>
         {
             ProductPressureTestStatisticsGroup v_Org = new ProductPressureTestStatisticsGroup();
             
+            v_Org.setStartDate( Date.getNowTime().getFull());
+            v_Org.setEndDate(   Date.getNowTime().getFull());
+            v_Org.setExportTime(Date.getNowTime().getFull());
+            
             v_Org.setOperator("" + i);
             v_Org.setList(new ArrayList<ProductPressureTestStatistics>());
             v_Org.setFirstTestNum("" + i);
@@ -86,6 +90,13 @@ public class JU_Total02 implements JUBase<ProductPressureTestStatisticsGroup>
                 v_Staff.setTestMedium("" + x);
                 v_Staff.setTestDate(new Date().getFullMilli_ID());
                 
+                v_Staff.setProPressTestList(new ArrayList<ProductPressureTestStatistics>());
+                
+                for (int y=1; y<=3; y++)
+                {
+                    v_Staff.getProPressTestList().add(v_Staff);
+                }
+                
                 v_Org.getList().add(v_Staff);
             }
             
@@ -103,7 +114,7 @@ public class JU_Total02 implements JUBase<ProductPressureTestStatisticsGroup>
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportTotalSubtotal");
         
         
-        List<ProductPressureTestStatisticsGroup> v_Datas = getDatas(500);
+        List<ProductPressureTestStatisticsGroup> v_Datas = getDatas(100);
         
         Date v_BeginTime = new Date();
         ExcelHelp.save(ReportHelp.toExcel("小计、分组数据的报表演示" ,v_Datas ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\TotalSubtotal");

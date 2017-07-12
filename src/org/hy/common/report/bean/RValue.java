@@ -1,6 +1,7 @@
 package org.hy.common.report.bean;
 
 import java.util.Iterator;
+import java.util.List;
 
 
 
@@ -17,16 +18,22 @@ public class RValue
 {
     
     /** 反射出来的值 */
-    private Object      value;
+    private Object        value;
     
     /** 小计循环的迭代器对象 */
-    private Iterator<?> iterator;
+    private Iterator<?>   iterator;
     
     /** 小计循环的迭代器的元素总个数 */
-    private int         iteratorSize;
+    private int           iteratorSize;
     
     /** 小计循环的迭代器的次数。下标从 0 开始 */
-    private int         iteratorIndex;
+    private int           iteratorIndex;
+    
+    /** 下一级的通过单位格上的表达式反射出来的值信息  */
+    private RValue        nextRValue;
+    
+    /** 值的组信息。与RCellGroup配合使用 */
+    private List<RValue>  valueGroup;
     
     
     
@@ -48,6 +55,8 @@ public class RValue
         this.iterator      = i_Iterator;
         this.iteratorSize  = 0;
         this.iteratorIndex = -1;
+        this.nextRValue    = null;
+        this.valueGroup    = null;
     }
 
     
@@ -128,6 +137,46 @@ public class RValue
     public void setIteratorIndex(int iteratorIndex)
     {
         this.iteratorIndex = iteratorIndex;
+    }
+    
+    
+    /**
+     * 获取：下一级的通过单位格上的表达式反射出来的值信息
+     */
+    public RValue getNextRValue()
+    {
+        return nextRValue;
+    }
+
+    
+    /**
+     * 设置：下一级的通过单位格上的表达式反射出来的值信息
+     * 
+     * @param nextRValue 
+     */
+    public void setNextRValue(RValue nextRValue)
+    {
+        this.nextRValue = nextRValue;
+    }
+
+
+    /**
+     * 获取：值的组信息。与RCellGroup配合使用
+     */
+    public List<RValue> getValueGroup()
+    {
+        return valueGroup;
+    }
+    
+    
+    /**
+     * 设置：值的组信息。与RCellGroup配合使用
+     * 
+     * @param valueGroup 
+     */
+    public void setValueGroup(List<RValue> valueGroup)
+    {
+        this.valueGroup = valueGroup;
     }
     
 }

@@ -37,6 +37,9 @@ public class RCell
     /** 反射单元格值的Settter方法。用于Excel转为Java对象时 */
     private MethodReflect valueSetMethod;
     
+    /** 下一级的标记的解释信息 */
+    private RCell nextRCell;
+    
     
     
     public RCell()
@@ -67,6 +70,7 @@ public class RCell
         this.rowNo              = i_RowNo;
         this.cellNo             = i_CellNo;
         this.valueSetMethod     = null;
+        this.nextRCell          = null;
     }
     
     
@@ -229,6 +233,26 @@ public class RCell
     public void setValueSetMethod(MethodReflect valueSetMethod)
     {
         this.valueSetMethod = valueSetMethod;
+    }
+
+    
+    /**
+     * 获取：下一级的标记的解释信息
+     */
+    public RCell getNextRCell()
+    {
+        return nextRCell;
+    }
+
+    
+    /**
+     * 设置：下一级的标记的解释信息
+     * 
+     * @param nextRCell 
+     */
+    public void setNextRCell(RCell nextRCell)
+    {
+        this.nextRCell = nextRCell;
     }
 
 }

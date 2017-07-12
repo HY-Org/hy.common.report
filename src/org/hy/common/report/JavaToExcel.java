@@ -281,21 +281,30 @@ public class JavaToExcel
             }
             
             // 计算补填最后一个分页的数量
-            int v_FillInCount = v_RSystemValue.getPageSize() % i_RTemplate.getPerPageRowSize();
-            if ( v_FillInCount >= 1 )
+            if ( v_RSystemValue.getPageSize() >=0  )
             {
-                v_RTotal.setFillInCount(i_RTemplate.getPerPageRowSize() - v_FillInCount);
+                int v_FillInCount = v_RSystemValue.getPageSize() % i_RTemplate.getPerPageRowSize();
+                if ( v_FillInCount >= 1 )
+                {
+                    v_RTotal.setFillInCount(i_RTemplate.getPerPageRowSize() - v_FillInCount);
+                }
+                
+                v_RSystemValue.setPageSize((int)Help.division(v_RSystemValue.getPageSize() ,i_RTemplate.getPerPageRowSize()));
+                if ( (i_Datas.size() % i_RTemplate.getPerPageRowSize()) != 0 )
+                {
+                    v_RSystemValue.setPageSize(v_RSystemValue.getPageSize() + 1);
+                }
+                
+                if ( v_RTotal.getTitleCount() >= 1 )
+                {
+                    v_RSystemValue.setPageSize(v_RSystemValue.getPageSize() + 1);
+                }
             }
-            
-            v_RSystemValue.setPageSize((int)Help.division(v_RSystemValue.getPageSize() ,i_RTemplate.getPerPageRowSize()));
-            if ( (i_Datas.size() % i_RTemplate.getPerPageRowSize()) != 0 )
+            else
             {
-                v_RSystemValue.setPageSize(v_RSystemValue.getPageSize() + 1);
-            }
-            
-            if ( v_RTotal.getTitleCount() >= 1 )
-            {
-                v_RSystemValue.setPageSize(v_RSystemValue.getPageSize() + 1);
+                // 首页都填充不满一页数据的情况
+                v_RTotal.setFillInCount(Math.abs(v_RSystemValue.getPageSize()));
+                v_RSystemValue.setPageSize(1);
             }
         }
         else
@@ -1303,6 +1312,51 @@ public class JavaToExcel
                     }
                     
                     io_RSystemValue.setRowSubtotalCount(io_RSystemValue.getRowSubtotalCount() + v_ForSize - 1);
+                    
+                    if ( v_RValue.getNextRValue() != null )
+                    {
+                        v_ForSize = v_RValue.getNextRValue().getIteratorSize();
+                        
+                        // 创建待合并的新行
+                        for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
+                        {
+                            Row v_Row = v_DataSheet.getRow(v_RowNum + v_RowIndex);
+                            
+                            if ( v_Row == null )
+                            {
+                                v_Row = v_DataSheet.createRow(v_RowNum + v_RowIndex);
+                                io_RTotal.addExcelRowIndex(1);
+                            }
+                        }
+                        
+                        // 合并
+                        for (int v_MergedColIndex=0; v_MergedColIndex<v_CellIndex; v_MergedColIndex++)
+                        {
+                            // 创建待合并的新列，并设置单元格的格式
+                            for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)
+                            {
+                                // 当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况
+                                Row  v_DataForRow  = v_DataSheet.getRow(v_RowNum + v_RowIndex);
+                                Cell v_DataForCell = v_DataForRow.getCell(v_MergedColIndex);
+                                
+                                if ( v_DataForCell == null ) 
+                                {
+                                    v_DataForCell = v_DataForRow.createCell(v_MergedColIndex);
+                                }
+                                
+                                v_DataForCell.setCellStyle(i_DataWorkbook.getCellStyle(i_RTemplate ,v_TemplateCell.getCellStyle().getIndex()));
+                            }
+                            
+                            ExcelHelp.addMergedRegions(v_DataSheet
+                                                      ,v_RowNum 
+                                                      ,v_RowNum + v_ForSize - 1 
+                                                      ,v_MergedColIndex 
+                                                      ,v_MergedColIndex 
+                                                      ,i_RTemplate.getIsSafe());
+                        }
+                    }
+                    
+                    v_ForSize = v_RValue.getIteratorSize();
                     
                     // 创建待合并的新行
                     for (int v_RowIndex=1; v_RowIndex<v_ForSize; v_RowIndex++)

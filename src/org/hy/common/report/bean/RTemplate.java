@@ -558,6 +558,64 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                         {
                             // 有可能没有Setter方法
                         }
+                        
+                        
+                        // 第三级集合的解释
+                        if ( v_Fors.length >= 3 )
+                        {
+                            v_RCell.setNextRCell(new RCell());
+                            v_ForMR         = new MethodReflect(v_ForElementJavaClass ,v_Fors[1].substring(1) ,true ,MethodReflect.$NormType_Getter);
+                            v_Iterator      = "";
+                            v_IteratorSize  = "";
+                            v_GenericsIndex = 0;
+                            
+                            if (      MethodReflect.isExtendImplement(v_ForMR.getReturnType() ,List.class) )
+                            {
+                                v_Iterator      = v_Fors[1].substring(1) + ".$iterator";
+                                v_IteratorSize  = v_Fors[1].substring(1) + ".$size";
+                                v_ValueName     = v_Fors[2].substring(1);
+                                v_GenericsIndex = 0;
+                            }
+                            else if ( MethodReflect.isExtendImplement(v_ForMR.getReturnType() ,Set.class) )
+                            {
+                                v_Iterator      = v_Fors[1].substring(1) + ".$iterator";
+                                v_IteratorSize  = v_Fors[1].substring(1) + ".$size";
+                                v_ValueName     = v_Fors[2].substring(1);
+                                v_GenericsIndex = 0;
+                            }
+                            else if ( MethodReflect.isExtendImplement(v_ForMR.getReturnType() ,Map.class) )
+                            {
+                                v_Iterator      = v_Fors[1].substring(1) + ".$values.$iterator";
+                                v_IteratorSize  = v_Fors[1].substring(1) + ".$size";
+                                v_ValueName     = v_Fors[2].substring(1);
+                                v_GenericsIndex = 1;
+                            }
+                            
+                            v_RCell.getNextRCell().setIteratorSizeMethod(new MethodReflect(v_ForElementJavaClass ,v_IteratorSize ,true ,MethodReflect.$NormType_Getter));
+                            v_RCell.getNextRCell().setIteratorMethod(    new MethodReflect(v_ForElementJavaClass ,v_Iterator     ,true ,MethodReflect.$NormType_Getter));
+                            
+                            v_ForElementJavaClass = MethodReflect.getGenericsReturn(v_ForMR.getReturnMethod() ,v_GenericsIndex).getGenericType();
+                            
+                            try
+                            {
+                                v_RCell.getNextRCell().setValueMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Getter));
+                                v_IsPull = true;
+                            }
+                            catch (Exception exce)
+                            {
+                                // 有可能没有Getter方法
+                            }
+                            
+                            try
+                            {
+                                v_RCell.getNextRCell().setValueSetMethod(new MethodReflect(v_ForElementJavaClass ,v_ValueName ,true ,MethodReflect.$NormType_Setter));
+                                v_IsPull = true;
+                            }
+                            catch (Exception exce)
+                            {
+                                // 有可能没有Setter方法
+                            }
+                        }
                     }
                     else
                     {
@@ -621,8 +679,18 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     public boolean isExists(String i_ValueName)
     {
-        return i_ValueName.startsWith(this.valueSign);
-        //return this.valueMethods.containsKey(i_ValueName) || this.valueNames.containsKey(i_ValueName);
+        if ( i_ValueName.startsWith(this.valueSign) )
+        {
+            return true;
+        }
+        else if ( this.valueMethods.containsKey(i_ValueName) || this.valueNames.containsKey(i_ValueName) )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     
     
@@ -653,23 +721,36 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                 if ( v_RCellG.isReplaceMode() )
                 {
                     Map<String ,Object> v_Replaces  = new HashMap<String ,Object>();
-                    int                 v_PlusValue = 0;
                     
-                    for (RCell v_RCell : v_RCellG)
+                    if ( Help.isNull(v_RValue.getValueGroup()) )
                     {
+                        v_RValue.setValueGroup(new ArrayList<RValue>(v_RCellG.size()));
+                        
+                        for (int v_Index=0; v_Index<v_RCellG.size(); v_Index++)
+                        {
+                            RValue v_RValueChild = new RValue();
+                            v_RValue.getValueGroup().add(v_RValueChild);
+                        }
+                    }
+                    
+                    for (int v_Index=0; v_Index<v_RCellG.size(); v_Index++)
+                    {
+                        RCell  v_RCell       = v_RCellG.get(v_Index);
+                        RValue v_RValueChild = v_RValue.getValueGroup().get(v_Index);
+                        
                         if ( v_RCell.isFor() )
                         {
-                            if ( v_RValue.getIterator() == null )
+                            if ( v_RValueChild.getIterator() == null )
                             {
-                                v_RValue.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
-                                v_RValue.setIteratorSize(    (int)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
+                                v_RValueChild.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
+                                v_RValueChild.setIteratorSize(    (int)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
                             }
                             
-                            if ( v_RValue.getIterator().hasNext() )
+                            if ( v_RValueChild.getIterator().hasNext() )
                             {
-                                Object v_ForElement = v_RValue.getIterator().next();
+                                Object v_ForElement = v_RValueChild.getIterator().next();
                                 v_Replaces.put(v_RCell.getValueName() ,v_RCell.getValueMethod().invokeForInstance(v_ForElement));
-                                v_PlusValue = 1;
+                                v_RValueChild.setIteratorIndex(v_RValueChild.getIteratorIndex() + 1);
                             }
                         }
                         else
@@ -678,7 +759,6 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                         }
                     }
                     
-                    v_RValue.setIteratorIndex(v_RValue.getIteratorIndex() + v_PlusValue);
                     v_RValue.setValue(StringHelp.replaceAll(v_RCellG.getCellInfo() ,v_Replaces));
                 }
                 // 填充模式
@@ -697,13 +777,49 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                         if ( v_RValue.getIterator().hasNext() )
                         {
                             Object v_ForElement = v_RValue.getIterator().next();
-                            v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(v_ForElement));
+                            if ( v_RCell.getNextRCell() != null )
+                            {
+                                v_RValue.setValue(v_ForElement);
+                            }
+                            else
+                            {
+                                v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(v_ForElement));
+                            }
                             v_RValue.setIteratorIndex(v_RValue.getIteratorIndex() + 1);
                         }
                     }
                     else
                     {
                         v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(i_Datas));
+                    }
+                    
+                    if ( v_RCell.getNextRCell() != null && v_RValue.getValue() != null )
+                    {
+                        if ( v_RValue.getNextRValue() == null )
+                        {
+                            v_RValue.setNextRValue(new RValue());
+                        }
+                        
+                        if ( v_RCell.getNextRCell().isFor() )
+                        {
+                            if ( v_RValue.getNextRValue().getIterator() == null )
+                            {
+                                v_RValue.getNextRValue().setIterator((Iterator<?>)v_RCell.getNextRCell().getIteratorMethod()    .invokeForInstance(v_RValue.getValue()));
+                                v_RValue.getNextRValue().setIteratorSize(    (int)v_RCell.getNextRCell().getIteratorSizeMethod().invokeForInstance(v_RValue.getValue()));
+                            }
+                            
+                            if ( v_RValue.getNextRValue().getIterator().hasNext() )
+                            {
+                                Object v_ForElement = v_RValue.getNextRValue().getIterator().next();
+                                v_RValue.getNextRValue().setValue(v_RCell.getNextRCell().getValueMethod().invokeForInstance(v_ForElement));
+                                v_RValue.setValue(v_RValue.getNextRValue().getValue());
+                                v_RValue.getNextRValue().setIteratorIndex(v_RValue.getNextRValue().getIteratorIndex() + 1);
+                            }
+                        }
+                        else
+                        {
+                            v_RValue.getNextRValue().setValue(v_RCell.getNextRCell().getValueMethod().invokeForInstance(v_RValue.getValue()));
+                        }
                     }
                 }
             }
