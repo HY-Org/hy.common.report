@@ -390,7 +390,7 @@ public class JavaToExcel
                         writeDataByBlankSpace(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue, i_RTemplate);
                     }
                     
-                    writeTitlePageFooter(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(i_Datas.size() - 1) ,i_RTemplate);
+                    writeTitlePageFooter(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.size() >= 1 ? i_Datas.get(i_Datas.size() - 1) : i_RTemplate.newObject() ,i_RTemplate);
                 }
             }
         }
