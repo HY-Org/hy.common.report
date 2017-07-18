@@ -877,7 +877,17 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     public boolean setValue(String i_ValueName ,Object i_Value ,Object io_RowObj)
     {
-        RCell v_RCell = this.valueMethods.get(i_ValueName).get(0);
+        if ( Help.isNull(i_ValueName) )
+        {
+            return false;
+        }
+        
+        RCellGroup v_RCellG = this.valueMethods.get(i_ValueName);
+        if ( v_RCellG == null )
+        {
+            return false;
+        }
+        RCell v_RCell = v_RCellG.get(0);
         
         if ( null != v_RCell && null != v_RCell.getValueSetMethod() )
         {
