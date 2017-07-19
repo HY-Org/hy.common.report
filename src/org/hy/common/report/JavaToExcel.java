@@ -63,6 +63,7 @@ import org.hy.common.report.event.ValueListener;
  *              v4.2  2017-07-03  添加：在有分页页脚的情况下，通过填充空白行的方法，将最后一页填充完整，好将分页页脚放在页脚的位置上。
  *              v4.3  2017-07-11  发现：copyRow(...)方法中，当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况。
  *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
+ *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能 
  */
 public class JavaToExcel
 {
@@ -2219,8 +2220,17 @@ public class JavaToExcel
                     {
                         if ( Help.isNumber(v_RValue.getValue().toString()) )
                         {
-                            i_DataCell.setCellType(CellType.NUMERIC);
-                            i_DataCell.setCellValue(Double.parseDouble(v_RValue.getValue().toString()));
+                            // 有小数点的才按数值处理。这样做的好处是：在Excel模板中设置数值格式（如3位小数）不会对整数生效。即，将10显示为 10.000
+                            if ( i_RTemplate.getIsIntegerShowDecimal() || v_RValue.getValue().toString().indexOf(".") >= 0 )
+                            {
+                                i_DataCell.setCellType(CellType.NUMERIC);
+                                i_DataCell.setCellValue(Double.parseDouble(v_RValue.getValue().toString()));
+                            }
+                            else
+                            {
+                                i_DataCell.setCellType(v_CellType);
+                                i_DataCell.setCellValue(v_RValue.getValue().toString());
+                            }
                         }
                         else
                         {

@@ -43,6 +43,7 @@ import org.hy.common.xml.SerializableDef;
  *              v4.3  2017-07-11  发现：copyRow(...)方法中，当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况。
  *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
  *                                     因此将rowAccessWindowSize的默认值扩大10倍，如果还不够大，请自行设置rowAccessWindowSize的大小。
+ *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能 
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -187,6 +188,17 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 值的标记。默认为一个冒号：":" */
     private String                     valueSign;
     
+    /** 
+     * 是否将整数显示为小数的形式。需Excel模板配合设置单元格的格式为：小数格式。
+     * 
+     *  Excel模板配合设置单元格的格式为：显示3位小数时
+     *    1. 当为true 时，10会显示为 10.000
+     *    2. 当为false时，10还是显示为 10
+     * 
+     * 默认为：false
+     */
+    private boolean                    isIntegerShowDecimal;
+    
     /** 是要安全？还是要性能（默认为：性能） */
     private boolean                    isSafe;
     
@@ -235,18 +247,19 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     public RTemplate()
     {
-        this.sheetIndex          = 0;
-        this.direction           = 0;
-        this.templateSheet       = null;
-        this.excelVersion        = null;
-        this.valueMethods        = new LinkedHashMap<String ,RCellGroup>();
-        this.valueNames          = new Hashtable<String ,String>();
-        this.valueListeners      = new Hashtable<String ,ValueListener>();
-        this.sheetListeners      = new ArrayList<SheetListener>();
-        this.isSafe              = false;
-        this.isBig               = true;
-        this.isCheck             = true;
-        this.rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE * 10;
+        this.sheetIndex           = 0;
+        this.direction            = 0;
+        this.templateSheet        = null;
+        this.excelVersion         = null;
+        this.valueMethods         = new LinkedHashMap<String ,RCellGroup>();
+        this.valueNames           = new Hashtable<String ,String>();
+        this.valueListeners       = new Hashtable<String ,ValueListener>();
+        this.sheetListeners       = new ArrayList<SheetListener>();
+        this.isIntegerShowDecimal = false;
+        this.isSafe               = false;
+        this.isBig                = true;
+        this.isCheck              = true;
+        this.rowAccessWindowSize  = SXSSFWorkbook.DEFAULT_WINDOW_SIZE * 10;
         this.titlePageHeaderFirstWriteByRow           = 0;
         this.titlePageHeaderFirstWriteByRealDataCount = 0;
         this.titlePageHeaderRate                      = 0;
@@ -1726,8 +1739,43 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.valueNames.put(this.valueSign + $ValueName_PageNo           ,$ValueName_PageNo);
         this.valueNames.put(this.valueSign + $ValueName_PageSize         ,$ValueName_PageSize);
     }
+    
+    
+    
+    /**
+     * 获取：是否将整数显示为小数的形式。需Excel模板配合设置单元格的格式为：小数格式。
+     * 
+     *  Excel模板配合设置单元格的格式为：显示3位小数时
+     *    1. 当为true 时，10会显示为 10.000
+     *    2. 当为false时，10还是显示为 10
+     * 
+     * 默认为：false
+     */
+    public boolean getIsIntegerShowDecimal()
+    {
+        return isIntegerShowDecimal;
+    }
+
 
     
+    /**
+     * 设置：是否将整数显示为小数的形式。需Excel模板配合设置单元格的格式为：小数格式。
+     * 
+     *  Excel模板配合设置单元格的格式为：显示3位小数时
+     *    1. 当为true 时，10会显示为 10.000
+     *    2. 当为false时，10还是显示为 10
+     * 
+     * 默认为：false
+     * 
+     * @param isIntegerShowDecimal 
+     */
+    public void setIntegerShowDecimal(boolean isIntegerShowDecimal)
+    {
+        this.isIntegerShowDecimal = isIntegerShowDecimal;
+    }
+    
+
+
     /**
      * 获取：是要安全？还是要性能（默认为：性能）
      */
