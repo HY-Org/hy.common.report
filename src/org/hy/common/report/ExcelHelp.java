@@ -66,6 +66,7 @@ import org.hy.common.Date;
 import org.hy.common.ExpireMap;
 import org.hy.common.Help;
 import org.hy.common.PartitionMap;
+import org.hy.common.StringHelp;
 import org.hy.common.TablePartition;
 import org.hy.common.file.FileHelp;
 import org.hy.common.report.bean.CacheSheetInfo;
@@ -100,6 +101,9 @@ public class ExcelHelp
     private static ExpireMap<CacheSheetInfo ,List<CellRangeAddress>> $MergedRegionsAreaCaches = new ExpireMap<CacheSheetInfo ,List<CellRangeAddress>>();
     
     private static ExpireMap<CacheSheetInfo ,List<ImageAreaInfo>>    $ImageAreaCaches         = new ExpireMap<CacheSheetInfo ,List<ImageAreaInfo>>();
+    
+    /** 判定小数格式的正则 */
+    private static final String $Decimal = "0\\.0+";
     
     
     
@@ -257,7 +261,14 @@ public class ExcelHelp
                     
                     if ( !Help.isNull(v_Value) )
                     {
-                        v_Ret.putRow(v_Value.trim() ,new RCell(v_RowNo ,v_ColumnNo));
+                        RCell        v_RCell    = new RCell(v_RowNo ,v_ColumnNo);
+                        List<String> v_Decimals = StringHelp.getString(v_Cell.getCellStyle().getDataFormatString() ,$Decimal);
+                        if ( !Help.isNull(v_Decimals) )
+                        {
+                            v_RCell.setDecimal(v_Decimals.get(0).split("\\.")[1].length());
+                        }
+                        
+                        v_Ret.putRow(v_Value.trim() ,v_RCell);
                     }
                 }
                 else if ( v_Cell.getCellTypeEnum() == CellType.NUMERIC )

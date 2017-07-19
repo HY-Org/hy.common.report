@@ -43,7 +43,7 @@ import org.hy.common.xml.SerializableDef;
  *              v4.3  2017-07-11  发现：copyRow(...)方法中，当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况。
  *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
  *                                     因此将rowAccessWindowSize的默认值扩大10倍，如果还不够大，请自行设置rowAccessWindowSize的大小。
- *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能 
+ *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -189,7 +189,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     private String                     valueSign;
     
     /** 
-     * 是否将整数显示为小数的形式。需Excel模板配合设置单元格的格式为：小数格式。
+     * 是否将整数显示为小数的形式。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)。
      * 
      *  Excel模板配合设置单元格的格式为：显示3位小数时
      *    1. 当为true 时，10会显示为 10.000
@@ -198,6 +198,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 默认为：false
      */
     private boolean                    isIntegerShowDecimal;
+    
+    /** 单元格信息。Map.key为: "行号,列号" */
+    private Map<String ,RCell>         cells;
     
     /** 是要安全？还是要性能（默认为：性能） */
     private boolean                    isSafe;
@@ -256,6 +259,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.valueListeners       = new Hashtable<String ,ValueListener>();
         this.sheetListeners       = new ArrayList<SheetListener>();
         this.isIntegerShowDecimal = false;
+        this.cells                = new HashMap<String ,RCell>();
         this.isSafe               = false;
         this.isBig                = true;
         this.isCheck              = true;
@@ -467,6 +471,15 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             Class<?>                    v_JavaClass  = Help.forName(this.dataClass);
             String                      v_PatternKey = $Pattern_Values_Before + this.valueSign + $Pattern_Values_End;
             Pattern                     v_Pattern    = Pattern.compile(v_PatternKey);
+            
+            this.cells = new HashMap<String ,RCell>();
+            for (List<RCell> v_Cells : v_ExcelDatas.values())
+            {
+                for (RCell v_Cell : v_Cells)
+                {
+                    this.cells.put(v_Cell.getRowNo() + "," + v_Cell.getCellNo() ,v_Cell);
+                }
+            }
             
             for (int i=v_TempDatas.size()-1; i>=0; i--)
             {
@@ -711,6 +724,31 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         {
             return false;
         }
+    }
+    
+    
+    
+    /**
+     * 获取单元格保留小数的位数（Excel设置单元格的格式）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-07-19
+     * @version     v1.0
+     *
+     * @param i_RowNo
+     * @param i_CellNo
+     * @return
+     */
+    public Integer getDecimal(int i_RowNo ,int i_CellNo)
+    {
+        RCell v_RCell = this.cells.get(i_RowNo + "," + i_CellNo);
+        
+        if ( v_RCell != null )
+        {
+            return v_RCell.getDecimal();
+        }
+        
+        return null;
     }
     
     

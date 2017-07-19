@@ -34,6 +34,9 @@ public class RCell
     /** 列号。下标从0开始 */
     private Integer cellNo;
     
+    /** 小数位数 */
+    private Integer decimal;
+    
     /** 反射单元格值的Settter方法。用于Excel转为Java对象时 */
     private MethodReflect valueSetMethod;
     
@@ -69,6 +72,7 @@ public class RCell
         this.iteratorSizeMethod = null;
         this.rowNo              = i_RowNo;
         this.cellNo             = i_CellNo;
+        this.decimal            = null;
         this.valueSetMethod     = null;
         this.nextRCell          = null;
     }
@@ -81,6 +85,7 @@ public class RCell
         this.iteratorSizeMethod = i_IteratorSizeMethod;
         this.rowNo              = null;
         this.cellNo             = null;
+        this.decimal            = null;
         this.valueSetMethod     = null;
     }
     
@@ -214,8 +219,28 @@ public class RCell
     {
         this.cellNo = cellNo;
     }
+    
+    
+    /**
+     * 获取：小数位数
+     */
+    public Integer getDecimal()
+    {
+        return decimal;
+    }
 
     
+    /**
+     * 设置：小数位数
+     * 
+     * @param decimal 
+     */
+    public void setDecimal(Integer decimal)
+    {
+        this.decimal = decimal;
+    }
+    
+
     /**
      * 获取：反射单元格值的Settter方法。用于Excel转为Java对象时
      */
