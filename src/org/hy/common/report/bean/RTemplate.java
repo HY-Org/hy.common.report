@@ -501,6 +501,13 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     {
                         v_ValueName = v_ItemValue.substring(this.valueSign.length());
                     }
+                    
+                    if ( this.valueNames.containsKey(this.getValueSign() + v_ValueName) )
+                    {
+                        v_RCellG.add(new RCell(v_ItemValue));
+                        continue;
+                    }
+                    
                     String [] v_Fors      = v_ValueName.split("\\[\\]");
                     boolean   v_IsPull    = false;
                     RCell     v_RCell     = new RCell(v_ItemValue);
@@ -646,7 +653,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     }
                     else
                     {
-                        if ( !this.valueListeners.containsKey(v_Value) )
+                        if ( !this.valueListeners.containsKey(this.getValueSign() + v_ValueName) )
                         {
                             System.err.println(Help.NVL(this.getName() ,this.getExcelFileName()) + "：变量名称或占位符[" + v_Value + "]未匹配到对应数据结构中的属性值。");
                         }
