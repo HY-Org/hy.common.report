@@ -57,6 +57,7 @@ public class JU_Total03 implements JUBase<PartSprayRecordGroup>
             PartSprayRecordGroup v_Org = new PartSprayRecordGroup();
             
             v_Org.setDepartName("" + i);
+            v_Org.setBeginDate( Date.getNowTime().getFull());
             v_Org.setEndDate(   Date.getNowTime().getFull());
             v_Org.setExportTime(Date.getNowTime().getFull());
             
