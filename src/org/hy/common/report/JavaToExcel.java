@@ -398,7 +398,7 @@ public class JavaToExcel
         
         if ( i_RTemplate.getRowCountTotal() >= 1 )
         {
-            writeTotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas ,i_RTemplate);
+            writeTotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.size() >= 1 ? i_Datas.get(i_Datas.size() - 1) : i_RTemplate.newObject() ,i_RTemplate);
         }
         
         
