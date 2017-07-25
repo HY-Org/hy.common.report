@@ -384,14 +384,17 @@ public class JavaToExcel
                 }
                 
                 // 将一页填充完整，好将分页页脚放在页脚的位置上
-                if ( v_RTotal.getTitlePageFooterCount() >= 1 && v_RTotal.getFillInCount() >= 1 )
+                if ( v_RTotal.getFillInCount() >= 1 )
                 {
                     for (int v_RowIndex=0; v_RowIndex<v_RTotal.getFillInCount(); v_RowIndex++)
                     {
                         writeDataByBlankSpace(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue, i_RTemplate);
                     }
                     
-                    writeTitlePageFooter(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.size() >= 1 ? i_Datas.get(i_Datas.size() - 1) : i_RTemplate.newObject() ,i_RTemplate);
+                    if ( v_RTotal.getTitlePageFooterCount() >= 1 )
+                    {
+                        writeTitlePageFooter(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.size() >= 1 ? i_Datas.get(i_Datas.size() - 1) : i_RTemplate.newObject() ,i_RTemplate);
+                    }
                 }
             }
         }
