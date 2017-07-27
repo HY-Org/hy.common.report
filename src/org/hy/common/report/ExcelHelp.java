@@ -72,6 +72,7 @@ import org.hy.common.file.FileHelp;
 import org.hy.common.report.bean.CacheSheetInfo;
 import org.hy.common.report.bean.ImageAreaInfo;
 import org.hy.common.report.bean.RCell;
+import org.hy.common.report.bean.RWorkbook;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProperties;
 
@@ -289,6 +290,24 @@ public class ExcelHelp
         }
         
         return v_Ret;
+    }
+    
+    
+    
+    /**
+     * 保存工作薄
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-07-27
+     * @version     v1.0
+     *
+     * @param i_Workbook  工作薄对象
+     * @param i_SaveFile  保存的全路径+文件名称。当没有写扩展名称或类型不匹配时，自动识别添加
+     * @return            保存成功返回：文件全路径+文件名称；异常返回：null
+     */
+    public final static String save(RWorkbook i_Workbook ,String i_SaveFile)
+    {
+        return save(i_Workbook.getWorkbook() ,i_SaveFile);
     }
     
     

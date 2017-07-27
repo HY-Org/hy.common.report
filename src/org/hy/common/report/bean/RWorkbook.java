@@ -62,6 +62,23 @@ public class RWorkbook
     
     
     /**
+     * 保存工作薄
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-07-27
+     * @version     v1.0
+     *
+     * @param i_SaveFile  保存的全路径+文件名称。当没有写扩展名称或类型不匹配时，自动识别添加
+     * @return            保存成功返回：文件全路径+文件名称；异常返回：null
+     */
+    public final String save(String i_SaveFile)
+    {
+        return ExcelHelp.save(this ,i_SaveFile);
+    }
+    
+    
+    
+    /**
      * 获取模板指定位置上的已转为本工作薄的字体
      * 
      * 目前看，只用于2003的版本(*.xls)，2007的版本是可以直接 setFont() 方法设置字体的。
