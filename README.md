@@ -17,6 +17,8 @@
 	* [横向扩展的模板举例](#横向扩展的模板举例)
 * 使用小技巧
 	* [小数格式的处理](#小数格式的处理)
+	* [添加高级筛选](#添加高级筛选)
+	* [冻结标题](#冻结标题)
 * [特别鸣谢](#特别鸣谢)
 
 
@@ -422,6 +424,51 @@ Help.print(v_Datas);
   
   2. 小数格式0.###：最多显示三位小数。如1.23，显示为1.23
 
+
+
+
+
+
+添加高级筛选
+------
+将Excel模板的配置文件中的isExcelFilter参数设置为true，即可自动在生成的报表中添加高级筛选功能。如下配置写法
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="报表对象ID">
+			<excelFileName>模板文件的路径</excelFileName>
+			<titleBeginRow>定义报表标题在模板中位置</titleBeginRow>
+			<dataBeginRow>定义报表数据在模板中位置</dataBeginRow>
+			<dataClass>定义报表数据对应的Java类型</dataClass>
+			
+			<!-- 添加高级筛选功能 -->
+			<isExcelFilter>true</isExcelFilter>
+		</template>
+        
+	</xconfig>
+	
+</config>
+```
+
+![image](images/ExcelFilter.png)
+
+
+
+
+
+冻结标题
+------
+想冻结标题？很简单，只要在模板中设置一下，即可在生成的报表中生效。
 
 
 
