@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -32,6 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Help;
+import org.hy.common.StringHelp;
 import org.hy.common.report.bean.RPosition;
 import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
@@ -64,6 +66,7 @@ import org.hy.common.report.event.ValueListener;
  *              v4.3  2017-07-11  发现：copyRow(...)方法中，当isBig=true、 rowAccessWindowSize<v_ForSize 时，v_DataForRow会出现空的情况。
  *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
  *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
+ *              v4.5  2017-07-31  添加：Excel高级筛选，由报表配置文件参数(isExcelFilter)控制生成的功能
  */
 public class JavaToExcel
 {
@@ -402,6 +405,17 @@ public class JavaToExcel
         if ( i_RTemplate.getRowCountTotal() >= 1 )
         {
             writeTotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.size() >= 1 ? i_Datas.get(i_Datas.size() - 1) : i_RTemplate.newObject() ,i_RTemplate);
+        }
+        
+        
+        // 是否添加Excel高级筛选功能
+        if ( i_RTemplate.getIsExcelFilter() && !Help.isNull(i_Datas) )
+        {
+            String v_Range = "A" + (i_RTemplate.getDataBeginRow())
+                           + ":" 
+                           + StringHelp.toABC26(v_DataSheet.getRow(0).getPhysicalNumberOfCells() - 1)
+                           + v_DataSheet.getPhysicalNumberOfRows();
+            v_DataSheet.setAutoFilter(CellRangeAddress.valueOf(v_Range));
         }
         
         

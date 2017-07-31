@@ -44,6 +44,7 @@ import org.hy.common.xml.SerializableDef;
  *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
  *                                     因此将rowAccessWindowSize的默认值扩大10倍，如果还不够大，请自行设置rowAccessWindowSize的大小。
  *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
+ *              v4.5  2017-07-31  添加：Excel高级筛选，由报表配置文件参数(isExcelFilter)控制生成的功能
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -199,6 +200,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     private boolean                    isIntegerShowDecimal;
     
+    /** 是否添加Excel高级筛选功能。默认为：false */
+    private boolean                    isExcelFilter; 
+    
     /** 单元格信息。Map.key为: "行号,列号" */
     private Map<String ,RCell>         cells;
     
@@ -259,6 +263,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.valueListeners       = new Hashtable<String ,ValueListener>();
         this.sheetListeners       = new ArrayList<SheetListener>();
         this.isIntegerShowDecimal = false;
+        this.isExcelFilter        = false;
         this.cells                = new HashMap<String ,RCell>();
         this.isSafe               = false;
         this.isBig                = true;
@@ -1807,11 +1812,33 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 
      * @param isIntegerShowDecimal 
      */
-    public void setIntegerShowDecimal(boolean isIntegerShowDecimal)
+    public void setIsIntegerShowDecimal(boolean isIntegerShowDecimal)
     {
         this.isIntegerShowDecimal = isIntegerShowDecimal;
     }
     
+
+    
+    /**
+     * 获取：是否添加Excel高级筛选功能。默认为：false
+     */
+    public boolean getIsExcelFilter()
+    {
+        return isExcelFilter;
+    }
+    
+
+    
+    /**
+     * 设置：是否添加Excel高级筛选功能。默认为：false
+     * 
+     * @param isExcelFilter 
+     */
+    public void setIsExcelFilter(boolean isExcelFilter)
+    {
+        this.isExcelFilter = isExcelFilter;
+    }
+
 
 
     /**
