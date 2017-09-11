@@ -1,5 +1,8 @@
 package org.hy.common.report.bean;
 
+import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,6 +19,8 @@ import org.hy.common.report.ExcelHelp;
  * @author      ZhengWei(HY)
  * @createDate  2017-03-18
  * @version     v1.0
+ *              v2.0  2017-09-11  1. 添加外界(第三方)创建样式、字体，并通过标记ID保存，方便二次引用的功能。
+ *                                   建议人：李浩
  */
 public class RWorkbook
 {
@@ -42,6 +47,22 @@ public class RWorkbook
      * 每个分区表中的主键是：模板单元格样式的位置索引
      */
     private TablePartitionRID<RTemplate ,CellStyle> cellStyles;
+    
+    /**
+     * 第三方用户动态通过克隆创建出来的字体。
+     * 
+     * Map.key    为第三方自行定义的标识
+     * Map.value  为 this.fonts 中的分区主键
+     */
+    private Map<String ,Short> fontsByCopy;
+    
+    /**
+     * 第三方用户动态通过克隆创建出来的样式。
+     * 
+     * Map.key    为第三方自行定义的标识
+     * Map.value  为 this.cellStyles 中的分区主键
+     */
+    private Map<String ,Short> cellStylesByCopy;
 
     
     
@@ -138,6 +159,76 @@ public class RWorkbook
         }
         
         return v_DataCellStyle;
+    }
+    
+    
+    
+    /**
+     * 创建一个新的样式，样式从i_DataCell中克隆出来。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-09-11
+     * @version     v1.0
+     *
+     * @param i_ID         标记ID。由调用者设定
+     * @param i_DataCell   被克隆的单元格样式
+     * @return
+     */
+    public synchronized CellStyle getCellStyleByCopy(String i_ID ,Cell i_DataCell ,RTemplate i_RTemplate)
+    {
+        Short     v_CellStyleID = this.cellStylesByCopy.get(i_ID);
+        CellStyle v_CellStyle   = null;
+        
+        if ( v_CellStyleID == null )
+        {
+            v_CellStyle = this.workbook.createCellStyle();
+            
+            ExcelHelp.copyCellStyle(i_DataCell.getCellStyle(), v_CellStyle);
+            
+            this.cellStyles.putRow(i_RTemplate ,String.valueOf(v_CellStyle.getIndex()) ,v_CellStyle);
+            this.cellStylesByCopy.put(i_ID ,v_CellStyle.getIndex());
+        }
+        else
+        {
+            v_CellStyle = this.getCellStyle(i_RTemplate ,v_CellStyleID);
+        }
+        
+        return v_CellStyle;
+    }
+    
+    
+    
+    /**
+     * 创建一个新的字体，字体从i_DataCell中克隆出来。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-09-11
+     * @version     v1.0
+     *
+     * @param i_ID         标记ID。由调用者设定
+     * @param i_DataCell   被克隆的单元格样式
+     * @return
+     */
+    public synchronized Font getFontByCopy(String i_ID ,Cell i_DataCell ,RTemplate i_RTemplate)
+    {
+        Short v_FontID = this.fontsByCopy.get(i_ID);
+        Font  v_Font   = null;
+        
+        if ( v_FontID == null )
+        {
+            v_Font = this.workbook.createFont();
+            
+            ExcelHelp.copyFont(this.workbook.getFontAt(i_DataCell.getCellStyle().getFontIndex()) ,v_Font);
+            
+            this.fonts.putRow(i_RTemplate ,String.valueOf(v_Font.getIndex()) ,v_Font);
+            this.fontsByCopy.put(i_ID ,v_Font.getIndex());
+        }
+        else
+        {
+            v_Font = this.getFont(i_RTemplate ,v_FontID);
+        }
+        
+        return v_Font;
     }
     
     

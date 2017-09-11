@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -92,6 +93,7 @@ import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProp
  *                                优化：启用对SXSSFWorkbook工作薄的支持大数据量
  *              v3.0  2017-06-22  添加：文档摘要的复制功能
  *              v3.1  2017-07-11  修正：分组统计合并单位格时，当待合并的单位格是一个时，其实是无须合并的。发现人：李浩
+ *              v3.2  2017-09-11  添加：自动计算行高的功能。
  */
 public class ExcelHelp
 {
@@ -1416,6 +1418,97 @@ public class ExcelHelp
         {
             i_ToCellStyle.cloneStyleFrom(i_FromCellStyle);
         }
+    }
+    
+    
+    
+    /**
+     * 计算单元格自动的行高
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-09-11
+     * @version     v1.0
+     *
+     * @param i_Text          单元格文本
+     * @param i_TemplateCell  模板对应的单元格对象
+     * @return
+     */
+    public static float calcCellAutoHeight(String i_Text ,Cell i_TemplateCell)
+    {
+        return ExcelHelp.calcCellAutoHeight(i_Text 
+                                           ,i_TemplateCell.getSheet().getWorkbook().getFontAt(i_TemplateCell.getCellStyle().getFontIndex()).getFontHeightInPoints()
+                                           ,i_TemplateCell.getRow().getHeightInPoints() 
+                                           ,i_TemplateCell.getSheet().getColumnWidthInPixels(i_TemplateCell.getColumnIndex()));
+    }
+    
+    
+    
+    /**
+     * 计算单元格自动的行高
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-09-11
+     * @version     v1.0
+     *
+     * @param i_Text               单元格文本
+     * @param i_DefaultRowHeight   默认行高
+     * @param i_CellWidth          单元格宽度
+     * @return
+     */
+    public static float calcCellAutoHeight(String i_Text ,float i_FontWidth ,float i_DefaultRowHeight ,float i_CellWidth)
+    {
+        int    v_HightCount  = 1;
+        double v_PerRowWidth = 0f;
+        
+        for (int i = 0; i < i_Text.length(); i++)
+        {
+            double v_CharWidth    = calcCharWidth(i_Text.substring(i ,i + 1));
+            v_CharWidth           = Help.multiply(v_CharWidth ,i_FontWidth);
+            
+            double v_TempRowWidth = Help.addition(v_PerRowWidth ,v_CharWidth);
+            
+            if ( v_TempRowWidth <= i_CellWidth )
+            {
+                v_PerRowWidth = v_TempRowWidth;
+            }
+            else
+            {
+                v_PerRowWidth = v_CharWidth;
+                v_HightCount++;
+            }
+        }
+        
+        return (float)Help.multiply(v_HightCount ,i_DefaultRowHeight);
+    }
+
+    
+    
+    public static float calcCharWidth(String charStr) 
+    {
+        if ( charStr == " " )
+        {
+            return 1f;
+        }
+        
+        // 判断是否为字母或字符
+        if ( Pattern.compile("^[A-Za-z0-9]+$").matcher(charStr).matches() )
+        {
+            return 1f;
+        }
+        
+        // 判断是否为全角
+        if ( Pattern.compile("[\u4e00-\u9fa5]+$").matcher(charStr).matches() )
+        {
+            return 2f;
+        }
+        
+        // 全角符号 及中文
+        if ( Pattern.compile("[^x00-xff]").matcher(charStr).matches() )
+        {
+            return 2f;
+        }
+        
+        return 1f;
     }
     
 }

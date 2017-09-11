@@ -28,6 +28,8 @@
 			<totalBeginRow>3</totalBeginRow>
 			<totalEndRow>4</totalEndRow>
 			
+			<addAutoHeight>orgName</addAutoHeight>
+			
 			<!-- 定义报表数据对应的Java类型 -->
 			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
 		</template>

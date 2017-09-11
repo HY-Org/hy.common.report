@@ -20,6 +20,9 @@ public class RValue
     /** 反射出来的值 */
     private Object        value;
     
+    /** 是否为自动的行高 */
+    private boolean       autoHeight;
+	
     /** 小计循环的迭代器对象 */
     private Iterator<?>   iterator;
     
@@ -52,6 +55,7 @@ public class RValue
     public RValue(Object i_Value ,Iterator<?> i_Iterator)
     {
         this.value         = i_Value;
+        this.autoHeight    = false;
         this.iterator      = i_Iterator;
         this.iteratorSize  = 0;
         this.iteratorIndex = -1;
@@ -178,5 +182,26 @@ public class RValue
     {
         this.valueGroup = valueGroup;
     }
+	
+	
+	
+    /**
+     * 获取：是否为自动的行高
+     */
+    public boolean isAutoHeight()
+    {
+        return autoHeight;
+    }
+
     
+    /**
+     * 设置：是否为自动的行高
+     * 
+     * @param autoHeight 
+     */
+    public void setAutoHeight(boolean autoHeight)
+    {
+        this.autoHeight = autoHeight;
+    }
+	
 }

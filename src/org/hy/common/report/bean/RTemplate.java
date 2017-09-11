@@ -45,6 +45,7 @@ import org.hy.common.xml.SerializableDef;
  *                                     因此将rowAccessWindowSize的默认值扩大10倍，如果还不够大，请自行设置rowAccessWindowSize的大小。
  *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
  *              v4.5  2017-07-31  添加：Excel高级筛选，由报表配置文件参数(isExcelFilter)控制生成的功能
+ *              v4.6  2017-09-11  添加：自动计算行高的功能。建议人：李浩
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -225,6 +226,13 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     private Integer                    rowAccessWindowSize;
     
+    /**
+     * 自动行高
+     * Map.key    为变量名称
+     * Map.value  暂时也保存变量名称
+     */
+    private Map<String ,Object>        autoHeights;
+    
     
     
     /** 
@@ -260,6 +268,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.excelVersion         = null;
         this.valueMethods         = new LinkedHashMap<String ,RCellGroup>();
         this.valueNames           = new Hashtable<String ,String>();
+        this.autoHeights         = new Hashtable<String ,Object>();
         this.valueListeners       = new Hashtable<String ,ValueListener>();
         this.sheetListeners       = new ArrayList<SheetListener>();
         this.isIntegerShowDecimal = false;
@@ -778,6 +787,11 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         
         if ( !Help.isNull(v_RCellG) )
         {
+            if ( this.autoHeights.containsKey(i_ValueName) )
+            {
+                v_RValue.setAutoHeight(true);
+            }
+            
             try
             {
                 // 替换模式
@@ -1118,6 +1132,25 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         }
         
         return i_EndRow.intValue() - i_BeginRow.intValue() + 1;
+    }
+    
+    
+    
+    /**
+     * 添加自动行高的变量名称
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-09-11
+     * @version     v1.0
+     *
+     * @param i_ValueName  变量名称
+     */
+    public void setAddAutoHeight(String i_ValueName)
+    {
+        if ( !Help.isNull(i_ValueName) )
+        {
+            this.autoHeights.put(this.valueSign + i_ValueName ,i_ValueName);
+        }
     }
     
     

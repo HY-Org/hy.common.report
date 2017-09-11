@@ -58,7 +58,7 @@ public class JU_ReportNormal implements JUBase<OrgInfo>
             OrgInfo v_Org = new OrgInfo();
             
             v_Org.setOrgNo(StringHelp.lpad(i ,3 ,"0"));
-            v_Org.setOrgName("部门名称 " + i);
+            v_Org.setOrgName("部门名称 1234567890中国qwertyuiop美国asdfghjkl英国zxcvbnm" + i);
             
             for (int x=1; x<=i*2; x++)
             {

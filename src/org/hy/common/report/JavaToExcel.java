@@ -2228,7 +2228,7 @@ public class JavaToExcel
                 
                 if ( v_Listener != null )
                 {
-                    v_RValue.setValue(Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,io_RSystemValue ,i_Datas ,v_RValue.getValue())));
+                    v_RValue.setValue(Help.NVL(v_Listener.getValue(i_RTemplate ,i_TemplateCell ,i_DataCell ,i_DataWorkbook ,io_RSystemValue ,i_Datas ,v_RValue.getValue())));
                 }
                 
                 if ( null != v_RValue.getValue() )
@@ -2251,6 +2251,7 @@ public class JavaToExcel
                             }
                             else
                             {
+                                // 日期类型的
                                 i_DataCell.setCellType(v_CellType);
                                 i_DataCell.setCellValue(v_RValue.getValue().toString());
                             }
@@ -2265,6 +2266,17 @@ public class JavaToExcel
                     {
                         i_DataCell.setCellType(v_CellType);
                         i_DataCell.setCellValue(v_RValue.getValue().toString());
+                        
+                        // 自动单元格高度
+                        if ( v_RValue.isAutoHeight() )
+                        {
+                            float v_AutoHeight = ExcelHelp.calcCellAutoHeight(v_RValue.getValue().toString() ,i_TemplateCell);
+                        
+                            if ( v_AutoHeight > i_DataCell.getRow().getHeightInPoints() )
+                            {
+                                i_DataCell.getRow().setHeightInPoints(v_AutoHeight);
+                            }
+                        }
                     }
                 }
                 else
