@@ -1,5 +1,6 @@
 package org.hy.common.report.bean;
 
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -75,9 +76,11 @@ public class RWorkbook
     
     public RWorkbook(Workbook i_Workbook)
     {
-        this.workbook   = i_Workbook;
-        this.fonts      = new TablePartitionRID<RTemplate ,Font>();
-        this.cellStyles = new TablePartitionRID<RTemplate ,CellStyle>();
+        this.workbook         = i_Workbook;
+        this.fonts            = new TablePartitionRID<RTemplate ,Font>();
+        this.cellStyles       = new TablePartitionRID<RTemplate ,CellStyle>();
+        this.fontsByCopy      = new Hashtable<String ,Short>();
+        this.cellStylesByCopy = new Hashtable<String ,Short>();
     }
     
     
