@@ -1451,7 +1451,6 @@ public class ExcelHelp
      * @version     v1.0
      *
      * @param i_Text               单元格文本
-     * @param i_FontWidth          字体宽度（字体高度）
      * @param i_DefaultRowHeight   默认行高
      * @param i_CellWidth          单元格宽度
      * @return
