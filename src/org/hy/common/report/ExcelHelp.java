@@ -1451,6 +1451,7 @@ public class ExcelHelp
      * @version     v1.0
      *
      * @param i_Text               单元格文本
+     * @param i_FontWidth          字体宽度（字体高度）
      * @param i_DefaultRowHeight   默认行高
      * @param i_CellWidth          单元格宽度
      * @return
@@ -1462,7 +1463,7 @@ public class ExcelHelp
         
         for (int i = 0; i < i_Text.length(); i++)
         {
-            double v_CharWidth    = calcCharWidth(i_Text.substring(i ,i + 1)) * 0.75;
+            double v_CharWidth    = Help.multiply(calcCharWidth(i_Text.substring(i ,i + 1)) ,0.75);
             v_CharWidth           = Help.multiply(v_CharWidth ,i_FontWidth);
             
             double v_TempRowWidth = Help.addition(v_PerRowWidth ,v_CharWidth);
