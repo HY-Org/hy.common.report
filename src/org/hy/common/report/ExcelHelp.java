@@ -1463,7 +1463,7 @@ public class ExcelHelp
         
         for (int i = 0; i < i_Text.length(); i++)
         {
-            double v_CharWidth    = Help.multiply(calcCharWidth(i_Text.substring(i ,i + 1)) ,0.75);
+            double v_CharWidth    = Help.multiply(calcCharWidth(i_Text.substring(i ,i + 1)) ,0.55);
             v_CharWidth           = Help.multiply(v_CharWidth ,i_FontWidth);
             
             double v_TempRowWidth = Help.addition(v_PerRowWidth ,v_CharWidth);
