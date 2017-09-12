@@ -28,6 +28,7 @@
 			<totalBeginRow>3</totalBeginRow>
 			<totalEndRow>4</totalEndRow>
 			
+			<!-- 自动行高 -->
 			<addAutoHeight>orgName</addAutoHeight>
 			
 			<!-- 定义报表数据对应的Java类型 -->

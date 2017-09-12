@@ -19,6 +19,7 @@
 	* [小数格式的处理](#小数格式的处理)
 	* [添加高级筛选](#添加高级筛选)
 	* [冻结标题](#冻结标题)
+	* [自动行高](#自动行高)
 * [特别鸣谢](#特别鸣谢)
 
 
@@ -469,7 +470,53 @@ Help.print(v_Datas);
 
 冻结标题
 ------
-想冻结标题？很简单，只要在模板中设置一下，即可在生成的报表中生效。
+想冻结标题？很简单，只要在模板(Excel文件)中设置一下，即可在生成的报表中生效。
+
+
+
+
+
+自动行高
+------
+添加设置自行高的占位符到配置文件中，如下
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportNormal">
+			<name>常规列表加合计的报表演示</name>
+			
+			<excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
+			
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>1</titleEndRow>
+			
+			<dataBeginRow>2</dataBeginRow>
+			<dataEndRow>2</dataEndRow>
+			
+			<totalBeginRow>3</totalBeginRow>
+			<totalEndRow>4</totalEndRow>
+			
+			<!-- 自动行高 -->
+			<addAutoHeight>orgName</addAutoHeight>
+			<addAutoHeight>多个字段添加多次即可</addAutoHeight>
+			
+			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```
 
 
 
