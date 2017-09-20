@@ -22,6 +22,8 @@ import org.hy.common.report.ExcelHelp;
  * @version     v1.0
  *              v2.0  2017-09-11  1. 添加外界(第三方)创建样式、字体，并通过标记ID保存，方便二次引用的功能。
  *                                   建议人：李浩
+ *              v2.1  2017-09-20  1. 修复：getCellStyleByCopy() 在动态改变单元格颜色时，可能出现颜色ID相同后，相互覆盖的问题。
+ *                                2. 修复：getFontByCopy()      在动态改变单元格字体时，可能出现字体ID相同后，相互覆盖的问题。
  */
 public class RWorkbook
 {
@@ -115,14 +117,14 @@ public class RWorkbook
      * @param i_IDX        字体在模板中的索引位置
      * @return
      */
-    public synchronized Font getFont(RTemplate i_RTemplate ,short i_IDX)
+    public synchronized Font getFont(RTemplate i_RTemplate ,int i_IDX)
     {
         Font v_DataFont = this.fonts.getRow(i_RTemplate ,String.valueOf(i_IDX));
         
         if ( v_DataFont == null )
         {
             v_DataFont = this.workbook.createFont();
-            ExcelHelp.copyFont(i_RTemplate.getTemplateSheet().getWorkbook().getFontAt(i_IDX) ,v_DataFont);
+            ExcelHelp.copyFont(i_RTemplate.getTemplateSheet().getWorkbook().getFontAt((short)i_IDX) ,v_DataFont);
             
             this.fonts.putRow(i_RTemplate ,String.valueOf(i_IDX) ,v_DataFont);
         }
@@ -145,7 +147,7 @@ public class RWorkbook
      * @param i_IDX        单元格样式在模板中的索引位置
      * @return
      */
-    public synchronized CellStyle getCellStyle(RTemplate i_RTemplate ,short i_IDX)
+    public synchronized CellStyle getCellStyle(RTemplate i_RTemplate ,int i_IDX)
     {
         CellStyle v_DataCellStyle = this.cellStyles.getRow(i_RTemplate ,String.valueOf(i_IDX));
         
@@ -188,12 +190,13 @@ public class RWorkbook
             
             ExcelHelp.copyCellStyle(i_DataCell.getCellStyle(), v_CellStyle);
             
-            this.cellStyles.putRow(i_RTemplate ,String.valueOf(v_CellStyle.getIndex()) ,v_CellStyle);
+            // 2017-09-20 动态格式的ID均加 Short.MAX_VALUE
+            this.cellStyles.putRow(i_RTemplate ,String.valueOf(Short.MAX_VALUE + v_CellStyle.getIndex()) ,v_CellStyle);
             this.cellStylesByCopy.put(i_ID ,v_CellStyle.getIndex());
         }
         else
         {
-            v_CellStyle = this.getCellStyle(i_RTemplate ,v_CellStyleID);
+            v_CellStyle = this.getCellStyle(i_RTemplate ,Short.MAX_VALUE + v_CellStyleID);
         }
         
         return v_CellStyle;
@@ -223,12 +226,13 @@ public class RWorkbook
             
             ExcelHelp.copyFont(this.workbook.getFontAt(i_DataCell.getCellStyle().getFontIndex()) ,v_Font);
             
-            this.fonts.putRow(i_RTemplate ,String.valueOf(v_Font.getIndex()) ,v_Font);
+            // 2017-09-20 动态格式的ID均加 Short.MAX_VALUE
+            this.fonts.putRow(i_RTemplate ,String.valueOf(Short.MAX_VALUE + v_Font.getIndex()) ,v_Font);
             this.fontsByCopy.put(i_ID ,v_Font.getIndex());
         }
         else
         {
-            v_Font = this.getFont(i_RTemplate ,v_FontID);
+            v_Font = this.getFont(i_RTemplate ,Short.MAX_VALUE + v_FontID);
         }
         
         return v_Font;

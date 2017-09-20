@@ -33,6 +33,13 @@
 			
 			<!-- 定义报表数据对应的Java类型 -->
 			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+			
+			<!-- 动态变色的监听器 -->
+			<call name="addListener">
+				<listener class="org.hy.common.report.junit.normal.ColorListener">
+					<valueName>orgName</valueName>
+				</listener>
+			</call>
 		</template>
 		
 	</xconfig>
