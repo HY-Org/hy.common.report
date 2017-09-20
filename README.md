@@ -20,6 +20,7 @@
 	* [添加高级筛选](#添加高级筛选)
 	* [冻结标题](#冻结标题)
 	* [自动行高](#自动行高)
+	* [动态背景色](#动态背景色)
 * [特别鸣谢](#特别鸣谢)
 
 
@@ -517,6 +518,70 @@ Help.print(v_Datas);
 	
 </config>
 ```
+
+
+
+
+
+动态背景色
+------
+对需要变颜色的占位符添加自定义监听器的到配置文件中，如下
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportNormal">
+			<name>常规列表加合计的报表演示</name>
+			
+			<excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
+			
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>1</titleEndRow>
+			
+			<dataBeginRow>2</dataBeginRow>
+			<dataEndRow>2</dataEndRow>
+			
+			<totalBeginRow>3</totalBeginRow>
+			<totalEndRow>4</totalEndRow>
+			
+			<addAutoHeight>orgName</addAutoHeight>
+			
+			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+			
+			<!-- 动态变色的监听器 -->
+			<call name="addListener">
+				<listener class="org.hy.common.report.junit.normal.ColorListener">
+					<valueName>orgName</valueName>
+				</listener>
+			</call>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```
+
+关键的核心代码
+```java
+
+// 创建并复制原单元格上的样式，第二次使用同相样的"自定义标记"时，将不在再创建，而是引用，性能提升
+CellStyle v_NewCellStyle = i_DataWorkbook.getCellStyleByCopy("自定义标记" ,i_DataCell ,i_RTemplate);
+
+v_NewCellStyle.setFillForegroundColor(IndexedColors.ORANGE.index);  // 设置颜色
+v_NewCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);    // 设置填充方式
+
+i_DataCell.setCellStyle(v_NewCellStyle);                            // 应用样式
+```
+[查看"动态变色的监听器"的完整代码](test/org/hy/common/report/junit/normal/ColorListener.java)
 
 
 
