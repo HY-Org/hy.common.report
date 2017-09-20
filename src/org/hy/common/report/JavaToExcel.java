@@ -67,6 +67,7 @@ import org.hy.common.report.event.ValueListener;
  *                                     原因是：SXSSFWorkbook缓存在内存中的行数是有限的。发现人：李浩
  *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
  *              v4.5  2017-07-31  添加：Excel高级筛选，由报表配置文件参数(isExcelFilter)控制生成的功能
+ *              v4.6  2017-09-20  修复：批注只能生成一行的问题。
  */
 public class JavaToExcel
 {
@@ -1117,17 +1118,17 @@ public class JavaToExcel
                                                                               ,v_TemplateAnchor.getDx2() 
                                                                               ,v_TemplateAnchor.getDy2() 
                                                                               ,v_TemplateAnchor.getCol1()
-                                                                              ,i_DataCell.getRowIndex()
+                                                                              ,i_DataCell.getRowIndex() 
                                                                               ,v_TemplateAnchor.getCol2()
                                                                               ,i_DataCell.getRowIndex() + v_TemplateAnchor.getRow2() - v_TemplateAnchor.getRow1()));
         }
         else if ( i_DataCell instanceof SXSSFCell )
         {
             SXSSFDrawing v_Patriarch = (SXSSFDrawing) i_DataCell.getSheet().createDrawingPatriarch();
-            v_DataComment = v_Patriarch.createCellComment(new XSSFClientAnchor(v_TemplateAnchor.getDx1() 
+            v_DataComment = v_Patriarch.createCellComment(new XSSFClientAnchor(v_TemplateAnchor.getDx1()
                                                                               ,v_TemplateAnchor.getDy1()
-                                                                              ,v_TemplateAnchor.getDx2() 
-                                                                              ,v_TemplateAnchor.getDy2() 
+                                                                              ,v_TemplateAnchor.getDx2()
+                                                                              ,v_TemplateAnchor.getDy2()
                                                                               ,v_TemplateAnchor.getCol1()
                                                                               ,i_DataCell.getRowIndex()
                                                                               ,v_TemplateAnchor.getCol2()
@@ -1148,7 +1149,7 @@ public class JavaToExcel
         
         v_DataComment.setAuthor( v_TemplateComment.getAuthor());
         v_DataComment.setColumn( v_TemplateComment.getColumn());
-        v_DataComment.setRow(    v_TemplateComment.getRow());
+        v_DataComment.setRow(    i_DataCell.getRowIndex());
         v_DataComment.setVisible(v_TemplateComment.isVisible());
         
         i_DataCell.setCellComment(v_DataComment);
