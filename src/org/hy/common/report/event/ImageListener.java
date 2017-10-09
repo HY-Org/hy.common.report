@@ -233,7 +233,7 @@ public class ImageListener implements ValueListener
                                                  ,this.beginColumn 
                                                  ,this.beginRow + v_OffsetRow
                                                  ,this.endColumn
-                                                 ,this.endRow    + v_OffsetRow);
+                                                 ,this.endRow   + v_OffsetRow);
             
 //            ((XSSFClientAnchor)v_ClientAnchor).getFrom().setCol(this.beginColumn);
 //            ((XSSFClientAnchor)v_ClientAnchor).getFrom().setRow(this.beginRow + v_OffsetRow);
