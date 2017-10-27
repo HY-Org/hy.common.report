@@ -12,6 +12,7 @@
 	* [一行数据一页的模板举例](#一行数据一页的模板举例)
 	* [动态行和小计的模板举例](#动态行和小计的模板举例)
 	* [分页页眉和分页页脚的模板举例](#分页页眉和分页页脚的模板举例)
+	* [追加模式的复合报表举例](#追加模式的复合报表举例)
 * Excel报表转Java对象
 	* [常规的纵深扩展的模板举例](#常规的纵深扩展的模板举例)
 	* [横向扩展的模板举例](#横向扩展的模板举例)
@@ -307,6 +308,38 @@ __分页页眉和分页页脚的XML配置举例__
 	</xconfig>
 	
 </config>
+```
+
+
+
+
+
+追加模式的复合报表举例
+------
+
+[查看测试代码](test/org/hy/common/report/junit/append)
+
+思路：将多个模板报表组合成一个更大的复合报表
+
+
+
+__追加模式的复合报表的生成结果__
+
+![image](images/Append.png)
+
+
+
+__追加模式的复合报表的Java举例__
+```java
+
+	// 最后一个参数为true时，即追加模式
+    v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,"工作表的标题" ,子报表01的数据 ,子报表01的模板 ,true);
+    v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,"工作表的标题" ,子报表02的数据 ,子报表02的模板 ,true);
+    v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,"工作表的标题" ,子报表03的数据 ,子报表03的模板 ,true);
+    
+    // 保存报表到文件
+    ExcelHelp.save(v_RWorkbook ,"保存路径\Excel文件名称.xlsx");
+    
 ```
 
 

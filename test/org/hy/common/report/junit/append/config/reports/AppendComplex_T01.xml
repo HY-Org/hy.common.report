@@ -11,7 +11,7 @@
 	<xconfig>
 	
 		<template id="ReportAppendComplex01">
-			<name>追加模式下的复合报表--模板01</name>
+			<name>追加模式的复合报表--模板01</name>
 			
 			<!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
 			<excelFileName>classpath:templates/AppendComplex_T01.xlsx</excelFileName>

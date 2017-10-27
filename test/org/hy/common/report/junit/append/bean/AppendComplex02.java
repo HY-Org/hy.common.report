@@ -5,7 +5,7 @@ package org.hy.common.report.junit.append.bean;
 
 
 /**
- * 追加模式下的复合报表--模板02 的数据对象
+ * 追加模式的复合报表--模板02 的数据对象
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-10-26

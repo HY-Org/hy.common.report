@@ -18,7 +18,7 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：追加模式下的复合报表
+ * 测试单元：追加模式的复合报表
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-10-26
@@ -52,7 +52,7 @@ public class JU_AppendComplex
             v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,"工作表的标题" ,v_RData ,v_RTemplate ,true);
         }
         
-        ExcelHelp.save(v_RWorkbook ,"C:\\Users\\ZhengWei\\Desktop\\追加模式下的复合报表.xmls");
+        ExcelHelp.save(v_RWorkbook ,"C:\\Users\\ZhengWei\\Desktop\\追加模式的复合报表.xlsx");
     }
     
 }
