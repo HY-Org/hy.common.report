@@ -10,7 +10,6 @@ import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RWorkbook;
 import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.junit.JUBase;
-import org.hy.common.report.junit.total02.ProductPressureTestStatistics;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;

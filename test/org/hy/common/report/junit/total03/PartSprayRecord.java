@@ -10,7 +10,8 @@
  */
 package org.hy.common.report.junit.total03;
 
-import java.util.List;
+
+
 
 
 /**
@@ -23,11 +24,6 @@ import java.util.List;
  * @since [产品/模块版本]
  */
 public class PartSprayRecord implements Comparable<PartSprayRecord> {
-
-	/**
-	 * 注释内容
-	 */
-	private static final long serialVersionUID = -5166202294198634244L;
 
 	/**
 	 * 主键
