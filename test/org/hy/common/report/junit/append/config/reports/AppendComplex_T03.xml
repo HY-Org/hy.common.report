@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportAppendComplex03">
+			<name>追加模式下的复合报表--模板03</name>
+			
+			<!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
+			<excelFileName>classpath:templates/AppendComplex_T03.xlsx</excelFileName>
+			
+			<!-- 定义报表标题在模板中位置 -->
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>0</titleEndRow>
+			
+			<!-- 定义报表数据在模板中位置 -->
+			<dataBeginRow>1</dataBeginRow>
+			<dataEndRow>8</dataEndRow>
+			
+			<!-- 定义报表数据对应的Java类型 -->
+			<dataClass>org.hy.common.report.junit.append.AppendComplex03</dataClass>
+		</template>
+		
+	</xconfig>
+	
+</config>
