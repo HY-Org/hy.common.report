@@ -334,8 +334,8 @@ __追加模式的复合报表的Java举例__
 
     // 最后一个参数为true时，即追加模式
     v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,"工作表的标题" ,子报表01的数据 ,子报表01的模板 ,true);
-    v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,"工作表的标题" ,子报表02的数据 ,子报表02的模板 ,true);
-    v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,"工作表的标题" ,子报表03的数据 ,子报表03的模板 ,true);
+    v_RWorkbook = ReportHelp.toExcel(v_RWorkbook               ,子报表02的数据 ,子报表02的模板 ,true);
+    v_RWorkbook = ReportHelp.toExcel(v_RWorkbook               ,子报表03的数据 ,子报表03的模板 ,true);
     
     // 保存报表到文件
     ExcelHelp.save(v_RWorkbook ,"保存路径\Excel文件名称.xlsx");
