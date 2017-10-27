@@ -25,7 +25,7 @@
 			<dataEndRow>8</dataEndRow>
 			
 			<!-- 定义报表数据对应的Java类型 -->
-			<dataClass>org.hy.common.report.junit.append.AppendComplex03</dataClass>
+			<dataClass>org.hy.common.report.junit.append.bean.AppendComplex03</dataClass>
 		</template>
 		
 	</xconfig>

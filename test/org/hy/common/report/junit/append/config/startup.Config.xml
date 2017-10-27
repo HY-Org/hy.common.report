@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="startupConfig"   class="java.util.ArrayList" />
+	<import name="item"            class="org.hy.common.app.Param" />
+	
+	
+	
+	<!-- 启动加载XML配置信息的列表 -->
+	<xconfig>
+		
+	    <startupConfig id="StartupConfig">
+	    	
+	    	<!-- 加载reports目录下所有配置文件 -->
+			<item>
+				<value>reports</value>
+			</item>
+			
+			
+			<!-- 加载具体的配置文件（使用相对路径） -->
+			<item>
+				<value>reports.Config.xml</value>
+			</item>
+			
+			
+			<item>
+				<value>datas.config.xml</value>
+			</item>
+			
+		</startupConfig>
+		
+	</xconfig>
+	
+</config>

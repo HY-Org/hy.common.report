@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="rtemplates"      class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<!-- 按引包import指定的类型实例对象 -->
+		<!-- 定义复合报表使用的子报表模板 -->
+		<rtemplates id="ReportAppendComplexs">
+		
+			<!-- 引用实例化的对象。此对象可以在其它配置文件中被实例化 -->
+			<template ref="ReportAppendComplex01" />
+			<template ref="ReportAppendComplex02" />
+			<template ref="ReportAppendComplex03" />
+			
+		</rtemplates>
+		
+	</xconfig>
+	
+</config>

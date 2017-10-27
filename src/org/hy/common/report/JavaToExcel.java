@@ -169,7 +169,28 @@ public class JavaToExcel
      */
     public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
-        return write(null ,i_SheetName ,i_Datas ,i_RTemplate);
+        return write(null ,i_SheetName ,i_Datas ,i_RTemplate ,false);
+    }
+    
+    
+    
+    /**
+     * 向Excel文件中写数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-10-26
+     * @version     v1.0
+     *
+     * @param i_SheetName  Excel工作表的名称
+     * @param i_Datas      数据对象
+     * @param i_RTemplate  模板信息对象
+     * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
+     * @return
+     * @throws RTemplateException 
+     */
+    public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
+    {
+        return write(null ,i_SheetName ,i_Datas ,i_RTemplate ,i_IsAppend);
     }
     
     
@@ -188,7 +209,27 @@ public class JavaToExcel
      */
     public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
-        return write(null ,null ,i_Datas ,i_RTemplate);
+        return write(null ,null ,i_Datas ,i_RTemplate ,false);
+    }
+    
+    
+    
+    /**
+     * 向Excel文件中写数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-10-26
+     * @version     v1.0
+     *
+     * @param i_Datas      数据对象
+     * @param i_RTemplate  模板信息对象
+     * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
+     * @return
+     * @throws RTemplateException 
+     */
+    public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
+    {
+        return write(null ,null ,i_Datas ,i_RTemplate ,i_IsAppend);
     }
     
     
@@ -209,7 +250,29 @@ public class JavaToExcel
      */
     public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
-        return write(i_Workbook ,null ,i_Datas ,i_RTemplate);
+        return write(i_Workbook ,null ,i_Datas ,i_RTemplate ,false);
+    }
+    
+    
+    
+    /**
+     * 向Excel文件中写数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-10-26
+     * @version     v1.0
+     *
+     * @param i_Workbook   工作薄对象
+     * @param i_SheetName  工作表名称
+     * @param i_Datas      数据对象
+     * @param i_RTemplate  模板信息对象
+     * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
+     * @return
+     * @throws RTemplateException 
+     */
+    public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
+    {
+        return write(i_Workbook ,null ,i_Datas ,i_RTemplate ,i_IsAppend);
     }
     
     
@@ -225,10 +288,11 @@ public class JavaToExcel
      * @param i_SheetName  工作表名称
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
+     * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
      * @return
      * @throws RTemplateException 
      */
-    public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
+    public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
     {
         RWorkbook v_DataWorkbook  = i_Workbook;
         Sheet     v_DataSheet     = null;
@@ -242,9 +306,16 @@ public class JavaToExcel
             v_DataWorkbook = createWorkbook(i_RTemplate);
         }
         
-        // 如果不这为转码一下，新生成的Excel会有异常，无法正常显示工作表的名称
-        v_SheetName     = new String(i_RTemplate.getTemplateSheet().getSheetName().getBytes());
-        v_DataSheet     = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,Help.NVL(i_SheetName ,v_SheetName));
+        if ( i_IsAppend && v_DataWorkbook.getWorkbook().getNumberOfSheets() >= 1)
+        {
+            v_DataSheet = v_DataWorkbook.getWorkbook().getSheetAt(v_DataWorkbook.getWorkbook().getNumberOfSheets() - 1);
+        }
+        else
+        {
+            // 如果不在这里转码一下，新生成的Excel会有异常，无法正常显示工作表的名称
+            v_SheetName = new String(i_RTemplate.getTemplateSheet().getSheetName().getBytes());
+            v_DataSheet = ExcelHelp.createSheet(v_DataWorkbook.getWorkbook() ,Help.NVL(i_SheetName ,v_SheetName));
+        }
         v_TemplateSheet = i_RTemplate.getTemplateSheet();
         
         ExcelHelp.copySheet(       v_TemplateSheet ,v_DataSheet);
@@ -261,6 +332,8 @@ public class JavaToExcel
         v_RSystemValue.setRowNo(           1);
         v_RSystemValue.setRowCount(        i_Datas.size());
         v_RSystemValue.setRowSubtotalCount(i_Datas.size());
+        
+        v_RTotal.addExcelRowIndex(v_DataSheet.getPhysicalNumberOfRows());
         
         
         // 计算分页总数量
@@ -446,6 +519,7 @@ public class JavaToExcel
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountTitle();
+        int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
 
         copyMergedRegionsTitle(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesTitle(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
@@ -455,7 +529,7 @@ public class JavaToExcel
             int v_TemplateRowNo = i_RTemplate.getTitleBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
             
-            int v_DataRowNo = v_RowNo;
+            int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
             Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
             io_RTotal.addExcelRowIndex(1);
             
