@@ -627,6 +627,8 @@ i_DataCell.setCellStyle(v_NewCellStyle);                            // 应用样
   1. [邹德福](https://github.com/dirful)：建议使用简单的反射规则，如 :staffs[].staffName ，而非之前的 :staffs.$get(index).staffName 完整Java方法路径形式。
   
   2. [李　浩](https://github.com/343136848)：建议对动态数据及小计功能的支持。
+  
+  3. [Jimlaren](https://github.com/jimlaren)：建议对追加模式的复合报表的支持。
    
 
 
