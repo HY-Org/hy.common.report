@@ -628,7 +628,7 @@ i_DataCell.setCellStyle(v_NewCellStyle);                            // 应用样
   
   2. [李　浩](https://github.com/343136848)：建议对动态数据及小计功能的支持。
   
-  3. [Jimlaren](https://github.com/jimlaren)：建议对追加模式复合报表的支持。
+  3. [姜　明](https://github.com/jimlaren)：建议对追加模式复合报表的支持。
    
 
 
