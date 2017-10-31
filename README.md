@@ -626,7 +626,7 @@ i_DataCell.setCellStyle(v_NewCellStyle);                            // 应用样
 二维码的生成
 ------
 
-__二维码的生成的数据举例__
+__二维码的生成的演示举例__
 
 ![image](images/ZXing_Result.png)
 
@@ -682,6 +682,70 @@ __二维码的生成的XML配置举例__
 ```
 
 [查看"二维码的生成"的完整代码](test/org/hy/common/report/junit/zxing)
+
+
+
+
+
+条形码的生成
+------
+
+__条形码的生成的演示举例__
+
+![image](images/ZXing_Result.png)
+
+__条形码的生成的XML配置举例__
+
+只需添加[ZXingListener](src/org/hy/common/report/event/ZXingListener.java)监听器的到配置文件中即可，如下
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportZXing">
+			<name>二维码、条形码的报表演示</name>
+			<excelFileName>classpath:JU_ZXing.xlsx</excelFileName>
+			
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>1</titleEndRow>
+			
+			<dataBeginRow>2</dataBeginRow>
+			<dataEndRow>2</dataEndRow>
+			
+			<dataClass>org.hy.common.report.junit.zxing.ZXingData</dataClass>
+			
+			<!-- 条形码的监听器 -->
+			<call name="addListener">
+				<listener class="org.hy.common.report.event.ZXingListener">
+					<barcodeFormat ref="com.google.zxing.BarcodeFormat.CODE_128"/>  <!-- 编码类型：条形码 -->
+					<width>300</width>                                              <!-- 条形码的宽度 -->
+					<height>120</height>                                            <!-- 条形码的高度 -->
+					<marginTop> 350000</marginTop>                                  <!-- 条形码的相对于顶部的边距 -->
+					<marginLeft>500000</marginLeft>                                 <!-- 条形码的相对于左侧的边距-->
+					
+					<valueName>zxing1D</valueName>                                  <!-- 监听的变量名称 -->
+					<beginRow>2</beginRow>
+					<endRow>2</endRow>
+					<beginColumn>2</beginColumn>
+					<endColumn>2</endColumn>
+				</listener>
+			</call>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```
+
+[查看"条形码的生成"的完整代码](test/org/hy/common/report/junit/zxing)
 
 
 
