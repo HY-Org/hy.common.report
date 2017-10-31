@@ -25,13 +25,13 @@
 			<!-- 二维码的监听器 -->
 			<call name="addListener">
 				<listener class="org.hy.common.report.event.ZXingListener">
-					<barcodeFormat ref="com.google.zxing.BarcodeFormat.QR_CODE"/>
-					<width>170</width>
-					<height>170</height>
-					<marginTop> 100000</marginTop>
-					<marginLeft>200000</marginLeft>
+					<barcodeFormat ref="com.google.zxing.BarcodeFormat.QR_CODE"/>  <!-- 编码类型：二维码 -->
+					<width>170</width>                                             <!-- 二维码的宽度 -->
+					<height>170</height>                                           <!-- 二维码的高度 -->
+					<marginTop> 100000</marginTop>                                 <!-- 二维码的相对于顶部的边距 -->
+					<marginLeft>200000</marginLeft>                                <!-- 二维码的相对于左侧的边距-->
 					
-					<valueName>zxing2D</valueName>
+					<valueName>zxing2D</valueName>                                 <!-- 监听的变量名称 -->
 					<beginRow>2</beginRow>
 					<endRow>2</endRow>
 					<beginColumn>1</beginColumn>

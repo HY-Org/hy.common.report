@@ -22,6 +22,8 @@
 	* [冻结标题](#冻结标题)
 	* [自动行高](#自动行高)
 	* [动态背景色](#动态背景色)
+	* [二维码的生成](#二维码的生成)
+	* [条形码的生成](#条形码的生成)
 * [特别鸣谢](#特别鸣谢)
 
 
@@ -616,6 +618,63 @@ v_NewCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);    // 设置填
 i_DataCell.setCellStyle(v_NewCellStyle);                            // 应用样式
 ```
 [查看"动态变色的监听器"的完整代码](test/org/hy/common/report/junit/normal/ColorListener.java)
+
+
+
+
+
+二维码的生成
+------
+只需添加[ZXingListener](src/org/hy/common/report/event/ZXingListener.java)监听器的到配置文件中即可，如下
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportZXing">
+			<name>二维码、条形码的报表演示</name>
+			<excelFileName>classpath:JU_ZXing.xlsx</excelFileName>
+			
+			<titleBeginRow>0</titleBeginRow>
+			<titleEndRow>1</titleEndRow>
+			
+			<dataBeginRow>2</dataBeginRow>
+			<dataEndRow>2</dataEndRow>
+			
+			<dataClass>org.hy.common.report.junit.zxing.ZXingData</dataClass>
+			
+			<!-- 二维码的监听器 -->
+			<call name="addListener">
+				<listener class="org.hy.common.report.event.ZXingListener">
+					<barcodeFormat ref="com.google.zxing.BarcodeFormat.QR_CODE"/>  <!-- 编码类型：二维码 -->
+					<width>170</width>                                             <!-- 二维码的宽度 -->
+					<height>170</height>                                           <!-- 二维码的高度 -->
+					<marginTop> 100000</marginTop>                                 <!-- 二维码的相对于顶部的边距 -->
+					<marginLeft>200000</marginLeft>                                <!-- 二维码的相对于左侧的边距-->
+					
+					<valueName>zxing2D</valueName>                                 <!-- 监听的变量名称 -->
+					<beginRow>2</beginRow>
+					<endRow>2</endRow>
+					<beginColumn>1</beginColumn>
+					<endColumn>1</endColumn>
+				</listener>
+			</call>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```
+
+[查看"二维码的生成"的完整代码](test/org/hy/common/report/junit/zxing)
 
 
 
