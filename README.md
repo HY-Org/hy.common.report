@@ -769,4 +769,6 @@ __条形码的生成的XML配置举例__
 
 引用 https://github.com/HY-ZhengWei/hy.common.file 类库
 
+引用 https://github.com/HY-ZhengWei/hy.common.zxing 类库
+
 引用 https://github.com/HY-ZhengWei/XJava 类库
