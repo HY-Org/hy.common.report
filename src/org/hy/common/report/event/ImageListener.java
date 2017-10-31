@@ -12,6 +12,7 @@ import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
@@ -34,19 +35,26 @@ import org.hy.common.report.bean.RWorkbook;
 public class ImageListener implements ValueListener
 {
     
-    private String  valueName;
+    /** 监听器的变量名称 */
+    protected String  valueName;
     
     /** 图片显示的位置信息：开始行号 */
-    private Integer beginRow;
+    protected Integer beginRow;
     
     /** 图片显示的位置信息：结束行号 */
-    private Integer endRow;
+    protected Integer endRow;
     
     /** 图片显示的位置信息：开始行号 */
-    private Short   beginColumn;
+    protected Short   beginColumn;
     
     /** 图片显示的位置信息：结束行号 */
-    private Short   endColumn;
+    protected Short   endColumn;
+    
+    /** 与单元格顶部的边距。先将图片大小设置好后导出报表看看，再微调此值 */
+    protected Integer marginTop;
+    
+    /** 与单元格左侧的边距。先将图片大小设置好后导出报表看看，再微调此值 */
+    protected Integer marginLeft;
     
     
     
@@ -158,6 +166,50 @@ public class ImageListener implements ValueListener
     {
         this.endColumn = endColumn;
     }
+    
+    
+    
+    /**
+     * 获取：与单元格顶部的边距。先将图片大小(width、height)设置好后导出报表看看，再微调此值
+     */
+    public Integer getMarginTop()
+    {
+        return marginTop;
+    }
+    
+
+    
+    /**
+     * 设置：与单元格顶部的边距。先将图片大小(width、height)设置好后导出报表看看，再微调此值
+     * 
+     * @param marginTop 
+     */
+    public void setMarginTop(Integer marginTop)
+    {
+        this.marginTop = marginTop;
+    }
+
+
+    
+    /**
+     * 获取：与单元格左侧的边距。先将图片大小(width、height)设置好后导出报表看看，再微调此值
+     */
+    public Integer getMarginLeft()
+    {
+        return marginLeft;
+    }
+
+
+    
+    /**
+     * 设置：与单元格左侧的边距。先将图片大小(width、height)设置好后导出报表看看，再微调此值
+     * 
+     * @param marginLeft 
+     */
+    public void setMarginLeft(Integer marginLeft)
+    {
+        this.marginLeft = marginLeft;
+    }
 
 
 
@@ -222,7 +274,7 @@ public class ImageListener implements ValueListener
         if ( v_Drawing instanceof HSSFPatriarch )
         {
             v_ClientAnchor = new HSSFClientAnchor(0 ,0 ,0 ,0
-                                                 ,this.beginColumn 
+                                                 ,this.beginColumn
                                                  ,this.beginRow + v_OffsetRow
                                                  ,this.endColumn
                                                  ,this.endRow   + v_OffsetRow);
@@ -230,15 +282,18 @@ public class ImageListener implements ValueListener
         else if ( v_Drawing instanceof XSSFDrawing )
         {
             v_ClientAnchor = new XSSFClientAnchor(0 ,0 ,0 ,0
-                                                 ,this.beginColumn 
+                                                 ,this.beginColumn
                                                  ,this.beginRow + v_OffsetRow
                                                  ,this.endColumn
                                                  ,this.endRow   + v_OffsetRow);
-            
-//            ((XSSFClientAnchor)v_ClientAnchor).getFrom().setCol(this.beginColumn);
-//            ((XSSFClientAnchor)v_ClientAnchor).getFrom().setRow(this.beginRow + v_OffsetRow);
-//            ((XSSFClientAnchor)v_ClientAnchor).getTo()  .setCol(this.endColumn);
-//            ((XSSFClientAnchor)v_ClientAnchor).getTo()  .setRow(this.endRow   + v_OffsetRow);
+        }
+        else if ( v_Drawing instanceof XSSFDrawing )
+        {
+            v_ClientAnchor = new XSSFClientAnchor(0 ,0 ,0 ,0
+                                                 ,this.beginColumn
+                                                 ,this.beginRow + v_OffsetRow
+                                                 ,this.endColumn
+                                                 ,this.endRow   + v_OffsetRow);
         }
         
         v_ClientAnchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
@@ -257,9 +312,31 @@ public class ImageListener implements ValueListener
         }
         
         int v_PictureIndex = i_DataCell.getSheet().getWorkbook().addPicture(v_ByteArrayOut.toByteArray() ,v_PictureType);
-        v_Drawing.createPicture(v_ClientAnchor ,v_PictureIndex);
+        Picture v_Picture  = v_Drawing.createPicture(v_ClientAnchor ,v_PictureIndex);
+        
+        this.resizeMarginLeftTop(v_Picture);
         
         return "";
+    }
+    
+    
+    
+    /**
+     * 重置图片大小，设置顶部、左侧边距
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-10-31
+     * @version     v1.0
+     *
+     * @param i_Picture
+     */
+    protected void resizeMarginLeftTop(Picture i_Picture)
+    {
+        i_Picture.resize();
+        i_Picture.getAnchor().setDx1(i_Picture.getAnchor().getDx1() + Help.NVL(this.marginLeft ,0));
+        i_Picture.getAnchor().setDx2(i_Picture.getAnchor().getDx2() + Help.NVL(this.marginLeft ,0));
+        i_Picture.getAnchor().setDy1(i_Picture.getAnchor().getDy1() + Help.NVL(this.marginTop  ,0));
+        i_Picture.getAnchor().setDy2(i_Picture.getAnchor().getDy2() + Help.NVL(this.marginTop  ,0));
     }
     
 }

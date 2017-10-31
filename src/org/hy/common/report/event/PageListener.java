@@ -20,6 +20,7 @@ import org.hy.common.report.event.ValueListener;
 public class PageListener implements ValueListener
 {
     
+    /** 监听器的变量名称 */
     private String  valueName;
     
     
