@@ -625,6 +625,13 @@ i_DataCell.setCellStyle(v_NewCellStyle);                            // 应用样
 
 二维码的生成
 ------
+
+__二维码的生成的数据举例__
+
+![image](images/ZXing_Result.png)
+
+__二维码的生成的XML配置举例__
+
 只需添加[ZXingListener](src/org/hy/common/report/event/ZXingListener.java)监听器的到配置文件中即可，如下
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
