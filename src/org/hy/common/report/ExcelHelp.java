@@ -1,8 +1,11 @@
 package org.hy.common.report;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,6 +54,7 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFObjectData;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.apache.poi.xssf.usermodel.XSSFPictureData;
@@ -94,6 +98,7 @@ import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProp
  *              v3.0  2017-06-22  添加：文档摘要的复制功能
  *              v3.1  2017-07-11  修正：分组统计合并单位格时，当待合并的单位格是一个时，其实是无须合并的。发现人：李浩
  *              v3.2  2017-09-11  添加：自动计算行高的功能。
+ *              v3.3  2017-12-07  添加：saveToInputStream()方法，将Excel文件数据保存成流信息。
  */
 public class ExcelHelp
 {
@@ -292,6 +297,46 @@ public class ExcelHelp
         }
         
         return v_Ret;
+    }
+    
+    
+    
+    /**
+     * 将Excel文件数据保存成流信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-12-07
+     * @version     v1.0
+     *
+     * @param i_Workbook
+     * @return
+     * @throws IOException
+     */
+    public final static InputStream saveToInputStream(RWorkbook i_Workbook) throws IOException
+    {
+        return saveToInputStream(i_Workbook);
+    }
+    
+    
+    
+    /**
+     * 将Excel文件数据保存成流信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-12-07
+     * @version     v1.0
+     *
+     * @param i_Workbook
+     * @return
+     * @throws IOException
+     */
+    public final static InputStream saveToInputStream(Workbook i_Workbook) throws IOException
+    {
+        ByteArrayOutputStream v_Output = new ByteArrayOutputStream();
+        
+        i_Workbook.write(v_Output);
+        
+        return new ByteArrayInputStream(v_Output.toByteArray());
     }
     
     
@@ -1364,6 +1409,31 @@ public class ExcelHelp
         i_ToFont.setStrikeout(         i_FromFont.getStrikeout());
         i_ToFont.setTypeOffset(        i_FromFont.getTypeOffset());
         i_ToFont.setUnderline(         i_FromFont.getUnderline());
+    }
+    
+    
+    
+    /**
+     * 查找一模一样的字体对象
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-11-16
+     * @version     v1.0
+     *
+     * @param i_Workbook
+     * @param i_Font
+     * @return
+     */
+    public final static XSSFFont findFont(XSSFWorkbook i_Workbook ,XSSFFont i_Font)
+    {
+        return i_Workbook.getStylesSource().findFont(i_Font.getBold() 
+                                                    ,i_Font.getColor() 
+                                                    ,i_Font.getFontHeight() 
+                                                    ,i_Font.getFontName() 
+                                                    ,i_Font.getItalic()
+                                                    ,i_Font.getStrikeout()
+                                                    ,i_Font.getTypeOffset()
+                                                    ,i_Font.getUnderline());
     }
     
     

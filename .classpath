@@ -21,8 +21,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/poi-examples-3.17-beta1.jar"/>
 	<classpathentry kind="lib" path="lib/poi-excelant-3.17-beta1.jar"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-3.17-beta1.jar"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-3.17-beta1.jar" sourcepath="E:/迅雷下载/poi-src-3.16-20170419.zip"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.17-beta1.jar" sourcepath="E:/迅雷下载/poi-src-3.16-20170419.zip"/>
 	<classpathentry kind="lib" path="lib/poi-scratchpad-3.17-beta1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.zxing"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.tpool"/>
