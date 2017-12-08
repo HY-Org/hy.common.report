@@ -314,7 +314,7 @@ public class ExcelHelp
      */
     public final static InputStream saveToInputStream(RWorkbook i_Workbook) throws IOException
     {
-        return saveToInputStream(i_Workbook);
+        return saveToInputStream(i_Workbook.getWorkbook());
     }
     
     
