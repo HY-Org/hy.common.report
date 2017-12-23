@@ -1,4 +1,4 @@
 Manifest-Version: 3.1.2
 Created-By: HY.ZhengWei@qq.com  2017
-Specification-Version: 3.1.2.S33  2017-12-08
+Specification-Version: 3.1.2.S33  2017-12-23
 SourceCode: https://github.com/HY-ZhengWei/hy.common.report

@@ -1793,7 +1793,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 获取：值的标记。默认为一个冒号：":"
      */
-    public String getValueSign()
+    public synchronized String getValueSign()
     {
         return valueSign;
     }

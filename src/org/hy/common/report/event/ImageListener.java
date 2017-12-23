@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.hy.common.Help;
@@ -287,7 +288,7 @@ public class ImageListener implements ValueListener
                                                  ,this.endColumn
                                                  ,this.endRow   + v_OffsetRow);
         }
-        else if ( v_Drawing instanceof XSSFDrawing )
+        else if ( v_Drawing instanceof SXSSFDrawing )
         {
             v_ClientAnchor = new XSSFClientAnchor(0 ,0 ,0 ,0
                                                  ,this.beginColumn
