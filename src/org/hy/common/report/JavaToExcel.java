@@ -1221,6 +1221,10 @@ public class JavaToExcel
                                                                               ,v_TemplateAnchor.getCol2()
                                                                               ,i_DataCell.getRowIndex() + v_TemplateAnchor.getRow2() - v_TemplateAnchor.getRow1()));
         }
+        else
+        {
+            throw new java.lang.ClassCastException(i_DataCell.getClass().getName() + " is not find Type.");
+        }
         
         v_DataComment.setAuthor( v_TemplateComment.getAuthor());
         v_DataComment.setColumn( v_TemplateComment.getColumn());

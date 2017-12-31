@@ -296,6 +296,10 @@ public class ImageListener implements ValueListener
                                                  ,this.endColumn
                                                  ,this.endRow   + v_OffsetRow);
         }
+        else
+        {
+            throw new java.lang.ClassCastException(v_Drawing.getClass().getName() + " is not find Type.");
+        }
         
         v_ClientAnchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
         
