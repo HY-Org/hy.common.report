@@ -35,7 +35,7 @@
 	<dependency>
 	    <groupId>org</groupId>
 	    <artifactId>hy.common.base</artifactId>
-	    <version>1.0.126</version>
+	    <version>1.0.132</version>
 	</dependency>
 	
 	<!-- https://github.com/HY-ZhengWei/hy.common.file -->
