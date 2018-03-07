@@ -30,27 +30,6 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-    
-    <!-- https://github.com/HY-ZhengWei/hy.common.base -->
-	<dependency>
-	    <groupId>org</groupId>
-	    <artifactId>hy.common.base</artifactId>
-	    <version>1.0.132</version>
-	</dependency>
-	
-	<!-- https://github.com/HY-ZhengWei/hy.common.file -->
-	<dependency>
-	    <groupId>org</groupId>
-	    <artifactId>hy.common.file</artifactId>
-	    <version>1.1.2</version>
-	</dependency>
-	
-	<!-- https://github.com/HY-ZhengWei/hy.common.tpool -->
-	<dependency>
-	    <groupId>org</groupId>
-	    <artifactId>hy.common.tpool</artifactId>
-	    <version>1.1.1</version>
-	</dependency>
 	
 	<!-- https://github.com/HY-ZhengWei/hy.common.zxing -->
 	<dependency>
@@ -63,7 +42,7 @@
 	<dependency>
 	    <groupId>org</groupId>
 	    <artifactId>hy.common.xjava</artifactId>
-	    <version>3.9.4</version>
+	    <version>3.9.12</version>
 	</dependency>
 	
 	<dependency>
