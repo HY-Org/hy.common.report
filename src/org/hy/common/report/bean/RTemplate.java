@@ -820,7 +820,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                             if ( v_RValueChild.getIterator() == null )
                             {
                                 v_RValueChild.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
-                                v_RValueChild.setIteratorSize(    (int)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
+                                v_RValueChild.setIteratorSize((Integer)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
                             }
                             
                             if ( v_RValueChild.getIterator().hasNext() )
@@ -848,7 +848,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                         if ( v_RValue.getIterator() == null )
                         {
                             v_RValue.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
-                            v_RValue.setIteratorSize(    (int)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
+                            v_RValue.setIteratorSize((Integer)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
                         }
                         
                         if ( v_RValue.getIterator().hasNext() )
@@ -882,7 +882,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                             if ( v_RValue.getNextRValue().getIterator() == null )
                             {
                                 v_RValue.getNextRValue().setIterator((Iterator<?>)v_RCell.getNextRCell().getIteratorMethod()    .invokeForInstance(v_RValue.getValue()));
-                                v_RValue.getNextRValue().setIteratorSize(    (int)v_RCell.getNextRCell().getIteratorSizeMethod().invokeForInstance(v_RValue.getValue()));
+                                v_RValue.getNextRValue().setIteratorSize((Integer)v_RCell.getNextRCell().getIteratorSizeMethod().invokeForInstance(v_RValue.getValue()));
                             }
                             
                             if ( v_RValue.getNextRValue().getIterator().hasNext() )
