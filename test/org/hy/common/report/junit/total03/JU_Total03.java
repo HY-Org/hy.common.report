@@ -41,7 +41,7 @@ public class JU_Total03 implements JUBase<PartSprayRecordGroup>
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_Total03.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

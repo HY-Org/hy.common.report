@@ -80,6 +80,7 @@ import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProp
  *              v3.1  2017-07-11  修正：分组统计合并单位格时，当待合并的单位格是一个时，其实是无须合并的。发现人：李浩
  *              v3.2  2017-09-11  添加：自动计算行高的功能。
  *              v3.3  2017-12-07  添加：saveToInputStream()方法，将Excel文件数据保存成流信息。
+ *              v3.4  2018-05-07  修正：占位符所在单元格有空格时，无法正确匹配占位符的解析信息。发现人：张宇
  */
 public class ExcelHelp
 {
@@ -257,7 +258,8 @@ public class ExcelHelp
                             v_RCell.setDecimal(v_Decimals.get(0).split("\\.")[1].length());
                         }
                         
-                        v_Ret.putRow(v_Value.trim() ,v_RCell);
+                        v_Ret.putRow(v_Value ,v_RCell); // 2018-05-07 修复：不再trim()。因为去空格后，原数据格式会被改变，比如说用户就是想导出空格呢？
+                                                        //            其二，当为占位符查询时，也是不去空格的查询，这里去空格后，为查询不到匹配的占位符解析信息的。
                     }
                 }
                 else if ( v_Cell.getCellTypeEnum() == CellType.NUMERIC )

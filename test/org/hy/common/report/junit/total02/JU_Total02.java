@@ -40,7 +40,7 @@ public class JU_Total02 implements JUBase<ProductPressureTestStatisticsGroup>
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_Total02.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

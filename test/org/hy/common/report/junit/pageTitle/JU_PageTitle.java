@@ -43,7 +43,7 @@ public class JU_PageTitle implements JUBase<OrgInfo>
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_PageTitle.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

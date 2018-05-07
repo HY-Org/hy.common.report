@@ -41,7 +41,7 @@ public class JU_Total_Subtotal implements JUBase<OrgInfo>
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_Total_Subtotal.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+
+
+
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+
+        <template id="Report_Brace">
+            <name>零件机加工时统计汇总表</name>
+            <sheetIndex>0</sheetIndex>
+            <excelFileName>classpath:大括号测试.xlsx</excelFileName>
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>2</titleEndRow>
+            <dataBeginRow>3</dataBeginRow>
+            <dataEndRow>3</dataEndRow>
+            <rowAccessWindowSize>10000</rowAccessWindowSize>
+            <dataClass>org.hy.common.report.junit.brace.Brace</dataClass>
+        </template>
+
+    </xconfig>
+
+</config>

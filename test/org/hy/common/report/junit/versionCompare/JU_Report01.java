@@ -40,7 +40,7 @@ public class JU_Report01 implements JUBase<ExcelBean>
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_Report01.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

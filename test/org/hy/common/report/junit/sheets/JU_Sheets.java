@@ -39,7 +39,7 @@ public class JU_Sheets
         {
             $isInit = true;
             
-            XJava.parserAnnotation(JU_Sheets.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

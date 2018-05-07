@@ -35,7 +35,7 @@ public class JU_ReadVerticalGrade
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_ReadVerticalGrade.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

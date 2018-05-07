@@ -36,7 +36,7 @@ public class JU_ReadHorizontal
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_ReadHorizontal.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

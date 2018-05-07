@@ -43,7 +43,7 @@ public class JU_ReportNormal implements JUBase<OrgInfo>
         if ( !$isInit )
         {
             $isInit = true;
-            XJava.parserAnnotation(JU_ReportNormal.class.getName());
+            XJava.parserAnnotation(this.getClass().getName());
         }
     }
     

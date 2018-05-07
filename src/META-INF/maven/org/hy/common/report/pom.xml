@@ -4,7 +4,7 @@
 
   <groupId>org</groupId>
   <artifactId>hy.common.report</artifactId>
-  <version>3.1.3</version>
+  <version>3.1.4</version>
   <packaging>jar</packaging>
 
   <name>hy.common.report</name>
@@ -42,7 +42,7 @@
 	<dependency>
 	    <groupId>org</groupId>
 	    <artifactId>hy.common.xjava</artifactId>
-	    <version>3.9.12</version>
+	    <version>3.9.14</version>
 	</dependency>
 	
 	<dependency>

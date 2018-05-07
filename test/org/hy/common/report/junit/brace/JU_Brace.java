@@ -1,14 +1,13 @@
-package org.hy.common.report.junit.zxing;
+package org.hy.common.report.junit.brace;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hy.common.StringHelp;
+import org.hy.common.Date;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.error.RTemplateException;
-import org.hy.common.report.junit.JUBase;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -21,22 +20,22 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：二维码、条形码的报表演示
+ * 测试单元：大括号测试
  *
  * @author      ZhengWei(HY)
- * @createDate  2017-10-30
+ * @createDate  2018-05-04
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_ZXing implements JUBase<ZXingData>
+public class JU_Brace
 {
     
     private static boolean $isInit = false;
     
     
     
-    public JU_ZXing() throws Exception
+    public JU_Brace() throws Exception
     {
         if ( !$isInit )
         {
@@ -47,31 +46,35 @@ public class JU_ZXing implements JUBase<ZXingData>
     
     
     
-    public List<ZXingData> getDatas(int i_DataSize)
+    public List<Brace> getDatas(int i_Size)
     {
-        List<ZXingData> v_Ret = new ArrayList<ZXingData>();
+        List<Brace> v_Dates = new ArrayList<Brace>();
         
-        for (int i=0; i<i_DataSize; i++)
+        for (int i=0; i<i_Size; i++)
         {
-            ZXingData v_Bean = new ZXingData();
+            Brace v_Data = new Brace();
             
-            v_Bean.setZxing2D(StringHelp.getUUID());
-            v_Bean.setZxing1D("" + (i * 314));
+            v_Data.setDepartName("部门名称" + i);
             
-            v_Ret.add(v_Bean);
+            v_Dates.add(v_Data);
         }
         
-        return v_Ret;
+        
+        v_Dates.get(0).setBeginDate("2018-01-01");
+        v_Dates.get(0).setEndDate(  "2018-05-04");
+        v_Dates.get(0).setExportTime(Date.getNowTime().getYMD());
+        
+        return v_Dates;
     }
     
     
     
     @Test
-    public void test_ZXing() throws RTemplateException
+    public void test_Normal() throws RTemplateException
     {
-        RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportZXing");
+        RTemplate v_RTemplate = (RTemplate)XJava.getObject("Report_Brace");
         
-        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\二维码、条形码的报表演示.xlsx");
+        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\大括号测试");
     }
     
 }
