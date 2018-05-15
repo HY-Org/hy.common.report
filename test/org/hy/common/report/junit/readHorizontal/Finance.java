@@ -1,5 +1,7 @@
 package org.hy.common.report.junit.readHorizontal;
 
+import java.sql.Timestamp;
+
 import org.hy.common.Date;
 import org.hy.common.xml.SerializableDef;
 
@@ -31,6 +33,9 @@ public class Finance extends SerializableDef
     
     /** 时间 */
     private Date   time;
+    
+    /** 数据库时间 */
+    private Timestamp time2;
 
     
     
@@ -115,6 +120,28 @@ public class Finance extends SerializableDef
     public void setTime(Date time)
     {
         this.time = time;
+    }
+
+
+    
+    /**
+     * 获取：数据库时间
+     */
+    public Timestamp getTime2()
+    {
+        return time2;
+    }
+    
+
+    
+    /**
+     * 设置：数据库时间
+     * 
+     * @param time2 
+     */
+    public void setTime2(Timestamp time2)
+    {
+        this.time2 = time2;
     }
     
 }
