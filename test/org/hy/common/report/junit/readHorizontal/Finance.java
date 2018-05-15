@@ -23,19 +23,22 @@ public class Finance extends SerializableDef
 
     
     /** 收益 */
-    private Double income;
+    private Double     income;
     
     /** 支出 */
-    private Double pay;
+    private Double    pay;
     
     /** 流动比 */
-    private String rate;
+    private String    rate;
     
     /** 时间 */
-    private Date   time;
+    private Date      time;
     
     /** 数据库时间 */
     private Timestamp time2;
+    
+    /** yyyy-MM格式的时间 */
+    private Date      time3;
 
     
     
@@ -142,6 +145,28 @@ public class Finance extends SerializableDef
     public void setTime2(Timestamp time2)
     {
         this.time2 = time2;
+    }
+
+
+    
+    /**
+     * 获取：yyyy-MM格式的时间
+     */
+    public Date getTime3()
+    {
+        return time3;
+    }
+    
+
+    
+    /**
+     * 设置：yyyy-MM格式的时间
+     * 
+     * @param time3 
+     */
+    public void setTime3(Date time3)
+    {
+        this.time3 = time3;
     }
     
 }
