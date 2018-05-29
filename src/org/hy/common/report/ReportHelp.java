@@ -24,7 +24,9 @@ public class ReportHelp
 {
     
     /**
-     * Excel文件转为Java对象
+     * Excel文件转为Java对象。
+     * 
+     * 注意：默认从Excel文件的首个工作表读取数据。而不是从模板定义的工作表位置RTemplate.getSheetIndex()读取数据。
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-05-09
@@ -62,6 +64,8 @@ public class ReportHelp
     
     /**
      * Excel数据通过占位符的映射转为Java对象
+     * 
+     * 注意：默认从Excel文件的首个工作表读取数据。而不是从模板定义的工作表位置RTemplate.getSheetIndex()读取数据。
      * 
      * @author      ZhengWei(HY)
      * @createDate  2017-05-24
