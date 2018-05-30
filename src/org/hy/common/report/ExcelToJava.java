@@ -28,6 +28,8 @@ import org.hy.common.report.bean.RTemplate;
  * @version     v1.0
  *              v1.1              修复：在读取单位格时，支持对公式表达式的计算结果的读取
  *              v2.0  2017-06-26  添加：对与 readVertical(...) 方法，如果有标题信息的话，将保存在首个对象中
+ *              v2.1  2018-05-30  修复：特殊情况：Excel的实际列数量不准确，为了预防此问题，列数量从标题行取。发现人：向以前
+ *                                     当Excel多个连续列是空值时，Excel实际列数量将不准确。此可能是 POI API的Bug。
  */
 public class ExcelToJava
 {
@@ -161,6 +163,7 @@ public class ExcelToJava
      * @author      ZhengWei(HY)
      * @createDate  2017-05-08
      * @version     v1.0
+     *              v2.0  2018-05-30  修复： Excel的实际列数量不准确，为了预防此问题，列数量从标题行取
      *
      * @param i_RTemplate    模板对象
      * @param i_RowColDatas  模板中的占位符信息。Map.key为"单位格行号,单位格列号"，Map.value为占位符
@@ -175,7 +178,8 @@ public class ExcelToJava
         int          v_RowCountData  = i_RTemplate.getRowCountData();
         boolean      v_IsHaveData    = false;
         Object       v_TitleObj      = null;
-        List<Object> v_Ret           = new ArrayList<Object>();   
+        List<Object> v_Ret           = new ArrayList<Object>();  
+        int          v_MaxColSize    = 0;
         
         // 读取标题信息
         if ( i_RTemplate.getRowCountTitle() >= 1 )
@@ -185,6 +189,9 @@ public class ExcelToJava
             for (int v_RowNo=i_RTemplate.getTitleBeginRow(); v_RowNo<v_RowCountTitle; v_RowNo++)
             {
                 Row v_Row = i_Sheet.getRow(v_RowNo);
+                
+                // 特殊情况：Excel的实际列数量不准确，为了预防此问题，列数量从标题行取 ZhengWei(HY) Add 2018-05-30
+                v_MaxColSize = Math.max(v_Row.getPhysicalNumberOfCells() ,v_MaxColSize);
                 
                 for (int v_ColumnNo=0; v_ColumnNo<=v_Row.getPhysicalNumberOfCells(); v_ColumnNo++)
                 {
@@ -228,7 +235,9 @@ public class ExcelToJava
                     continue;
                 }
                 
-                for (int v_ColumnNo=0; v_ColumnNo<=v_Row.getPhysicalNumberOfCells(); v_ColumnNo++)
+                v_MaxColSize = Math.max(v_Row.getPhysicalNumberOfCells() ,v_MaxColSize);
+                
+                for (int v_ColumnNo=0; v_ColumnNo<=v_MaxColSize; v_ColumnNo++)
                 {
                     Cell v_Cell = v_Row.getCell(v_ColumnNo);
                     if ( v_Cell == null )
