@@ -69,6 +69,7 @@ import org.hy.common.report.event.ValueListener;
  *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
  *              v4.5  2017-07-31  添加：Excel高级筛选，由报表配置文件参数(isExcelFilter)控制生成的功能
  *              v4.6  2017-09-20  修复：批注只能生成一行的问题。
+ *              v4.7  2018-06-11  修复：模板空白行（无任何数据）时，可能返回NULL时，只添加一行空白行。
  */
 public class JavaToExcel
 {
@@ -533,8 +534,11 @@ public class JavaToExcel
             int v_DataRowNo = v_RowNo + v_ExcelRowIndex;
             Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
             io_RTotal.addExcelRowIndex(1);
-            
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+                
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
     }
     
@@ -574,7 +578,10 @@ public class JavaToExcel
             Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
             io_RTotal.addExcelRowIndex(1);
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
     }
     
@@ -612,7 +619,10 @@ public class JavaToExcel
             Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
             io_RTotal.addExcelRowIndex(1);
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
     }
     
@@ -650,7 +660,10 @@ public class JavaToExcel
             Row v_DataRow   = i_DataSheet.createRow(v_DataRowNo);
             io_RTotal.addExcelRowIndex(1);
             
-            copyRowByBlankSpace(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRowByBlankSpace(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow);
+            }
         }
     }
     
@@ -689,7 +702,10 @@ public class JavaToExcel
             io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
     }
     
@@ -736,7 +752,10 @@ public class JavaToExcel
             io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
             
-            copyRowPageFooter(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRowPageFooter(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
         
         // 创建分页页脚。模板的"行（可对应Excel中的多行）"按一个不可再被分割的整体对待，固没有写在下面的For语句中。
@@ -791,7 +810,10 @@ public class JavaToExcel
             io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
             
-            copyRowPageHeader(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRowPageHeader(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
     }
     
@@ -830,7 +852,10 @@ public class JavaToExcel
             io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
             
-            copyRowPageFooter(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRowPageFooter(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
         
         // 创建分页页脚。模板的"行（可对应Excel中的多行）"按一个不可再被分割的整体对待，固没有写在下面的For语句中。
@@ -877,7 +902,10 @@ public class JavaToExcel
             io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
     }
     
@@ -916,7 +944,10 @@ public class JavaToExcel
             io_RTotal.addExcelRowIndex(1);
             io_RTotal.addRealDataCount(1);
             
-            copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            if ( v_TemplateRow != null ) // 模板空白行（无任何数据）时，可能返回NULL
+            {
+                copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
+            }
         }
     }
     

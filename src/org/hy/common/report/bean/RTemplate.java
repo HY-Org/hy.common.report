@@ -46,6 +46,7 @@ import org.hy.common.xml.SerializableDef;
  *              v4.4  2017-07-19  添加：是否将整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
  *              v4.5  2017-07-31  添加：Excel高级筛选，由报表配置文件参数(isExcelFilter)控制生成的功能
  *              v4.6  2017-09-11  添加：自动计算行高的功能。建议人：李浩
+ *              v5.0  2018-06-12  添加：在 ":系统固定变量" 格式的基础上，添加对 "{:系统固定变量}" 格式的填充替换的支持。
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -814,8 +815,36 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     {
                         RCell  v_RCell       = v_RCellG.get(v_Index);
                         RValue v_RValueChild = v_RValue.getValueGroup().get(v_Index);
+                        String v_ValueName   = StringHelp.replaceAll(v_RCell.getValueName() 
+                                                                    ,new String[]{$Value_LimitBefore ,$Value_LimitEnd ,this.valueSign} 
+                                                                    ,new String[]{""});
                         
-                        if ( v_RCell.isFor() )
+                        // 添加对 "{:系统固定变量}" 格式的填充替换的支持  2018-06-12
+                        if ( $ValueName_RowNo.equalsIgnoreCase(v_ValueName) )
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_RSystemValue.getRowNo()));
+                        }
+                        else if ( $ValueName_RowIndex.equalsIgnoreCase(v_ValueName) )
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_RSystemValue.getRowIndex()));
+                        }
+                        else if ( $ValueName_RowCount.equalsIgnoreCase(v_ValueName) )
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_RSystemValue.getRowCount()));
+                        }
+                        else if ( $ValueName_RowSubtotalCount.equalsIgnoreCase(v_ValueName) )
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_RSystemValue.getRowSubtotalCount()));
+                        }
+                        else if ( $ValueName_PageNo.equalsIgnoreCase(v_ValueName) )
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_RSystemValue.getPageNo()));
+                        }
+                        else if ( $ValueName_PageSize.equalsIgnoreCase(v_ValueName) )
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_RSystemValue.getPageSize()));
+                        }
+                        else if ( v_RCell.isFor() )
                         {
                             if ( v_RValueChild.getIterator() == null )
                             {
