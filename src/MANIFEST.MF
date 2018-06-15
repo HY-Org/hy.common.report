@@ -1,5 +1,5 @@
 Manifest-Version: 3.1.5
 Created-By: HY.ZhengWei@qq.com  2017
-Specification-Version: 3.1.5.S36  2018-06-12
+Specification-Version: 3.1.5.S36  2018-06-15
 SourceCode: https://github.com/HY-ZhengWei/hy.common.report
 Build-JDK: 1.6
