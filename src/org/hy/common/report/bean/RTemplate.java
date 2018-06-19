@@ -47,6 +47,8 @@ import org.hy.common.xml.SerializableDef;
  *              v4.5  2017-07-31  添加：Excel高级筛选，由报表配置文件参数(isExcelFilter)控制生成的功能
  *              v4.6  2017-09-11  添加：自动计算行高的功能。建议人：李浩
  *              v5.0  2018-06-12  添加：在 ":系统固定变量" 格式的基础上，添加对 "{:系统固定变量}" 格式的填充替换的支持。
+ *              v5.1  2018-06-19  添加：实例比较、相等时，添加this.name属性的判定。
+ *                                     防止同一Excel文件生成多个模板对象时，无法区别模板实例。建议人：邹德福
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -1988,12 +1990,17 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         }
         else
         {
-            if ( this.excelFileName == null )
+            if ( Help.isNull(this.name) || Help.isNull(this.excelFileName) )
             {
                 return -1;
             }
             
-            return this.excelFileName.compareTo(i_Other.getExcelFileName());
+            int v_Ret = this.name.compareTo(i_Other.getName());
+            if ( v_Ret == 0 )
+            {
+                v_Ret = this.excelFileName.compareTo(i_Other.getExcelFileName());
+            }
+            return v_Ret;
         }
     }
 
@@ -2002,12 +2009,22 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     @Override
     public int hashCode()
     {
-        if ( this.excelFileName != null )
+        int v_Ret = 0;
+        
+        if ( !Help.isNull(this.name) )
         {
-            return this.excelFileName.hashCode();
+            v_Ret = this.name.hashCode();
+        }
+        if ( !Help.isNull(this.excelFileName) )
+        {
+            v_Ret += this.excelFileName.hashCode() * 1000;
+        }
+        if ( v_Ret == 0 )
+        {
+            return super.hashCode();
         }
         
-        return super.hashCode();
+        return v_Ret;
     }
 
 
@@ -2025,12 +2042,24 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         }
         else if ( i_Other instanceof RTemplate )
         {
-            if ( this.excelFileName == null )
+            boolean v_Ret = false;
+            
+            if ( !Help.isNull(this.name) )
+            {
+                v_Ret = this.name.equals(((RTemplate)i_Other).getName());
+            }
+            
+            if ( !v_Ret )
             {
                 return false;
             }
             
-            return this.excelFileName.equals(((RTemplate)i_Other).getExcelFileName());
+            if ( !Help.isNull(this.excelFileName) )
+            {
+                v_Ret = this.excelFileName.equals(((RTemplate)i_Other).getExcelFileName());
+            }
+            
+            return v_Ret;
         }
         else
         {

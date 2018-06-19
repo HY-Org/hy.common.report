@@ -4,7 +4,7 @@
 
   <groupId>org</groupId>
   <artifactId>hy.common.report</artifactId>
-  <version>3.1.5</version>
+  <version>3.1.6</version>
   <packaging>jar</packaging>
 
   <name>hy.common.report</name>
