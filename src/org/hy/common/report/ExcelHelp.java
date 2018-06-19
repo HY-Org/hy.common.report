@@ -224,7 +224,7 @@ public class ExcelHelp
         }
         else
         {
-            v_EndRow = v_Sheet.getPhysicalNumberOfRows();
+            v_EndRow = v_Sheet.getLastRowNum();
         }
         
         for (int v_RowNo=v_BeginRow; v_RowNo<=v_EndRow; v_RowNo++)

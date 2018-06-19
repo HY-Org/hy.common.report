@@ -173,7 +173,7 @@ public class ExcelToJava
      */
     private final static List<Object> readVertical(RTemplate i_RTemplate ,Map<String ,String> i_RowColDatas ,Sheet i_Sheet ,boolean i_IsAddNull)
     {
-        int          v_RowCount      = i_Sheet.getPhysicalNumberOfRows();
+        int          v_RowCount      = i_Sheet.getLastRowNum();
         int          v_RowCountTitle = i_RTemplate.getRowCountTitle();
         int          v_RowCountData  = i_RTemplate.getRowCountData();
         boolean      v_IsHaveData    = false;
@@ -191,9 +191,9 @@ public class ExcelToJava
                 Row v_Row = i_Sheet.getRow(v_RowNo);
                 
                 // 特殊情况：Excel的实际列数量不准确，为了预防此问题，列数量从标题行取 ZhengWei(HY) Add 2018-05-30
-                v_MaxColSize = Math.max(v_Row.getPhysicalNumberOfCells() ,v_MaxColSize);
+                v_MaxColSize = Math.max(v_Row.getLastCellNum() ,v_MaxColSize);
                 
-                for (int v_ColumnNo=0; v_ColumnNo<=v_Row.getPhysicalNumberOfCells(); v_ColumnNo++)
+                for (int v_ColumnNo=0; v_ColumnNo<=v_Row.getLastCellNum(); v_ColumnNo++)
                 {
                     Cell v_Cell = v_Row.getCell(v_ColumnNo);
                     if ( v_Cell == null )
@@ -235,7 +235,7 @@ public class ExcelToJava
                     continue;
                 }
                 
-                v_MaxColSize = Math.max(v_Row.getPhysicalNumberOfCells() ,v_MaxColSize);
+                v_MaxColSize = Math.max(v_Row.getLastCellNum() ,v_MaxColSize);
                 
                 for (int v_ColumnNo=0; v_ColumnNo<=v_MaxColSize; v_ColumnNo++)
                 {
@@ -283,7 +283,7 @@ public class ExcelToJava
      */
     private final static List<Object> readHorizontal(RTemplate i_RTemplate ,Map<String ,String> i_RowColDatas ,Sheet i_Sheet ,boolean i_IsAddNull)
     {
-        int          v_CellCount    = i_Sheet.getRow(i_RTemplate.getDataBeginRow()).getPhysicalNumberOfCells();
+        int          v_CellCount    = i_Sheet.getRow(i_RTemplate.getDataBeginRow()).getLastCellNum();
         int          v_ColCountData = i_RTemplate.getColCountData();
         boolean      v_IsHaveData   = false;
         List<Object> v_Ret          = new ArrayList<Object>();   

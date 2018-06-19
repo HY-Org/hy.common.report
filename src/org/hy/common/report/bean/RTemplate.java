@@ -483,7 +483,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     {
         try
         {
-            PartitionMap<String ,RCell> v_ExcelDatas = ExcelHelp.readDatas(this.getTemplateSheet());
+            int                         v_MinRow     = Help.min(titleBeginRow ,dataBeginRow ,titlePageHeaderBeginRow ,titlePageFooterBeginRow ,subtotalBeginRow ,totalBeginRow);
+            int                         v_MaxRow     = Help.max(titleEndRow   ,dataEndRow   ,titlePageHeaderEndRow   ,titlePageFooterEndRow   ,subtotalEndRow   ,totalEndRow);
+            PartitionMap<String ,RCell> v_ExcelDatas = ExcelHelp.readDatas(this.getTemplateSheet() ,v_MinRow ,v_MaxRow);
             List<String>                v_TempDatas  = Help.toListKeys(v_ExcelDatas);
             Class<?>                    v_JavaClass  = Help.forName(this.dataClass);
             String                      v_PatternKey = $Pattern_Values_Before + this.valueSign + $Pattern_Values_End;

@@ -335,7 +335,7 @@ public class JavaToExcel
         v_RSystemValue.setRowCount(        i_Datas.size());
         v_RSystemValue.setRowSubtotalCount(i_Datas.size());
         
-        v_RTotal.addExcelRowIndex(v_DataSheet.getPhysicalNumberOfRows());
+        v_RTotal.addExcelRowIndex(v_DataSheet.getLastRowNum());
         
         
         // 计算分页总数量
@@ -489,8 +489,8 @@ public class JavaToExcel
         {
             String v_Range = "A" + (i_RTemplate.getDataBeginRow())
                            + ":" 
-                           + StringHelp.toABC26(v_DataSheet.getRow(0).getPhysicalNumberOfCells() - 1)
-                           + v_DataSheet.getPhysicalNumberOfRows();
+                           + StringHelp.toABC26(v_DataSheet.getRow(0).getLastCellNum() - 1)
+                           + v_DataSheet.getLastRowNum();
             v_DataSheet.setAutoFilter(CellRangeAddress.valueOf(v_Range));
         }
         
