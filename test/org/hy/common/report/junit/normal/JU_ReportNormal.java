@@ -8,6 +8,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.bean.RWorkbook;
 import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.junit.JUBase;
 import org.hy.common.report.junit.total.OrgInfo;
@@ -86,7 +87,13 @@ public class JU_ReportNormal implements JUBase<OrgInfo>
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportNormal");
         
-        ExcelHelp.save(ReportHelp.toExcel("常规列表加合计的报表演示" ,getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportNormal.xlsx");
+        RWorkbook v_RWorkbook = ReportHelp.toExcel("常规列表加合计的报表演示" ,getDatas(10) ,v_RTemplate);
+        
+        // 同一Excel的工作表追加输出第二张报表。
+        // 并且与前一张报表间隔3行空行
+        v_RWorkbook = ReportHelp.toExcel(v_RWorkbook ,getDatas(20) ,v_RTemplate ,true ,3);
+        
+        ExcelHelp.save(v_RWorkbook.getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ReportNormal.xlsx");
     }
     
 }

@@ -173,7 +173,7 @@ public class ExcelToJava
      */
     private final static List<Object> readVertical(RTemplate i_RTemplate ,Map<String ,String> i_RowColDatas ,Sheet i_Sheet ,boolean i_IsAddNull)
     {
-        int          v_RowCount      = i_Sheet.getLastRowNum();
+        int          v_RowCount      = i_Sheet.getLastRowNum() + 1;
         int          v_RowCountTitle = i_RTemplate.getRowCountTitle();
         int          v_RowCountData  = i_RTemplate.getRowCountData();
         boolean      v_IsHaveData    = false;

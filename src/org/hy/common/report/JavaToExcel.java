@@ -70,6 +70,7 @@ import org.hy.common.report.event.ValueListener;
  *              v4.5  2017-07-31  添加：Excel高级筛选，由报表配置文件参数(isExcelFilter)控制生成的功能
  *              v4.6  2017-09-20  修复：批注只能生成一行的问题。
  *              v4.7  2018-06-11  修复：模板空白行（无任何数据）时，可能返回NULL时，只添加一行空白行。
+ *              v5.0  2018-06-22  添加：在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
  */
 public class JavaToExcel
 {
@@ -171,7 +172,7 @@ public class JavaToExcel
      */
     public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
-        return write(null ,i_SheetName ,i_Datas ,i_RTemplate ,false);
+        return write(null ,i_SheetName ,i_Datas ,i_RTemplate ,false ,0);
     }
     
     
@@ -192,7 +193,29 @@ public class JavaToExcel
      */
     public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
     {
-        return write(null ,i_SheetName ,i_Datas ,i_RTemplate ,i_IsAppend);
+        return write(null ,i_SheetName ,i_Datas ,i_RTemplate ,i_IsAppend ,0);
+    }
+    
+    
+    
+    /**
+     * 向Excel文件中写数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2018-06-22
+     * @version     v1.0
+     *
+     * @param i_SheetName  Excel工作表的名称
+     * @param i_Datas      数据对象
+     * @param i_RTemplate  模板信息对象
+     * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
+     * @param i_AddBlankRow   在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
+     * @return
+     * @throws RTemplateException 
+     */
+    public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend ,int i_AddBlankRow) throws RTemplateException
+    {
+        return write(null ,i_SheetName ,i_Datas ,i_RTemplate ,i_IsAppend ,i_AddBlankRow);
     }
     
     
@@ -211,7 +234,7 @@ public class JavaToExcel
      */
     public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
-        return write(null ,null ,i_Datas ,i_RTemplate ,false);
+        return write(null ,null ,i_Datas ,i_RTemplate ,false ,0);
     }
     
     
@@ -231,7 +254,28 @@ public class JavaToExcel
      */
     public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
     {
-        return write(null ,null ,i_Datas ,i_RTemplate ,i_IsAppend);
+        return write(null ,null ,i_Datas ,i_RTemplate ,i_IsAppend ,0);
+    }
+    
+    
+    
+    /**
+     * 向Excel文件中写数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2018-06-22
+     * @version     v1.0
+     *
+     * @param i_Datas         数据对象
+     * @param i_RTemplate     模板信息对象
+     * @param i_IsAppend      是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
+     * @param i_AddBlankRow   在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
+     * @return
+     * @throws RTemplateException 
+     */
+    public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend ,int i_AddBlankRow) throws RTemplateException
+    {
+        return write(null ,null ,i_Datas ,i_RTemplate ,i_IsAppend ,i_AddBlankRow);
     }
     
     
@@ -252,7 +296,7 @@ public class JavaToExcel
      */
     public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
-        return write(i_Workbook ,null ,i_Datas ,i_RTemplate ,false);
+        return write(i_Workbook ,null ,i_Datas ,i_RTemplate ,false ,0);
     }
     
     
@@ -274,7 +318,30 @@ public class JavaToExcel
      */
     public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
     {
-        return write(i_Workbook ,null ,i_Datas ,i_RTemplate ,i_IsAppend);
+        return write(i_Workbook ,null ,i_Datas ,i_RTemplate ,i_IsAppend ,0);
+    }
+    
+    
+    
+    /**
+     * 向Excel文件中写数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2018-06-22
+     * @version     v1.0
+     *
+     * @param i_Workbook      工作薄对象
+     * @param i_SheetName     工作表名称
+     * @param i_Datas         数据对象
+     * @param i_RTemplate     模板信息对象
+     * @param i_IsAppend      是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
+     * @param i_AddBlankRow   在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
+     * @return
+     * @throws RTemplateException 
+     */
+    public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend ,int i_AddBlankRow) throws RTemplateException
+    {
+        return write(i_Workbook ,null ,i_Datas ,i_RTemplate ,i_IsAppend ,i_AddBlankRow);
     }
     
     
@@ -286,15 +353,16 @@ public class JavaToExcel
      * @createDate  2017-03-16
      * @version     v1.0
      *
-     * @param i_Workbook   工作薄对象
-     * @param i_SheetName  工作表名称
-     * @param i_Datas      数据对象
-     * @param i_RTemplate  模板信息对象
-     * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
+     * @param i_Workbook      工作薄对象
+     * @param i_SheetName     工作表名称
+     * @param i_Datas         数据对象
+     * @param i_RTemplate     模板信息对象
+     * @param i_IsAppend      是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
+     * @param i_AddBlankRow   在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
      * @return
      * @throws RTemplateException 
      */
-    public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
+    public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend ,int i_AddBlankRow) throws RTemplateException
     {
         RWorkbook v_DataWorkbook  = i_Workbook;
         Sheet     v_DataSheet     = null;
@@ -335,8 +403,18 @@ public class JavaToExcel
         v_RSystemValue.setRowCount(        i_Datas.size());
         v_RSystemValue.setRowSubtotalCount(i_Datas.size());
         
-        v_RTotal.addExcelRowIndex(v_DataSheet.getLastRowNum());
+        v_RTotal.addExcelRowIndex(Help.max(v_DataSheet.getLastRowNum() ,0));
+        if ( v_DataSheet.getLastRowNum() > 0 )
+        {
+            // 工作表有数据时    getLastRowNum() 的下标从0开始，所以此处额外加1。
+            v_RTotal.addExcelRowIndex(1);
+        }
         
+        // 在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。ZhengWei(HY) Add 2018-06-22
+        if ( i_AddBlankRow >= 1 )
+        {
+            v_RTotal.addExcelRowIndex(i_AddBlankRow);
+        }
         
         // 计算分页总数量
         if ( i_RTemplate.getRowCountSubtotal() >= 1 )
