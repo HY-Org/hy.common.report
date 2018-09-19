@@ -71,6 +71,7 @@ import org.hy.common.report.event.ValueListener;
  *              v4.6  2017-09-20  修复：批注只能生成一行的问题。
  *              v4.7  2018-06-11  修复：模板空白行（无任何数据）时，可能返回NULL时，只添加一行空白行。
  *              v5.0  2018-06-22  添加：在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
+ *              V5.1  2018-09-19  修复： 复文本格式化调用方法applyFont(...)异常的问题。发现人：李秉坤
  */
 public class JavaToExcel
 {
@@ -2536,8 +2537,10 @@ public class JavaToExcel
                     short v_IDX        = v_TemplateRichText.getFontOfFormattingRun(v_FontIndex);
                     Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
                     
-                    v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
-                    v_TextLen = v_FirstIndex;
+                    if ( v_TextLen > 0 )
+                    {
+                        v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                    }
                 }
                 
                 i_DataCell.setCellValue(v_DataRichText);
@@ -2558,8 +2561,10 @@ public class JavaToExcel
                         int  v_IDX      = v_TemplateFont.getIndex();
                         Font v_DataFont = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
                         
-                        v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
-                        v_TextLen = v_FirstIndex;
+                        if ( v_TextLen > 0 )
+                        {
+                            v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                        }
                     }
                 }
                 
@@ -2604,8 +2609,10 @@ public class JavaToExcel
                 short v_IDX        = ((HSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun( v_FontIndex);
                 Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
                 
-                v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
-                v_TextLen = v_FirstIndex;
+                if ( v_TextLen > 0 )
+                {
+                    v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                }
             }
             
             i_DataCell.getCellComment().setString(v_DataRichText);
