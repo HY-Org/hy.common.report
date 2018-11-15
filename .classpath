@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/XJava"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.zxing"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.tpool"/>
 	<classpathentry kind="lib" path="lib/poi-3.17.jar" sourcepath="C:/Users/ZhengWei/.m2/org/apache/poi/poi/3.17/poi-3.17-sources.jar"/>
@@ -22,5 +21,6 @@
 	<classpathentry kind="lib" path="lib/poi-ooxml-3.17.jar" sourcepath="C:/Users/ZhengWei/.m2/org/apache/poi/poi-ooxml/3.17/poi-ooxml-3.17-sources.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.17.jar"/>
 	<classpathentry kind="lib" path="lib/poi-scratchpad-3.17.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.xjava"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
