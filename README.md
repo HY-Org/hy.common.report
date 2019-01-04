@@ -476,6 +476,8 @@ Help.print(v_Datas);
 
 通过marginLeft，设定动态图片与单元格左侧的边距。此属性的数值相当的大，如只少10000起步才有效果。
 
+[查看测试代码](test/org/hy/common/report/junit/versionCompare)
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
