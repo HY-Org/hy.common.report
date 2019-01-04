@@ -17,6 +17,7 @@
 	* [常规的纵深扩展的模板举例](#常规的纵深扩展的模板举例)
 	* [横向扩展的模板举例](#横向扩展的模板举例)
 * 使用小技巧
+	* [动态图片的缩放及偏移](#动态图片的缩放及偏移)
 	* [小数格式的处理](#小数格式的处理)
 	* [添加高级筛选](#添加高级筛选)
 	* [冻结标题](#冻结标题)
@@ -172,11 +173,16 @@ __一行数据一页的XML配置__
 			
 			<call name="addListener">                                   <!-- 定义自定义变量名称的二次加工事件 -->
 				<listener class="org.hy.common.report.event.ImageListener">
-					<valueName>:image</valueName>                       <!-- 定义变量名称 -->
-					<beginRow>29</beginRow>                             <!-- 定义动态图片在模板中的位置 -->
+					<valueName>image</valueName>     <!-- 定义变量名称。注意：此处不用写占位符前缀冒号 -->
+					<beginRow>29</beginRow>          <!-- 定义动态图片在模板中的位置 -->
 					<endRow>43</endRow>
 					<beginColumn>0</beginColumn>
 					<endColumn>8</endColumn>
+					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
+					<maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
+					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+					<marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
+					<marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
 				</listener>
 			</call>
 		</template>
@@ -452,6 +458,58 @@ List<Object> v_Datas     = ReportHelp.toJava(v_RTemplate ,"Excel数据文件的�
 
 Help.print(v_Datas);
 ```
+
+
+
+
+
+动态图片的缩放及偏移
+------
+
+通过maxWidth，设定动态图片的最大宽度，当大于此值时，图片的宽度会被自动缩小。
+通过maxHeight，设定动态图片的最大调试，当大于此值时，图片的高度会被自动缩小。
+当isScale为真时，动态图片被缩小时，将保持高宽等比缩放。
+通过marginTop，设定动态图片与单元格顶部的边距。此属性的数值相当的大，如只少10000起步才有效果。
+通过marginLeft，设定动态图片与单元格左侧的边距。此属性的数值相当的大，如只少10000起步才有效果。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 报表模板配置信息 -->
+	<xconfig>
+	
+		<template id="ReportTemplate">
+			
+			... 
+			...
+			
+			<call name="addListener">                  <!-- 定义自定义变量名称的二次加工事件 -->
+				<listener class="org.hy.common.report.event.ImageListener">
+					<valueName>image</valueName>     <!-- 定义变量名称。注意：此处不用写占位符前缀冒号 -->
+					<beginRow>29</beginRow>          <!-- 定义动态图片在模板中的位置 -->
+					<endRow>43</endRow>
+					<beginColumn>0</beginColumn>
+					<endColumn>8</endColumn>
+					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
+					<maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
+					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+					<marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
+					<marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
+				</listener>
+			</call>
+		</template>
+		
+	</xconfig>
+	
+</config>
+```  
 
 
 

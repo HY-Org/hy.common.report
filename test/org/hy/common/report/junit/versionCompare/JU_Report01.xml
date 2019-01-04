@@ -52,6 +52,11 @@
 					<endRow>18</endRow>
 					<beginColumn>0</beginColumn>
 					<endColumn>3</endColumn>
+					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
+					<maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
+					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+					<marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
+					<marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
 				</listener>
 			</call>
 		</template>

@@ -57,7 +57,7 @@ public class JU_Report01 implements JUBase<ExcelBean>
             v_Bean.setAge(i);
             v_Bean.setName("Name " + i);
             v_Bean.setDate(new Date());
-            v_Bean.setImage("/Users/hy/WSS/WorkSpace_SearchDesktop/hy.common.report/images/" + i + ".jpg");
+            v_Bean.setImage("/Volumes/HY_HD_06/WSS/WorkSpace_SearchDesktop/hy.common.report/images/" + i + ".jpg");
             
             v_Ret.add(v_Bean);
         }
@@ -73,8 +73,8 @@ public class JU_Report01 implements JUBase<ExcelBean>
         RTemplate v_RTemplate01 = (RTemplate)XJava.getObject("Report01");
         RTemplate v_RTemplate02 = (RTemplate)XJava.getObject("Report02");
         
-        ExcelHelp.save(ReportHelp.toExcel("XLSX格式" ,getDatas(10) ,v_RTemplate02).getWorkbook() ,"/Users/hy/Downloads/Report01");
-        ExcelHelp.save(ReportHelp.toExcel("XLS格式"  ,getDatas(10) ,v_RTemplate01).getWorkbook() ,"/Users/hy/Downloads/Report01");
+        ExcelHelp.save(ReportHelp.toExcel("XLSX格式" ,getDatas(11) ,v_RTemplate02).getWorkbook() ,"/Volumes/HY_HD_06/Downloads/Report01");
+        // ExcelHelp.save(ReportHelp.toExcel("XLS格式"  ,getDatas(11) ,v_RTemplate01).getWorkbook() ,"/Volumes/HY_HD_06/Downloads/Report01");
     }
     
 }

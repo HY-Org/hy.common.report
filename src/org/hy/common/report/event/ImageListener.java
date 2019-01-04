@@ -1,5 +1,7 @@
 package org.hy.common.report.event;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,6 +34,7 @@ import org.hy.common.report.bean.RWorkbook;
  * @author      ZhengWei(HY)
  * @createDate  2017-03-18
  * @version     v1.0
+ *              v2.0  2019-01-04  添加：图片缩放功能。支持最大宽度、最大高度等功能。
  */
 public class ImageListener implements ValueListener
 {
@@ -51,11 +54,29 @@ public class ImageListener implements ValueListener
     /** 图片显示的位置信息：结束行号 */
     protected Short   endColumn;
     
+    /** 图片最大宽度。默认为0值，表示不限制 */
+    protected int     maxWidth;
+    
+    /** 图片最大高度。默认为0值，表示不限制 */
+    protected int     maxHeight;
+    
+    /** 当图片被缩小时，是否保持高宽等比缩放（当maxWidth 或 maxHeight大于0时有效）。默认为：真 */
+    protected boolean isScale;
+    
     /** 与单元格顶部的边距。先将图片大小设置好后导出报表看看，再微调此值 */
     protected Integer marginTop;
     
     /** 与单元格左侧的边距。先将图片大小设置好后导出报表看看，再微调此值 */
     protected Integer marginLeft;
+    
+    
+    
+    public ImageListener()
+    {
+        this.maxWidth  = 0;
+        this.maxHeight = 0;
+        this.isScale   = true;
+    }
     
     
     
@@ -211,6 +232,109 @@ public class ImageListener implements ValueListener
     {
         this.marginLeft = marginLeft;
     }
+    
+    
+    
+    /**
+     * 缩放图片。按预先设定的最大宽度和最大高度
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2019-01-04
+     * @version     v1.0
+     *
+     * @param i_Image
+     * @return
+     */
+    protected BufferedImage resizeImage(BufferedImage i_Image)
+    {
+        if ( this.maxWidth <= 0 && this.maxHeight <= 0 )
+        {
+            return i_Image;
+        }
+        
+        int     v_NewWidth  = i_Image.getWidth();
+        int     v_NewHeight = i_Image.getHeight();
+        boolean v_IsResize  = false;
+        
+        // 计算高宽等比缩放的情况
+        if ( this.isScale )
+        {
+            double v_WidthZoomRate  = 1;
+            double v_HeightZoomRate = 1;
+            
+            if ( this.maxWidth > 0 && v_NewWidth > this.maxWidth )
+            {
+                v_WidthZoomRate = Help.division(this.maxWidth ,v_NewWidth);
+                v_IsResize      = true;
+            }
+            
+            if ( this.maxHeight > 0 && v_NewHeight > this.maxHeight )
+            {
+                v_HeightZoomRate = Help.division(this.maxHeight ,v_NewHeight);
+                v_IsResize       = true;
+            }
+            
+            if ( v_IsResize )
+            {
+                double v_ZoomRate = Help.min(v_WidthZoomRate ,v_HeightZoomRate);
+                v_NewWidth  = (int)Math.floor(Help.multiply(v_NewWidth  ,v_ZoomRate));
+                v_NewHeight = (int)Math.floor(Help.multiply(v_NewHeight ,v_ZoomRate));
+            }
+        }
+        // 计算非等比缩放的情况
+        else
+        {
+            if ( this.maxWidth > 0 && v_NewWidth > this.maxWidth )
+            {
+                v_NewWidth = this.maxWidth;
+                v_IsResize = true;
+            }
+            
+            if ( this.maxHeight > 0 && v_NewHeight > this.maxHeight )
+            {
+                v_NewHeight = this.maxHeight;
+                v_IsResize = true;
+            }
+        }
+        
+        if ( v_IsResize )
+        {
+            return resizeImage(i_Image ,v_NewWidth ,v_NewHeight);
+        }
+        else
+        {
+            return i_Image;
+        }
+    }
+    
+    
+    
+    /**
+     * 缩放图片
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2019-01-04
+     * @version     v1.0
+     *
+     * @param i_Image
+     * @param i_NewWidth   新的宽度
+     * @param i_NewHeight  新的高度
+     * @return
+     */
+    protected BufferedImage resizeImage(BufferedImage i_Image ,int i_NewWidth ,int i_NewHeight)
+    {
+        BufferedImage v_NewImage = new BufferedImage(i_NewWidth ,i_NewHeight, i_Image.getType());
+        
+        Graphics2D v_Graphics = v_NewImage.createGraphics();
+        // 从原图上取颜色绘制新图
+        v_Graphics.drawImage(i_Image ,0 ,0 ,i_Image.getWidth() ,i_Image.getHeight() ,null);
+        v_Graphics.dispose();
+        
+        // 根据图片尺寸压缩比得到新图的尺寸
+        v_NewImage.getGraphics().drawImage(i_Image.getScaledInstance(i_NewWidth ,i_NewHeight ,Image.SCALE_SMOOTH) ,0 ,0 ,null);
+        
+        return v_NewImage;
+    }
 
 
 
@@ -257,6 +381,9 @@ public class ImageListener implements ValueListener
             {
                 v_BufferImage = ImageIO.read(new File(v_ImageName));
             }
+            
+            // 缩放图片
+            v_BufferImage = resizeImage(v_BufferImage);
             
             v_ByteArrayOut = new ByteArrayOutputStream();
             ImageIO.write(v_BufferImage ,v_ImageType ,v_ByteArrayOut);
