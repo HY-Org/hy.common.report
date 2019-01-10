@@ -35,14 +35,14 @@
 	<dependency>
 	    <groupId>org</groupId>
 	    <artifactId>hy.common.zxing</artifactId>
-	    <version>3.3.1</version>
+	    <version>3.3.2</version>
 	</dependency>
 	
 	<!-- https://github.com/HY-ZhengWei/XJava -->
 	<dependency>
 	    <groupId>org</groupId>
 	    <artifactId>hy.common.xjava</artifactId>
-	    <version>3.9.25</version>
+	    <version>3.9.26</version>
 	</dependency>
 	
 	<dependency>

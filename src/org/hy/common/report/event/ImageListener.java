@@ -1,7 +1,5 @@
 package org.hy.common.report.event;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,6 +18,7 @@ import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.hy.common.Help;
+import org.hy.common.file.FileHelp;
 import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RWorkbook;
@@ -247,97 +246,13 @@ public class ImageListener implements ValueListener
      */
     protected BufferedImage resizeImage(BufferedImage i_Image)
     {
-        if ( this.maxWidth <= 0 && this.maxHeight <= 0 )
-        {
-            return i_Image;
-        }
+        FileHelp v_FileHelp = new FileHelp();
         
-        int     v_NewWidth  = i_Image.getWidth();
-        int     v_NewHeight = i_Image.getHeight();
-        boolean v_IsResize  = false;
-        
-        // 计算高宽等比缩放的情况
-        if ( this.isScale )
-        {
-            double v_WidthZoomRate  = 1;
-            double v_HeightZoomRate = 1;
-            
-            if ( this.maxWidth > 0 && v_NewWidth > this.maxWidth )
-            {
-                v_WidthZoomRate = Help.division(this.maxWidth ,v_NewWidth);
-                v_IsResize      = true;
-            }
-            
-            if ( this.maxHeight > 0 && v_NewHeight > this.maxHeight )
-            {
-                v_HeightZoomRate = Help.division(this.maxHeight ,v_NewHeight);
-                v_IsResize       = true;
-            }
-            
-            if ( v_IsResize )
-            {
-                double v_ZoomRate = Help.min(v_WidthZoomRate ,v_HeightZoomRate);
-                v_NewWidth  = (int)Math.floor(Help.multiply(v_NewWidth  ,v_ZoomRate));
-                v_NewHeight = (int)Math.floor(Help.multiply(v_NewHeight ,v_ZoomRate));
-            }
-        }
-        // 计算非等比缩放的情况
-        else
-        {
-            if ( this.maxWidth > 0 && v_NewWidth > this.maxWidth )
-            {
-                v_NewWidth = this.maxWidth;
-                v_IsResize = true;
-            }
-            
-            if ( this.maxHeight > 0 && v_NewHeight > this.maxHeight )
-            {
-                v_NewHeight = this.maxHeight;
-                v_IsResize = true;
-            }
-        }
-        
-        if ( v_IsResize )
-        {
-            return resizeImage(i_Image ,v_NewWidth ,v_NewHeight);
-        }
-        else
-        {
-            return i_Image;
-        }
+        return v_FileHelp.resizeImageByMax(i_Image ,this.isScale ,this.maxWidth ,this.maxHeight);
     }
     
     
     
-    /**
-     * 缩放图片
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2019-01-04
-     * @version     v1.0
-     *
-     * @param i_Image
-     * @param i_NewWidth   新的宽度
-     * @param i_NewHeight  新的高度
-     * @return
-     */
-    protected BufferedImage resizeImage(BufferedImage i_Image ,int i_NewWidth ,int i_NewHeight)
-    {
-        BufferedImage v_NewImage = new BufferedImage(i_NewWidth ,i_NewHeight, i_Image.getType());
-        
-        Graphics2D v_Graphics = v_NewImage.createGraphics();
-        // 从原图上取颜色绘制新图
-        v_Graphics.drawImage(i_Image ,0 ,0 ,i_Image.getWidth() ,i_Image.getHeight() ,null);
-        v_Graphics.dispose();
-        
-        // 根据图片尺寸压缩比得到新图的尺寸
-        v_NewImage.getGraphics().drawImage(i_Image.getScaledInstance(i_NewWidth ,i_NewHeight ,Image.SCALE_SMOOTH) ,0 ,0 ,null);
-        
-        return v_NewImage;
-    }
-
-
-
     /**
      * 对变量名称反射出来的值进行加工处理
      * 
@@ -464,7 +379,7 @@ public class ImageListener implements ValueListener
      */
     protected void resizeMarginLeftTop(Picture i_Picture)
     {
-        i_Picture.resize();
+        // i_Picture.resize();  // 此句会使图片大小走样，请无添加
         i_Picture.getAnchor().setDx1(i_Picture.getAnchor().getDx1() + Help.NVL(this.marginLeft ,0));
         i_Picture.getAnchor().setDx2(i_Picture.getAnchor().getDx2() + Help.NVL(this.marginLeft ,0));
         i_Picture.getAnchor().setDy1(i_Picture.getAnchor().getDy1() + Help.NVL(this.marginTop  ,0));
