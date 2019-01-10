@@ -34,6 +34,8 @@ import org.hy.common.report.bean.RWorkbook;
  * @createDate  2017-03-18
  * @version     v1.0
  *              v2.0  2019-01-04  添加：图片缩放功能。支持最大宽度、最大高度等功能。
+ *              v3.0  2019-01-10  添加：图片缩放功能。支持最小宽度、最小高度等功能。
+ *                                     当最大高宽与最小高宽同时限定时，以最大高宽为最终的限定。
  */
 public class ImageListener implements ValueListener
 {
@@ -59,6 +61,12 @@ public class ImageListener implements ValueListener
     /** 图片最大高度。默认为0值，表示不限制 */
     protected int     maxHeight;
     
+    /** 图片最小宽度。默认为0值，表示不限制 */
+    protected int     minWidth;
+    
+    /** 图片最小宽度。默认为0值，表示不限制 */
+    protected int     minHeight;
+    
     /** 当图片被缩小时，是否保持高宽等比缩放（当maxWidth 或 maxHeight大于0时有效）。默认为：真 */
     protected boolean isScale;
     
@@ -74,6 +82,8 @@ public class ImageListener implements ValueListener
     {
         this.maxWidth  = 0;
         this.maxHeight = 0;
+        this.minWidth  = 0;
+        this.minHeight = 0;
         this.isScale   = true;
     }
     
@@ -235,6 +245,94 @@ public class ImageListener implements ValueListener
     
     
     /**
+     * 获取：图片最大宽度。默认为0值，表示不限制
+     */
+    public int getMaxWidth()
+    {
+        return maxWidth;
+    }
+    
+
+    
+    /**
+     * 获取：图片最大高度。默认为0值，表示不限制
+     */
+    public int getMaxHeight()
+    {
+        return maxHeight;
+    }
+    
+
+    
+    /**
+     * 获取：图片最小宽度。默认为0值，表示不限制
+     */
+    public int getMinWidth()
+    {
+        return minWidth;
+    }
+    
+
+    
+    /**
+     * 获取：图片最小宽度。默认为0值，表示不限制
+     */
+    public int getMinHeight()
+    {
+        return minHeight;
+    }
+    
+
+    
+    /**
+     * 设置：图片最大宽度。默认为0值，表示不限制
+     * 
+     * @param maxWidth 
+     */
+    public void setMaxWidth(int maxWidth)
+    {
+        this.maxWidth = maxWidth;
+    }
+    
+
+    
+    /**
+     * 设置：图片最大高度。默认为0值，表示不限制
+     * 
+     * @param maxHeight 
+     */
+    public void setMaxHeight(int maxHeight)
+    {
+        this.maxHeight = maxHeight;
+    }
+
+
+    
+    /**
+     * 设置：图片最小宽度。默认为0值，表示不限制
+     * 
+     * @param minWidth 
+     */
+    public void setMinWidth(int minWidth)
+    {
+        this.minWidth = minWidth;
+    }
+
+
+    
+    /**
+     * 设置：图片最小宽度。默认为0值，表示不限制
+     * 
+     * @param minHeight 
+     */
+    public void setMinHeight(int minHeight)
+    {
+        this.minHeight = minHeight;
+    }
+
+    
+
+    /**
      * 缩放图片。按预先设定的最大宽度和最大高度
      * 
      * @author      ZhengWei(HY)
@@ -246,9 +344,10 @@ public class ImageListener implements ValueListener
      */
     protected BufferedImage resizeImage(BufferedImage i_Image)
     {
-        FileHelp v_FileHelp = new FileHelp();
+        FileHelp      v_FileHelp = new FileHelp();
+        BufferedImage v_Image    = v_FileHelp.resizeImageByMin(i_Image ,this.isScale ,this.minWidth ,this.minHeight);
         
-        return v_FileHelp.resizeImageByMax(i_Image ,this.isScale ,this.maxWidth ,this.maxHeight);
+        return v_FileHelp.resizeImageByMax(v_Image ,this.isScale ,this.maxWidth ,this.maxHeight);
     }
     
     
