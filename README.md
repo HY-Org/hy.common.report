@@ -180,6 +180,8 @@ __一行数据一页的XML配置__
 					<endColumn>8</endColumn>
 					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
 					<maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
+					<minWidth>50</minWidth>          <!-- 图片最小宽度 -->
+					<minHeight>20</minHeight>        <!-- 图片最小高度 -->
 					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
 					<marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
 					<marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
@@ -513,6 +515,8 @@ __marginLeft__：设定动态图片与单元格左侧的边距。此属性的数
 					<endColumn>8</endColumn>
 					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
 					<maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
+					<minWidth>50</minWidth>          <!-- 图片最小宽度 -->
+					<minHeight>20</minHeight>        <!-- 图片最小高度 -->
 					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
 					<marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
 					<marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
@@ -836,7 +840,10 @@ __条形码的生成的XML配置举例__
   2. [李　浩](https://github.com/343136848)：建议对动态数据及小计功能的支持。
   
   3. [姜　明](https://github.com/jimlaren)：建议对追加模式复合报表的支持。
-   
+  
+  4. [王涵宇](https://github.com/Hyking23)：建议图片缩放功能。支持最大宽度、最大高度等功能。
+  
+  5. [杨　东](https://github.com/yangpiena)：建议图片缩放功能。支持最小宽度、最小高度等功能。
 
 
 ---

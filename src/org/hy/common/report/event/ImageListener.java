@@ -34,8 +34,10 @@ import org.hy.common.report.bean.RWorkbook;
  * @createDate  2017-03-18
  * @version     v1.0
  *              v2.0  2019-01-04  添加：图片缩放功能。支持最大宽度、最大高度等功能。
+ *                                     建议人：王涵宇
  *              v3.0  2019-01-10  添加：图片缩放功能。支持最小宽度、最小高度等功能。
  *                                     当最大高宽与最小高宽同时限定时，以最大高宽为最终的限定。
+ *                                     建议人：杨东
  */
 public class ImageListener implements ValueListener
 {
