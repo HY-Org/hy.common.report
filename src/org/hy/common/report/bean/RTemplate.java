@@ -271,7 +271,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.excelVersion         = null;
         this.valueMethods         = new LinkedHashMap<String ,RCellGroup>();
         this.valueNames           = new Hashtable<String ,String>();
-        this.autoHeights         = new Hashtable<String ,Object>();
+        this.autoHeights          = new Hashtable<String ,Object>();
         this.valueListeners       = new Hashtable<String ,ValueListener>();
         this.sheetListeners       = new ArrayList<SheetListener>();
         this.isIntegerShowDecimal = false;
