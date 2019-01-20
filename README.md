@@ -844,6 +844,9 @@ __条形码的生成的XML配置举例__
   4. [王涵宇](https://github.com/Hyking23)：建议图片缩放功能。支持最大宽度、最大高度等功能。
   
   5. [杨　东](https://github.com/yangpiena)：建议图片缩放功能。支持最小宽度、最小高度等功能。
+  
+  6. [张　宇](https://github.com/ZYsoftkitty)：发现占位符所在单元格有空格时，无法正确匹配占位符的解析信息。
+
 
 
 ---
