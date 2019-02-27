@@ -42,7 +42,7 @@
 	<dependency>
 	    <groupId>org</groupId>
 	    <artifactId>hy.common.xjava</artifactId>
-	    <version>3.9.26</version>
+	    <version>3.9.28</version>
 	</dependency>
 	
 	<dependency>
