@@ -71,7 +71,7 @@ public class JU_ImageReport
                 v_Data.setPropertyValue(v_PIndex ,i + "-" + v_PIndex);
             }
             
-            v_Data.setOutLinePathNum("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image\\image01.png");
+            v_Data.setOutLinePathNum("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image\\image (" + i + ").png");
             v_Datas.add(v_Data);
         }
         
@@ -85,7 +85,7 @@ public class JU_ImageReport
     {
         //RTemplate             v_RTemplate01 = (RTemplate)XJava.getObject("Report_Image_xls");
         RTemplate             v_RTemplate02 = (RTemplate)XJava.getObject("Report_Image_xlsx");
-        List<ImageReportBean> v_Datas       = this.getDatas(2);
+        List<ImageReportBean> v_Datas       = this.getDatas(118);
         
         //RWorkbook v_RWorkbook01 = ReportHelp.toExcel(v_Datas ,v_RTemplate01);
         RWorkbook v_RWorkbook02 = ReportHelp.toExcel(v_Datas ,v_RTemplate02);

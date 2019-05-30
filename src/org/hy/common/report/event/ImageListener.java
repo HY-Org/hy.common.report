@@ -458,10 +458,10 @@ public class ImageListener implements ValueListener
         }
         
         ByteArrayOutputStream v_ByteArrayOut = null;
+        BufferedImage         v_BufferImage  = null;
         try
         {
             // 读取图片
-            BufferedImage v_BufferImage = null;
             if ( v_ImageName.startsWith("file:") )
             {
                 v_BufferImage = ImageIO.read(new URL(v_ImageName));
@@ -535,9 +535,43 @@ public class ImageListener implements ValueListener
         int v_PictureIndex = i_DataCell.getSheet().getWorkbook().addPicture(v_ByteArrayOut.toByteArray() ,v_PictureType);
         Picture v_Picture  = v_Drawing.createPicture(v_ClientAnchor ,v_PictureIndex);
         
-        this.resizeMarginLeftTop(v_Picture);
+        this.resizeMarginLeftTop(v_Picture ,v_BufferImage ,this.scaleX ,this.scaleY);
         
         return "";
+    }
+    
+    
+    
+    /**
+     * 自动缩放
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2019-05-30
+     * @version     v1.0
+     *
+     * @param i_Picture
+     * @param i_Image
+     */
+    protected void autoScale(Picture i_Picture ,BufferedImage i_Image)
+    {
+        double v_Scale = 1D - 0.00001D;
+        
+        if ( i_Image.getWidth() > i_Image.getHeight() )
+        {
+            // double v_ScaleY = Help.division(i_Image.getHeight() ,i_Image.getWidth());
+            // i_Picture.resize(v_Scale ,v_ScaleY);
+            i_Picture.resize(v_Scale ,v_Scale);
+        }
+        else if ( i_Image.getWidth() < i_Image.getHeight() )
+        {
+            // double v_ScaleX = Help.division(i_Image.getWidth() ,i_Image.getHeight());
+            // i_Picture.resize(v_ScaleX ,v_Scale);
+            i_Picture.resize(0.5D ,v_Scale);
+        }
+        else
+        {
+            i_Picture.resize(v_Scale ,v_Scale);
+        }
     }
     
     
@@ -553,17 +587,37 @@ public class ImageListener implements ValueListener
      */
     protected void resizeMarginLeftTop(Picture i_Picture)
     {
-        if ( this.scaleX != null && this.scaleY != null )
+        this.resizeMarginLeftTop(i_Picture ,null ,null ,null);
+    }
+    
+    
+    
+    /**
+     * 重置图片大小，设置顶部、左侧边距
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-10-31
+     * @version     v1.0
+     *
+     * @param i_Picture
+     */
+    protected void resizeMarginLeftTop(Picture i_Picture ,BufferedImage i_Image ,Double i_ScaleX ,Double i_ScaleY)
+    {
+        if ( i_ScaleX != null && i_ScaleY != null )
         {
-            i_Picture.resize(scaleX ,scaleY);
+            i_Picture.resize(i_ScaleX ,i_ScaleY);
         }
-        else if ( this.scaleX != null )
+        else if ( i_ScaleX != null )
         {
-            i_Picture.resize(scaleX ,1);
+            i_Picture.resize(i_ScaleX ,1);
         }
-        else if ( this.scaleY != null )
+        else if ( i_ScaleY != null )
         {
-            i_Picture.resize(1 ,this.scaleY);
+            i_Picture.resize(1 ,i_ScaleY);
+        }
+        else if ( i_Image != null )
+        {
+            // autoScale(i_Picture ,i_Image);
         }
         
         i_Picture.getAnchor().setDx1(i_Picture.getAnchor().getDx1() + Help.NVL(this.marginLeft ,0));
