@@ -617,7 +617,7 @@ public class ImageListener implements ValueListener
         }
         else if ( i_Image != null )
         {
-            // autoScale(i_Picture ,i_Image);
+            autoScale(i_Picture ,i_Image);
         }
         
         i_Picture.getAnchor().setDx1(i_Picture.getAnchor().getDx1() + Help.NVL(this.marginLeft ,0));
