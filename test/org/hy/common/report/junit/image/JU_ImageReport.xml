@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+	<import name="xconfig"         class="java.util.ArrayList" />
+	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
+	
+	
+	
+	<!-- 导出产品气路图模板配置信息 -->
+	<xconfig>
+	
+		<template id="Report_Image_xls">
+			<name>外形尺寸图</name>
+			
+			<!-- Excel模板文件所在地方 并通过扩展名识别文件格式类型 -->
+			<excelFileName>classpath:ImageReport.xls</excelFileName>
+
+			<!-- 定义报表数据在模板中位置 -->
+			<dataBeginRow>0</dataBeginRow>                                         
+			<dataEndRow>13</dataEndRow>
+
+			<!-- 定义外形尺寸数据对应的Java类型 -->
+			<dataClass>org.hy.common.report.junit.image.ImageReportBean</dataClass>
+
+			<call name="addListener">                                       <!-- 定义自定义变量名称的二次加工事件 -->
+				<listener class="org.hy.common.report.event.ImageListener">
+					<valueName>outLinePathNum</valueName>                   <!-- 定义变量名称 -->
+					<beginRow>8</beginRow>                                  <!-- 定义动态图片在模板中的位置 -->
+					<endRow>11</endRow>
+					<beginColumn>0</beginColumn>
+					<endColumn>4</endColumn>
+					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
+					<maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
+					<minWidth>50</minWidth>          <!-- 图片最小宽度 -->
+					<minHeight>20</minHeight>        <!-- 图片最小高度 -->
+				</listener>
+			</call>
+			
+		</template>
+		
+		
+        
+        <template id="Report_Image_xlsx">
+			<name>外形尺寸图</name>
+			
+			<!-- Excel模板文件所在地方 并通过扩展名识别文件格式类型 -->
+			<excelFileName>classpath:ImageReport.xlsx</excelFileName>
+
+			<!-- 定义报表数据在模板中位置 -->
+			<dataBeginRow>0</dataBeginRow>                                         
+			<dataEndRow>13</dataEndRow>
+
+			<!-- 定义外形尺寸数据对应的Java类型 -->
+			<dataClass>org.hy.common.report.junit.image.ImageReportBean</dataClass>
+
+			<call name="addListener">                                       <!-- 定义自定义变量名称的二次加工事件 -->
+				<listener class="org.hy.common.report.event.ImageListener">
+					<valueName>outLinePathNum</valueName>                   <!-- 定义变量名称 -->
+					<beginRow>8</beginRow>                                  <!-- 定义动态图片在模板中的位置 -->
+					<endRow>11</endRow>
+					<beginColumn>0</beginColumn>
+					<endColumn>4</endColumn>
+					<scaleX>0.99</scaleX>                                   <!-- 可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），横向缩放比例。不设置，不缩放 -->
+					<scaleY>0.99</scaleY>                                   <!-- 可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放 -->
+				</listener>
+			</call>
+			
+		</template>
+        
+	</xconfig>
+	
+</config>

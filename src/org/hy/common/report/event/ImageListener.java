@@ -38,6 +38,7 @@ import org.hy.common.report.bean.RWorkbook;
  *              v3.0  2019-01-10  添加：图片缩放功能。支持最小宽度、最小高度等功能。
  *                                     当最大高宽与最小高宽同时限定时，以最大高宽为最终的限定。
  *                                     建议人：杨东
+ *              v4.0  2019-05-30  添加：图片的横向、纵向缩放比例
  */
 public class ImageListener implements ValueListener
 {
@@ -71,6 +72,12 @@ public class ImageListener implements ValueListener
     
     /** 当图片被缩小时，是否保持高宽等比缩放（当maxWidth 或 maxHeight大于0时有效）。默认为：真 */
     protected boolean isScale;
+    
+    /** 可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），横向缩放比例。不设置，不缩放 */
+    protected Double  scaleX;
+    
+    /** 可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放 */
+    protected Double  scaleY;
     
     /** 与单元格顶部的边距。先将图片大小设置好后导出报表看看，再微调此值 */
     protected Integer marginTop;
@@ -333,6 +340,72 @@ public class ImageListener implements ValueListener
     }
 
     
+    
+    /**
+     * 获取：当图片被缩小时，是否保持高宽等比缩放（当maxWidth 或 maxHeight大于0时有效）。默认为：真
+     */
+    public boolean isScale()
+    {
+        return isScale;
+    }
+
+
+    
+    /**
+     * 设置：当图片被缩小时，是否保持高宽等比缩放（当maxWidth 或 maxHeight大于0时有效）。默认为：真
+     * 
+     * @param isScale 
+     */
+    public void setScale(boolean isScale)
+    {
+        this.isScale = isScale;
+    }
+
+
+
+    /**
+     * 获取：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），横向缩放比例。不设置，不缩放
+     */
+    public Double getScaleX()
+    {
+        return scaleX;
+    }
+
+
+    
+    /**
+     * 获取：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放
+     */
+    public Double getScaleY()
+    {
+        return scaleY;
+    }
+
+
+    
+    /**
+     * 设置：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），横向缩放比例。不设置，不缩放
+     * 
+     * @param scaleX 
+     */
+    public void setScaleX(Double scaleX)
+    {
+        this.scaleX = scaleX;
+    }
+
+
+    
+    /**
+     * 设置：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放
+     * 
+     * @param scaleY 
+     */
+    public void setScaleY(Double scaleY)
+    {
+        this.scaleY = scaleY;
+    }
+
+
 
     /**
      * 缩放图片。按预先设定的最大宽度和最大高度
@@ -480,7 +553,19 @@ public class ImageListener implements ValueListener
      */
     protected void resizeMarginLeftTop(Picture i_Picture)
     {
-        // i_Picture.resize();  // 此句会使图片大小走样，请无添加
+        if ( this.scaleX != null && this.scaleY != null )
+        {
+            i_Picture.resize(scaleX ,scaleY);
+        }
+        else if ( this.scaleX != null )
+        {
+            i_Picture.resize(scaleX ,1);
+        }
+        else if ( this.scaleY != null )
+        {
+            i_Picture.resize(1 ,this.scaleY);
+        }
+        
         i_Picture.getAnchor().setDx1(i_Picture.getAnchor().getDx1() + Help.NVL(this.marginLeft ,0));
         i_Picture.getAnchor().setDx2(i_Picture.getAnchor().getDx2() + Help.NVL(this.marginLeft ,0));
         i_Picture.getAnchor().setDy1(i_Picture.getAnchor().getDy1() + Help.NVL(this.marginTop  ,0));
