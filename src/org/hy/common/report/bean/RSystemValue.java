@@ -10,6 +10,7 @@ package org.hy.common.report.bean;
  * @author      ZhengWei(HY)
  * @createDate  2017-03-28
  * @version     v1.0
+ *              v2.0  2020-04-10  添加：在多个不同模板，以追加模式写入时，对模板中图片作偏移量的修正。
  */
 public class RSystemValue
 {
@@ -29,6 +30,15 @@ public class RSystemValue
     /** 分页总页数的变量名称 */
     private int pageSize;
     
+    /** 追加模式下的，记录追加前已有数据的最大行号。下标从0开始。默认为：0 */
+    private int appendStartRowIndex;
+    
+    
+    
+    public RSystemValue()
+    {
+        this.appendStartRowIndex = 0;
+    }   
     
     
     /**
@@ -137,6 +147,26 @@ public class RSystemValue
     public void setPageSize(int pageSize)
     {
         this.pageSize = pageSize;
+    }
+
+    
+    /**
+     * 获取：追加模式下的，记录追加前已有数据的最大行号。下标从0开始。默认为：0
+     */
+    public int getAppendStartRowIndex()
+    {
+        return appendStartRowIndex;
+    }
+
+    
+    /**
+     * 设置：追加模式下的，记录追加前已有数据的最大行号。下标从0开始。默认为：0
+     * 
+     * @param appendStartRowIndex 
+     */
+    public void setAppendStartRowIndex(int appendStartRowIndex)
+    {
+        this.appendStartRowIndex = appendStartRowIndex;
     }
     
 }

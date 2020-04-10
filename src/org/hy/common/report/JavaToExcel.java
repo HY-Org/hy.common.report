@@ -403,6 +403,7 @@ public class JavaToExcel
         v_RSystemValue.setRowNo(           1);
         v_RSystemValue.setRowCount(        i_Datas.size());
         v_RSystemValue.setRowSubtotalCount(i_Datas.size());
+        v_RSystemValue.setAppendStartRowIndex(Help.max(v_DataSheet.getLastRowNum() ,0));
         
         v_RTotal.addExcelRowIndex(Help.max(v_DataSheet.getLastRowNum() ,0));
         if ( v_DataSheet.getLastRowNum() > 0 )

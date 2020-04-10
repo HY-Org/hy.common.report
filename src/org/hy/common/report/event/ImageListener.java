@@ -39,6 +39,7 @@ import org.hy.common.report.bean.RWorkbook;
  *                                     当最大高宽与最小高宽同时限定时，以最大高宽为最终的限定。
  *                                     建议人：杨东
  *              v4.0  2019-05-30  添加：图片的横向、纵向缩放比例
+ *              v4.1  2020-04-10  添加：在多个不同模板，以追加模式写入时，对模板中图片作偏移量的修正。
  */
 public class ImageListener implements ValueListener
 {
@@ -486,7 +487,7 @@ public class ImageListener implements ValueListener
         Drawing<?>   v_Drawing      = i_DataCell.getSheet().createDrawingPatriarch();
         ClientAnchor v_ClientAnchor = null;
         int          v_PictureType  = 0;
-        int          v_OffsetRow    = i_RTemplate.getRowCountData() * (i_RSystemValue.getRowNo() - 1);
+        int          v_OffsetRow    = (i_RSystemValue.getAppendStartRowIndex() > 0 ? i_RSystemValue.getAppendStartRowIndex() + 1 : 0) + i_RTemplate.getRowCountData() * (i_RSystemValue.getRowNo() - 1);
         
         if ( v_Drawing instanceof HSSFPatriarch )
         {

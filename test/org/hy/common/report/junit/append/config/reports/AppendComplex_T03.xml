@@ -26,6 +26,22 @@
 			
 			<!-- 定义报表数据对应的Java类型 -->
 			<dataClass>org.hy.common.report.junit.append.bean.AppendComplex03</dataClass>
+			
+			<call name="addListener">                                       <!-- 定义自定义变量名称的二次加工事件 -->
+				<listener class="org.hy.common.report.event.ImageListener">
+					<valueName>qcode</valueName>                            <!-- 定义变量名称 -->
+					<beginRow>5</beginRow>                                  <!-- 定义动态图片在模板中的位置 -->
+					<endRow>9</endRow>
+					<beginColumn>3</beginColumn>
+					<endColumn>5</endColumn>
+					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
+					<maxHeight>300</maxHeight>       <!-- 图片最大高度 -->
+					<minWidth>100</minWidth>          <!-- 图片最小宽度 -->
+					<minHeight>100</minHeight>        <!-- 图片最小高度 -->
+				</listener>
+			</call>
+			
 		</template>
 		
 	</xconfig>

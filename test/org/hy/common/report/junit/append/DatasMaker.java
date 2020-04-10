@@ -8,6 +8,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.report.junit.append.bean.AppendComplex01;
 import org.hy.common.report.junit.append.bean.AppendComplex02;
 import org.hy.common.report.junit.append.bean.AppendComplex03;
+import org.hy.common.xml.XJava;
 
 
 
@@ -74,7 +75,7 @@ public class DatasMaker
     {
         List<AppendComplex03> v_Datas = new ArrayList<AppendComplex03>();
         
-        for (int i=1; i<=1; i++)
+        for (int i=1; i<=3; i++)
         {
             String          v_No   = StringHelp.lpad(i ,3 ,"0");
             AppendComplex03 v_Data = new AppendComplex03();
@@ -88,6 +89,7 @@ public class DatasMaker
             v_Data.setNet(     Help.multiply(i ,10));
             v_Data.setRt(      Help.multiply(i ,30));
             v_Data.setGross(   Help.multiply(i ,Math.PI));  // 在模板上可设置显示的小数位数
+            v_Data.setQcode(XJava.getParam("QCodeImagePath").getValue() + i + ".png");
             
             v_Datas.add(v_Data);
         }

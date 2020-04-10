@@ -31,6 +31,8 @@ public class AppendComplex03
     private Double  rt;
     
     private Double  gross;
+    
+    private String  qcode;
 
     
     
@@ -156,6 +158,20 @@ public class AppendComplex03
     public void setGross(Double gross)
     {
         this.gross = gross;
+    }
+
+
+    
+    public String getQcode()
+    {
+        return qcode;
+    }
+
+
+    
+    public void setQcode(String qcode)
+    {
+        this.qcode = qcode;
     }
     
 }

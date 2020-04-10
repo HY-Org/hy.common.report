@@ -5,11 +5,19 @@
 	<import name="xconfig"         class="java.util.ArrayList" />
 	<import name="datas"           class="java.util.ArrayList" />
 	<import name="datasItem"       class="java.util.ArrayList" />
+	<import name="item"            class="org.hy.common.app.Param" />
 	
 	
 	
 	<!-- 报表测试数据生成配置 -->
 	<xconfig>
+	
+		<item id="QCodeImagePath">
+            <name>QCodeImagePath</name>
+			<value>D:\WorkSpace_SearchDesktop\hy.common.report\test\org\hy\common\report\junit\append\config\images\append</value>
+			<comment>二维码路径</comment>
+        </item>
+	        
 	
 		<!-- 按Class指定的类型实例对象，并设置对象id -->
 		<datasMaker id="DatasMaker" class="org.hy.common.report.junit.append.DatasMaker">
