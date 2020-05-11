@@ -536,7 +536,7 @@ public class ImageListener implements ValueListener
         int v_PictureIndex = i_DataCell.getSheet().getWorkbook().addPicture(v_ByteArrayOut.toByteArray() ,v_PictureType);
         Picture v_Picture  = v_Drawing.createPicture(v_ClientAnchor ,v_PictureIndex);
         
-        this.resizeMarginLeftTop(v_Picture ,v_BufferImage ,this.scaleX ,this.scaleY);
+        this.resizeMarginLeftTop(v_Picture ,v_BufferImage ,this.isScale ,this.scaleX ,this.scaleY);
         
         return "";
     }
@@ -555,19 +555,19 @@ public class ImageListener implements ValueListener
      */
     protected void autoScale(Picture i_Picture ,BufferedImage i_Image)
     {
-        double v_Scale = 1D - 0.00001D;
+        double v_Scale = 1D;
         
         if ( i_Image.getWidth() > i_Image.getHeight() )
         {
-            // double v_ScaleY = Help.division(i_Image.getHeight() ,i_Image.getWidth());
-            // i_Picture.resize(v_Scale ,v_ScaleY);
-            i_Picture.resize(v_Scale ,v_Scale);
+            double v_ScaleY = Help.division(i_Image.getHeight() ,i_Image.getWidth());
+            i_Picture.resize(v_Scale ,v_ScaleY);
+            // i_Picture.resize(v_Scale ,v_Scale);
         }
         else if ( i_Image.getWidth() < i_Image.getHeight() )
         {
-            // double v_ScaleX = Help.division(i_Image.getWidth() ,i_Image.getHeight());
-            // i_Picture.resize(v_ScaleX ,v_Scale);
-            i_Picture.resize(0.5D ,v_Scale);
+            double v_ScaleX = Help.division(i_Image.getWidth() ,i_Image.getHeight());
+            i_Picture.resize(v_ScaleX ,v_Scale);
+            // i_Picture.resize(0.5D ,v_Scale);
         }
         else
         {
@@ -588,7 +588,7 @@ public class ImageListener implements ValueListener
      */
     protected void resizeMarginLeftTop(Picture i_Picture)
     {
-        this.resizeMarginLeftTop(i_Picture ,null ,null ,null);
+        this.resizeMarginLeftTop(i_Picture ,null ,false ,null ,null);
     }
     
     
@@ -602,7 +602,7 @@ public class ImageListener implements ValueListener
      *
      * @param i_Picture
      */
-    protected void resizeMarginLeftTop(Picture i_Picture ,BufferedImage i_Image ,Double i_ScaleX ,Double i_ScaleY)
+    protected void resizeMarginLeftTop(Picture i_Picture ,BufferedImage i_Image ,boolean i_IsScale ,Double i_ScaleX ,Double i_ScaleY)
     {
         if ( i_ScaleX != null && i_ScaleY != null )
         {

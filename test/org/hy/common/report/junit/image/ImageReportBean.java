@@ -83,6 +83,9 @@ public class ImageReportBean extends SerializableDef
 	
 	/** 参数数值5 */
 	private String paramValue5;
+	
+	/** 二维码图片 */
+	private String imgPath;
 
 	
 	
@@ -535,6 +538,26 @@ public class ImageReportBean extends SerializableDef
     public void setParamValue5(String paramValue5)
     {
         this.paramValue5 = paramValue5;
+    }
+
+
+    /**
+     * 获取：二维码图片
+     */
+    public String getImgPath()
+    {
+        return imgPath;
+    }
+
+    
+    /**
+     * 设置：二维码图片
+     * 
+     * @param imgPath 
+     */
+    public void setImgPath(String imgPath)
+    {
+        this.imgPath = imgPath;
     }
 	
 }

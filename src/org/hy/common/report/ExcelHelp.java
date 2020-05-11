@@ -716,6 +716,140 @@ public class ExcelHelp
     
     
     /**
+     * 复制模板工作表的打印区域到数据工作表中
+     *  1. 精确定位复杂报表（标题不是在同一行或多行，而是标题与数据相互交融显示）的打印区域
+     *  2. 确保同一Excel在不同电脑上打印分页是一样（但不保证打印DPI，即行高是一样的）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-11
+     * @version     v1.0
+     * 
+     * @param i_FromSheet          源工作表
+     * @param i_ToSheet            目标工作表
+     * @param i_ToSheetLastRowNum  目标工作表原用的数据。下标从0开始，0表示目标工作表还未写入任何数据
+     * @param i_NewDataSize        本次数据（或追加数据）的大小，即分页页数
+     */
+    public final static void copyPrintSetup(Sheet i_FromSheet ,Sheet i_ToSheet ,int i_ToSheetLastRowNum ,int i_NewDataSize) 
+    {
+        int    v_FromSheetIndex = i_FromSheet.getWorkbook().getSheetIndex(i_FromSheet);
+        int    v_ToSheetIndex   = i_ToSheet  .getWorkbook().getSheetIndex(i_ToSheet);
+        String v_FromSheetName  = i_FromSheet.getWorkbook().getSheetName(v_FromSheetIndex); 
+        String v_ToSheetName    = i_ToSheet  .getWorkbook().getSheetName(v_ToSheetIndex); 
+        String v_FromPrintArea  = i_FromSheet.getWorkbook().getPrintArea(v_FromSheetIndex);
+        String v_ToPrintArea    = i_ToSheet  .getWorkbook().getPrintArea(v_ToSheetIndex);
+        
+        if ( Help.isNull(v_FromPrintArea) || i_NewDataSize <= 0 )
+        {
+            return;
+        }
+        
+        String []     v_RepalceSpace      = {""};
+        StringBuilder v_ToPrintAreaBuffer = new StringBuilder();
+        v_FromPrintArea = StringHelp.replaceAll(v_FromPrintArea ,new String[] {v_FromSheetName + "!" ,"$"} ,v_RepalceSpace);
+        if ( !Help.isNull(v_ToPrintArea) )
+        {
+            v_ToPrintArea = StringHelp.replaceAll(v_ToPrintArea ,new String[] {v_ToSheetName   + "!" ,"$"} ,v_RepalceSpace);
+            v_ToPrintAreaBuffer.append(v_ToPrintArea).append(",");
+        }
+        
+        String [] v_A_TO_Z = {"A" ,"B" ,"C" ,"D" ,"E" ,"F" ,"G"
+                             ,"H" ,"I" ,"J" ,"K" ,"L" ,"M" ,"N"
+                             ,"O" ,"P" ,"Q" ,"R" ,"S" ,"T"
+                             ,"U" ,"V" ,"W" ,"X" ,"Y" ,"Z"};
+        String [] v_SEArr    = v_FromPrintArea.split(":");
+        int    v_StartRow    = Integer.parseInt(StringHelp.replaceAll(v_SEArr[0] ,v_A_TO_Z ,v_RepalceSpace));
+        int    v_EndRow      = Integer.parseInt(StringHelp.replaceAll(v_SEArr[1] ,v_A_TO_Z ,v_RepalceSpace));
+        int    v_PageRowSize = v_EndRow - v_StartRow + 1;
+        String v_StartColumn = StringHelp.replaceAll(v_SEArr[0] ,v_StartRow + "" ,"");
+        String v_EndColumn   = StringHelp.replaceAll(v_SEArr[1] ,v_EndRow   + "" ,"");
+        
+        v_StartRow += i_ToSheetLastRowNum;
+        v_EndRow   += i_ToSheetLastRowNum;
+        
+        for (int v_PageNo=1; v_PageNo<=i_NewDataSize; v_PageNo++)
+        {
+            v_ToPrintAreaBuffer.append(v_StartColumn).append(v_StartRow + v_PageRowSize * (v_PageNo - 1));
+            v_ToPrintAreaBuffer.append(":");
+            v_ToPrintAreaBuffer.append(v_EndColumn)  .append(v_EndRow   + v_PageRowSize * (v_PageNo - 1));
+            
+            if ( v_PageNo < i_NewDataSize )
+            {
+                v_ToPrintAreaBuffer.append(",");
+            }
+        }
+        
+        // 设置对应工作表的打印区域
+        i_ToSheet.getWorkbook().setPrintArea(v_ToSheetIndex ,v_ToPrintAreaBuffer.toString());
+    }
+
+    
+    
+    /**
+     * 通过分隔符设定的打印区域到数据工作表中
+     *  1. 精确定位复杂报表（标题不是在同一行或多行，而是标题与数据相互交融显示）的打印区域
+     *  2. 确保同一Excel在不同电脑上打印分页是一样（但不保证打印DPI，即行高是一样的）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-11
+     * @version     v1.0
+     * 
+     * @param i_FromSheet          源工作表
+     * @param i_ToSheet            目标工作表
+     * @param i_ToSheetLastRowNum  目标工作表原用的数据。下标从0开始，0表示目标工作表还未写入任何数据
+     * @param i_NewDataSize        本次数据（或追加数据）的大小，即分页页数
+     */
+    public final static void setPrintRowBreaks(Sheet i_FromSheet ,Sheet i_ToSheet ,int i_ToSheetLastRowNum ,int i_NewDataSize) 
+    {
+        int    v_FromSheetIndex = i_FromSheet.getWorkbook().getSheetIndex(i_FromSheet);
+        int    v_ToSheetIndex   = i_ToSheet  .getWorkbook().getSheetIndex(i_ToSheet);
+        String v_FromSheetName  = i_FromSheet.getWorkbook().getSheetName(v_FromSheetIndex); 
+        String v_ToSheetName    = i_ToSheet  .getWorkbook().getSheetName(v_ToSheetIndex); 
+        String v_FromPrintArea  = i_FromSheet.getWorkbook().getPrintArea(v_FromSheetIndex);
+        String v_ToPrintArea    = i_ToSheet  .getWorkbook().getPrintArea(v_ToSheetIndex);
+        
+        if ( Help.isNull(v_FromPrintArea) || i_NewDataSize <= 0 )
+        {
+            return;
+        }
+        
+        String []     v_RepalceSpace      = {""};
+        v_FromPrintArea = StringHelp.replaceAll(v_FromPrintArea ,new String[] {v_FromSheetName + "!" ,"$"} ,v_RepalceSpace);
+        if ( !Help.isNull(v_ToPrintArea) )
+        {
+            v_ToPrintArea = StringHelp.replaceAll(v_ToPrintArea ,new String[] {v_ToSheetName   + "!" ,"$"} ,v_RepalceSpace);
+        }
+        
+        if ( i_ToSheetLastRowNum > 0 )
+        {
+            i_ToSheet.setRowBreak(i_ToSheetLastRowNum);
+        }
+        
+        String [] v_A_TO_Z = {"A" ,"B" ,"C" ,"D" ,"E" ,"F" ,"G"
+                             ,"H" ,"I" ,"J" ,"K" ,"L" ,"M" ,"N"
+                             ,"O" ,"P" ,"Q" ,"R" ,"S" ,"T"
+                             ,"U" ,"V" ,"W" ,"X" ,"Y" ,"Z"};
+        String [] v_SEArr    = v_FromPrintArea.split(":");
+        int    v_StartRow    = Integer.parseInt(StringHelp.replaceAll(v_SEArr[0] ,v_A_TO_Z ,v_RepalceSpace));
+        int    v_EndRow      = Integer.parseInt(StringHelp.replaceAll(v_SEArr[1] ,v_A_TO_Z ,v_RepalceSpace));
+        int    v_PageRowSize = v_EndRow - v_StartRow + 1;
+        
+        v_StartRow += i_ToSheetLastRowNum;
+        v_EndRow   += i_ToSheetLastRowNum;
+        
+        for (int v_PageNo=1; v_PageNo<=i_NewDataSize; v_PageNo++)
+        {
+            if ( v_PageNo == 1 && i_ToSheetLastRowNum > 0 )
+            {
+                i_ToSheet.setRowBreak(v_StartRow + v_PageRowSize * (v_PageNo - 1) - 1);
+            }
+            
+            i_ToSheet.setRowBreak(v_EndRow + v_PageRowSize * (v_PageNo - 1) - 1);
+        }
+    }
+    
+    
+    
+    /**
      * 复制页眉、页脚的文字信息
      * 
      * @author      ZhengWei(HY)

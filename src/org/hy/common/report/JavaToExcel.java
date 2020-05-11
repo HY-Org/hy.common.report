@@ -71,7 +71,8 @@ import org.hy.common.report.event.ValueListener;
  *              v4.6  2017-09-20  修复：批注只能生成一行的问题。
  *              v4.7  2018-06-11  修复：模板空白行（无任何数据）时，可能返回NULL时，只添加一行空白行。
  *              v5.0  2018-06-22  添加：在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
- *              V5.1  2018-09-19  修复： 复文本格式化调用方法applyFont(...)异常的问题。发现人：李秉坤
+ *              V5.1  2018-09-19  修复：复文本格式化调用方法applyFont(...)异常的问题。发现人：李秉坤
+ *              V6.0  2020-05-11  添加：打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果。发现人：雷伟松
  */
 public class JavaToExcel
 {
@@ -394,6 +395,13 @@ public class JavaToExcel
         ExcelHelp.copyColumnsWidth(v_TemplateSheet ,v_DataSheet);
         // 数据工作表的打印区域，复制于模板
         ExcelHelp.copyPrintSetup  (v_TemplateSheet ,v_DataSheet);
+        
+        if ( RTemplate.$PageBreakMode_Page.equals(i_RTemplate.getPageBreakMode()) )
+        {
+            // 数据工作表的打印区域，用分隔符的方式，精确设定每一页的打印区域
+            ExcelHelp.setPrintRowBreaks(v_TemplateSheet ,v_DataSheet ,Help.max(v_DataSheet.getLastRowNum() ,0) ,i_Datas.size());
+        }
+        
         // 数据工作表的整体(所有)列的样式，复制于模板
         copyColumnsStyle(i_RTemplate ,v_TemplateSheet ,v_DataWorkbook ,v_DataSheet);
         

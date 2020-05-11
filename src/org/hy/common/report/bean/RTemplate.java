@@ -48,7 +48,9 @@ import org.hy.common.xml.SerializableDef;
  *              v4.6  2017-09-11  添加：自动计算行高的功能。建议人：李浩
  *              v5.0  2018-06-12  添加：在 ":系统固定变量" 格式的基础上，添加对 "{:系统固定变量}" 格式的填充替换的支持。
  *              v5.1  2018-06-19  添加：实例比较、相等时，添加this.name属性的判定。
- *                                     防止同一Excel文件生成多个模板对象时，无法区别模板实例。建议人：邹德福
+ *                                       防止同一Excel文件生成多个模板对象时，无法区别模板实例。建议人：邹德福
+ *              v6.0  2020-05-11  添加：打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果。
+ *                                      发现人：雷伟松
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -73,6 +75,14 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     /** 系统固定变量名称：分页总页数的变量名称。暂时不支持，因为动态行 */
     public final static String         $ValueName_PageSize           = "PageSize__";
+    
+    
+    
+    /** 打印分页模式 1. auto     ：自动模式（默认的）。对于复杂报表，可能出现同一Excel在不同电脑上打印时，分页结果是有差异的。 */
+    public final static String         $PageBreakMode_Auto           = "auto";
+    
+    /** 打印分页模式 2. rowBreak ：按模板打印区域及输出数据量大小（即分页页数），添加多个分隔符分页。 */
+    public final static String         $PageBreakMode_Page           = "rowBreak";
     
     
     
@@ -185,6 +195,13 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 合计内容的结束行号（包括此行）。下标从零开始 */
     private Integer                    totalEndRow;
     
+    /** 
+     * 打印分页模式
+     *   1. auto     ：自动模式（默认的）。对于复杂报表，可能出现同一Excel在不同电脑上打印时，分页结果是有差异的。
+     *   2. rowBreak ：按模板打印区域及输出数据量大小（即分页页数），添加多个分隔符分页。 
+     */
+    private String                     pageBreakMode;
+    
     
     
     /** 报表数据的Java类型 */
@@ -280,6 +297,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.isSafe               = false;
         this.isBig                = true;
         this.isCheck              = true;
+        this.pageBreakMode        = "auto";
         this.rowAccessWindowSize  = SXSSFWorkbook.DEFAULT_WINDOW_SIZE * 10;
         this.titlePageHeaderFirstWriteByRow           = 0;
         this.titlePageHeaderFirstWriteByRealDataCount = 0;
@@ -1978,6 +1996,30 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.rowAccessWindowSize = rowAccessWindowSize;
     }
     
+    
+    /**
+     * 获取：打印分页模式
+     *   1. auto     ：自动模式（默认的）。对于复杂报表，可能出现同一Excel在不同电脑上打印时，分页结果是有差异的。
+     *   2. rowBreak ：按模板打印区域及输出数据量大小（即分页页数），添加多个分隔符分页。
+     */
+    public String getPageBreakMode()
+    {
+        return pageBreakMode;
+    }
+
+    
+    /**
+     * 设置：打印分页模式
+     *   1. auto     ：自动模式（默认的）。对于复杂报表，可能出现同一Excel在不同电脑上打印时，分页结果是有差异的。
+     *   2. rowBreak ：按模板打印区域及输出数据量大小（即分页页数），添加多个分隔符分页。
+     * 
+     * @param pageBreakMode 
+     */
+    public void setPageBreakMode(String pageBreakMode)
+    {
+        this.pageBreakMode = pageBreakMode;
+    }
+
 
     @Override
     public int compareTo(RTemplate i_Other)
