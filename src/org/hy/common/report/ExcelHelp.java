@@ -843,7 +843,15 @@ public class ExcelHelp
                 i_ToSheet.setRowBreak(v_StartRow + v_PageRowSize * (v_PageNo - 1) - 1);
             }
             
-            i_ToSheet.setRowBreak(v_EndRow + v_PageRowSize * (v_PageNo - 1) - 1);
+            if ( i_ToSheetLastRowNum > 0 )
+            {
+                // 追加模式下，在前置已有数据的情况下，因 i_ToSheetLastRowNum 的下标是从0开始的，因此不在-1。
+                i_ToSheet.setRowBreak(v_EndRow + v_PageRowSize * (v_PageNo - 1));
+            }
+            else
+            {
+                i_ToSheet.setRowBreak(v_EndRow + v_PageRowSize * (v_PageNo - 1) - 1);
+            }
         }
     }
     

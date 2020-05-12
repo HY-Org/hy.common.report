@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 导出数据表配置信息 -->
+    <xconfig>
+    
+        <template id="Report_AppendPage_1_xlsx">
+            <name>数据表</name>
+            
+            <!-- Excel模板文件所在地方 并通过扩展名识别文件格式类型 -->
+            <excelFileName>classpath:1.xlsx</excelFileName>
+
+            <!-- 定义报表数据在模板中位置 -->
+            <dataBeginRow>0</dataBeginRow>
+            <dataEndRow>59</dataEndRow>
+
+            <!-- 定义外形尺寸数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.image.ImageReportBean</dataClass>
+            <pageBreakMode ref="this.$PageBreakMode_Page" />                <!-- 打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果 -->
+
+            <call name="addListener">                                       <!-- 定义自定义变量名称的二次加工事件 -->
+                <listener class="org.hy.common.report.event.ImageListener">
+                    <valueName>imgPath</valueName>                          <!-- 定义变量名称 -->
+                    <beginRow>1</beginRow>                                  <!-- 定义动态图片在模板中的位置 -->
+                    <endRow>3</endRow>
+                    <beginColumn>12</beginColumn>
+                    <endColumn>12</endColumn>
+                    <isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+                    <scaleX>1.01</scaleX>
+                    <scaleY>1</scaleY>
+                    <maxWidth>0</maxWidth>         <!-- 图片最大宽度 -->
+                    <maxHeight>0</maxHeight>       <!-- 图片最大高度 -->
+                    <minWidth>0</minWidth>          <!-- 图片最小宽度 -->
+                    <minHeight>0</minHeight>        <!-- 图片最小高度 -->
+                    <marginLeft>0</marginLeft>
+                </listener>
+            </call>
+            
+        </template>
+        
+        
+        
+        <template id="Report_AppendPage_2_xlsx">
+            <name>数据表</name>
+            
+            <!-- Excel模板文件所在地方 并通过扩展名识别文件格式类型 -->
+            <excelFileName>classpath:2.xlsx</excelFileName>
+
+            <!-- 定义报表数据在模板中位置 -->
+            <dataBeginRow>0</dataBeginRow>
+            <dataEndRow>59</dataEndRow>
+
+            <!-- 定义外形尺寸数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.image.ImageReportBean</dataClass>
+            <pageBreakMode ref="this.$PageBreakMode_Page" />                <!-- 打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果 -->
+
+            <call name="addListener">                                       <!-- 定义自定义变量名称的二次加工事件 -->
+                <listener class="org.hy.common.report.event.ImageListener">
+                    <valueName>imgPath</valueName>                          <!-- 定义变量名称 -->
+                    <beginRow>1</beginRow>                                  <!-- 定义动态图片在模板中的位置 -->
+                    <endRow>3</endRow>
+                    <beginColumn>12</beginColumn>
+                    <endColumn>12</endColumn>
+                    <isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+                    <scaleX>1.01</scaleX>
+                    <scaleY>1</scaleY>
+                    <maxWidth>0</maxWidth>         <!-- 图片最大宽度 -->
+                    <maxHeight>0</maxHeight>       <!-- 图片最大高度 -->
+                    <minWidth>0</minWidth>          <!-- 图片最小宽度 -->
+                    <minHeight>0</minHeight>        <!-- 图片最小高度 -->
+                    <marginLeft>0</marginLeft>
+                </listener>
+            </call>
+            
+        </template>
+
+    </xconfig>
+    
+</config>
