@@ -25,6 +25,7 @@
 	* [动态背景色](#动态背景色)
 	* [二维码的生成（占位符监听器）](#二维码的生成)
 	* [条形码的生成（占位符监听器）](#条形码的生成)
+	* [富文本](#富文本的生成)
 * [特别鸣谢](#特别鸣谢)
 
 
@@ -832,6 +833,58 @@ __条形码的生成的XML配置举例__
 ```
 
 [查看"条形码的生成"的完整代码](test/org/hy/common/report/junit/zxing)
+
+
+
+
+
+富文本的支持
+------
+
+__富文本的演示举例__
+
+![image](images/RichText_Result.png)
+
+__富文本支持的XML配置举例__
+
+只需配置 isBig 为 false 即可。
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 导出数据表配置信息 -->
+    <xconfig>
+    
+        <template id="Report_Font_xlsx">
+            <name>数据表</name>
+            
+            <!-- Excel模板文件所在地方 并通过扩展名识别文件格式类型 -->
+            <excelFileName>classpath:JU_FontReport.xlsx</excelFileName>
+
+            <!-- 定义报表数据在模板中位置 -->
+            <dataBeginRow>0</dataBeginRow>
+            <dataEndRow>2</dataEndRow>
+
+            <!-- 定义外形尺寸数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.font.FontTest</dataClass>
+            
+            <!-- 非大数据导出优化。但可以支持富文本 -->
+            <isBig>false</isBig>
+            
+        </template>
+
+    </xconfig>
+    
+</config>
+```
+
+[查看"富文本"的完整代码](test/org/hy/common/report/junit/font)
 
 
 
