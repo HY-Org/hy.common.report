@@ -2572,7 +2572,7 @@ public class JavaToExcel
                         
                         if ( v_TextLen > 0 )
                         {
-                            v_DataRichText.applyFont(v_FirstIndex, v_TextLen, (short)v_IDX);
+                            v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
                         }
                     }
                 }
