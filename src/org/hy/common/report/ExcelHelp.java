@@ -81,6 +81,7 @@ import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProp
  *              v3.2  2017-09-11  添加：自动计算行高的功能。
  *              v3.3  2017-12-07  添加：saveToInputStream()方法，将Excel文件数据保存成流信息。
  *              v3.4  2018-05-07  修正：占位符所在单元格有空格时，无法正确匹配占位符的解析信息。发现人：张宇
+ *              v4.0  2020-05-14  添加：打印设置参数中的垂直居中、水平居中。发现人：雷伟松
  */
 public class ExcelHelp
 {
@@ -708,6 +709,9 @@ public class ExcelHelp
             i_ToSheet.setMargin(XSSFSheet.HeaderMargin  ,i_FromSheet.getMargin(XSSFSheet.HeaderMargin));  // 页眉
             i_ToSheet.setMargin(XSSFSheet.FooterMargin  ,i_FromSheet.getMargin(XSSFSheet.FooterMargin));  // 页脚
         }
+        
+        i_ToSheet.setHorizontallyCenter(i_FromSheet.getHorizontallyCenter());  // 设置打印页面为水平居中
+        i_ToSheet.setVerticallyCenter(  i_FromSheet.getVerticallyCenter());    // 设置打印页面为垂直居中
         
         copyHeaderFooter(i_FromSheet.getHeader() ,i_ToSheet.getHeader());
         copyHeaderFooter(i_FromSheet.getFooter() ,i_ToSheet.getFooter());

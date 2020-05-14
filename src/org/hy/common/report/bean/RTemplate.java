@@ -198,7 +198,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 
      * 打印分页模式
      *   1. auto     ：自动模式（默认的）。对于复杂报表，可能出现同一Excel在不同电脑上打印时，分页结果是有差异的。
-     *   2. rowBreak ：按模板打印区域及输出数据量大小（即分页页数），添加多个分隔符分页。 
+     *   2. rowBreak ：按模板打印区域及输出数据量大小（即分页页数），添加多个分隔符分页。
+     *   
+     * 要求：须配合Excel模板上设置的打印区域一共使用
      */
     private String                     pageBreakMode;
     
