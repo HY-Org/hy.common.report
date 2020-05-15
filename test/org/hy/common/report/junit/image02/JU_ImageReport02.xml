@@ -66,7 +66,7 @@
                     <beginRow>4</beginRow>                                  <!-- 定义动态图片在模板中的位置 -->
                     <endRow>9</endRow>
                     <beginColumn>0</beginColumn>
-                    <endColumn>7</endColumn>
+                    <endColumn>8</endColumn>
                 </listener>
             </call>
             
