@@ -137,7 +137,7 @@ public class ExcelToJava
             {
                 for (RCell v_RCell : v_Item.getValue())
                 {
-                    v_RowColDatas.put(v_RCell.getRowNo().intValue() + "," + v_RCell.getCellNo().intValue() ,v_Item.getKey());
+                    v_RowColDatas.put(v_RCell.getRowNo().intValue() + "," + v_RCell.getColNo().intValue() ,v_Item.getKey());
                 }
             }
         }

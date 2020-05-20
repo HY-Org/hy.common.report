@@ -32,7 +32,13 @@ public class RCell
     private Integer rowNo;
     
     /** 列号。下标从0开始 */
-    private Integer cellNo;
+    private Integer colNo;
+    
+    /** 绝对定位的行，即固定行号 */
+    private boolean fixedRow;
+    
+    /** 绝对定位的列，即固定列号 */
+    private boolean fixedCol;
     
     /** 小数位数 */
     private Integer decimal;
@@ -65,16 +71,18 @@ public class RCell
     }
     
     
-    public RCell(Integer i_RowNo ,Integer i_CellNo)
+    public RCell(Integer i_RowNo ,Integer i_ColNo)
     {
         this.valueMethod        = null;
         this.iteratorMethod     = null;
         this.iteratorSizeMethod = null;
         this.rowNo              = i_RowNo;
-        this.cellNo             = i_CellNo;
+        this.colNo              = i_ColNo;
         this.decimal            = null;
         this.valueSetMethod     = null;
         this.nextRCell          = null;
+        this.fixedRow           = false;
+        this.fixedCol           = false;
     }
     
     
@@ -84,9 +92,11 @@ public class RCell
         this.iteratorMethod     = i_IteratorMethod;
         this.iteratorSizeMethod = i_IteratorSizeMethod;
         this.rowNo              = null;
-        this.cellNo             = null;
+        this.colNo              = null;
         this.decimal            = null;
         this.valueSetMethod     = null;
+        this.fixedRow           = false;
+        this.fixedCol           = false;
     }
     
     
@@ -204,20 +214,20 @@ public class RCell
     /**
      * 获取：列号。下标从0开始
      */
-    public Integer getCellNo()
+    public Integer getColNo()
     {
-        return cellNo;
+        return colNo;
     }
 
     
     /**
      * 设置：列号。下标从0开始
      * 
-     * @param cellNo 
+     * @param colNo 
      */
-    public void setCellNo(Integer cellNo)
+    public void setColNo(Integer colNo)
     {
-        this.cellNo = cellNo;
+        this.colNo = colNo;
     }
     
     
@@ -278,6 +288,50 @@ public class RCell
     public void setNextRCell(RCell nextRCell)
     {
         this.nextRCell = nextRCell;
+    }
+
+
+    
+    /**
+     * 获取：绝对定位的行，即固定行号
+     */
+    public boolean isFixedRow()
+    {
+        return fixedRow;
+    }
+
+
+    
+    /**
+     * 获取：绝对定位的列，即固定列号
+     */
+    public boolean isFixedCol()
+    {
+        return fixedCol;
+    }
+
+    
+    
+    /**
+     * 设置：绝对定位的行，即固定行号
+     * 
+     * @param fixedRow 
+     */
+    public void setFixedRow(boolean fixedRow)
+    {
+        this.fixedRow = fixedRow;
+    }
+
+    
+    
+    /**
+     * 设置：绝对定位的列，即固定列号
+     * 
+     * @param fixedCol 
+     */
+    public void setFixedCol(boolean fixedCol)
+    {
+        this.fixedCol = fixedCol;
     }
 
 }

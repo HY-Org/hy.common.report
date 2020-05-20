@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 导出数据表配置信息 -->
+    <xconfig>
+    
+        <template id="Report_Formula_xlsx">
+            <name>Excel公式计算的演示</name>
+            
+            <!-- Excel模板文件所在地方 并通过扩展名识别文件格式类型 -->
+            <excelFileName>classpath:JU_Formula.xlsx</excelFileName>
+            
+            <!-- 总标题 -->
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+
+            <!-- 定义报表数据在模板中位置 -->
+            <dataBeginRow>2</dataBeginRow>
+            <dataEndRow>5</dataEndRow>
+
+            <!-- 定义外形尺寸数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.image.ImageReportBean</dataClass>
+            
+        </template>
+
+    </xconfig>
+    
+</config>

@@ -105,4 +105,17 @@ public class JU_ImageReport02
         ExcelHelp.save(v_RWorkbook03.getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ImageReport_" + Date.getNowTime().getFull_ID() + ".xlsx");
     }
     
+    
+    
+    @Test
+    public void test_Image04() throws RTemplateException
+    {
+        RTemplate             v_RTemplate = (RTemplate)XJava.getObject("Report_Image04_xlsx");
+        List<ImageReportBean> v_Datas     = this.getDatas(3);
+        
+        RWorkbook v_RWorkbook04 = ReportHelp.toExcel(v_Datas ,v_RTemplate);
+        
+        ExcelHelp.save(v_RWorkbook04.getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ImageReport_" + Date.getNowTime().getFull_ID() + ".xlsx");
+    }
+    
 }

@@ -516,7 +516,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             {
                 for (RCell v_Cell : v_Cells)
                 {
-                    this.cells.put(v_Cell.getRowNo() + "," + v_Cell.getCellNo() ,v_Cell);
+                    this.cells.put(v_Cell.getRowNo() + "," + v_Cell.getColNo() ,v_Cell);
                 }
             }
             
