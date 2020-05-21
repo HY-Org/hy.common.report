@@ -902,7 +902,7 @@ Excel公式中涉及到的所有单元格ID均将偏移。
 
 __Excel公式计算的演示举例__
 
-![image](images/Forumla_Result.png)
+![image](images/Formula_Result.png)
 
 __Excel公式计算的模板配置说明__
 
@@ -910,7 +910,7 @@ Excel公式的填充赋值与普通文本一样，只要在Excel模板上设定�
 在输出成业务报表时，模板上设定的公式，会自动的按实际数据偏移计算后得到正确匹配的公式。
 如下图所示
 
-![image](images/Forumla.png)
+![image](images/Formula.png)
 
 要注意的只有一点：参与Excel公式的占位符
 要求设置格式为数字格式，步骤如下：
