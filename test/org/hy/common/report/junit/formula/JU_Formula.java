@@ -1,8 +1,18 @@
 package org.hy.common.report.junit.formula;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.report.ExcelFormula;
+import org.hy.common.report.ExcelHelp;
+import org.hy.common.report.ReportHelp;
 import org.hy.common.report.bean.RCell;
+import org.hy.common.report.bean.RTemplate;
+import org.hy.common.report.bean.RWorkbook;
+import org.hy.common.report.error.RTemplateException;
+import org.hy.common.report.junit.image.ImageReportBean;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -41,6 +51,36 @@ public class JU_Formula
     
     
     
+    /**
+     * 测试：带公式的报表生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-21
+     * @version     v1.0
+     *
+     * @throws RTemplateException
+     */
+    @Test
+    public void test_Formula() throws RTemplateException
+    {
+        RTemplate             v_RTemplate = (RTemplate)XJava.getObject("Report_Formula_xlsx");
+        List<ImageReportBean> v_Datas     = this.getDatas(3);
+        
+        RWorkbook v_RWorkbook = ReportHelp.toExcel(v_Datas ,v_RTemplate);
+        
+        ExcelHelp.save(v_RWorkbook.getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\Formula_" + Date.getNowTime().getFull_ID() + ".xlsx");
+    }
+    
+    
+    
+    /**
+     * 测试：Excel单元格ID的转换为数字表示的行号、列号
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-19
+     * @version     v1.0
+     *
+     */
     @Test
     public void test_A1_to_Java()
     {
@@ -81,6 +121,14 @@ public class JU_Formula
     
     
     
+    /**
+     * 测试：将数字表示的行号、列号转为Excel的单元格ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-20
+     * @version     v1.0
+     *
+     */
     @Test
     public void test_Java_to_A1()
     {
@@ -95,6 +143,14 @@ public class JU_Formula
     
     
     
+    /**
+     * 测试：Excel单元格ID的偏移量
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-20
+     * @version     v1.0
+     *
+     */
     @Test
     public void test_calcCellOffset()
     {
@@ -124,6 +180,14 @@ public class JU_Formula
     
     
     
+    /**
+     * 测试：解释Excel公式中的单元格ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-21
+     * @version     v1.0
+     *
+     */
     @Test
     public void test_parserFormula()
     {
@@ -142,6 +206,66 @@ public class JU_Formula
             
             Help.print(ExcelFormula.parserFormula(v_Formula));
         }
+    }
+    
+    
+    
+    /**
+     * 测试：Excel公式的偏移计算
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-21
+     * @version     v1.0
+     *
+     */
+    @Test
+    public void test_calcFormulaOffset()
+    {
+        String [] v_Formulas = {"=A1 + B1"
+                               ,"=A1 - B1"
+                               ,"=A1 * B1"
+                               ,"=A1 / B1"
+                               ,"=A1 / B1 + C1 - D1 * E1"
+                               ,"=$A1 / B$1 + $C$1 - D1 * E1"
+                               ,"=$A1 / B$1 + A1 + B1 + $C$1 - D1 * E1"
+        };
+        
+        for (String v_Formula : v_Formulas)
+        {
+            System.out.println("\n\n" + v_Formula + "\n" + ExcelFormula.calcFormulaOffset(v_Formula ,1 ,1));
+        }
+    }
+    
+    
+    
+    /**
+     * 生成测试数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2019-05-30
+     * @version     v1.0
+     *
+     * @param i_Size
+     * @return
+     */
+    public List<ImageReportBean> getDatas(int i_Size)
+    {
+        List<ImageReportBean> v_Datas = new ArrayList<ImageReportBean>();
+        
+        for (int i=1; i<=i_Size; i++)
+        {
+            ImageReportBean v_Data   = new ImageReportBean();
+            int             v_PSize  = v_Data.gatPropertySize();
+            
+            for (int v_PIndex=0; v_PIndex<v_PSize; v_PIndex++)
+            {
+                v_Data.setPropertyValue(v_PIndex ,v_PIndex + "");
+            }
+            
+            v_Datas.add(v_Data);
+        }
+        
+        return v_Datas;
     }
     
 }

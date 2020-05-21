@@ -73,6 +73,7 @@ import org.hy.common.report.event.ValueListener;
  *              v5.0  2018-06-22  添加：在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
  *              V5.1  2018-09-19  修复：复文本格式化调用方法applyFont(...)异常的问题。发现人：李秉坤
  *              V6.0  2020-05-11  添加：打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果。发现人：雷伟松
+ *              V7.0  2020-05-21  添加：支持Excel公式的偏移计算及赋值
  */
 public class JavaToExcel
 {
@@ -2362,7 +2363,7 @@ public class JavaToExcel
         else if ( v_CellType == CellType.FORMULA) 
         {
             i_DataCell.setCellType(v_CellType);
-            i_DataCell.setCellFormula(i_TemplateCell.getCellFormula());
+            i_DataCell.setCellFormula(ExcelFormula.calcFormulaOffset(i_TemplateCell ,i_DataCell));
         } 
         else 
         {
@@ -2432,10 +2433,15 @@ public class JavaToExcel
                 
                 if ( null != v_RValue.getValue() )
                 {
+                    // 单元格的数字格式
+                    short v_DataFormat = i_TemplateCell.getCellStyle().getDataFormat();
+                    
                     // 如果模板的数据格式是：数值
-                    if ( i_DataCell.getCellStyle().getDataFormat() > 0 )
+                    if ( v_DataFormat > 0 )
                     {
-                        if ( Help.isNumber(v_RValue.getValue().toString()) )
+                        String v_DataFormatName = i_TemplateCell.getCellStyle().getDataFormatString();
+                        
+                        if ( v_DataFormatName.indexOf("0") >= 0 && Help.isNumber(v_RValue.getValue().toString()) )
                         {
                             // 整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
                             if ( i_RTemplate.getIsIntegerShowDecimal() )
@@ -2450,9 +2456,8 @@ public class JavaToExcel
                             }
                             else
                             {
-                                // 日期类型的
-                                i_DataCell.setCellType(v_CellType);
-                                i_DataCell.setCellValue(v_RValue.getValue().toString());
+                                i_DataCell.setCellType(CellType.NUMERIC);
+                                i_DataCell.setCellValue(Double.parseDouble(v_RValue.getValue().toString()));
                             }
                         }
                         else
@@ -2465,16 +2470,16 @@ public class JavaToExcel
                     {
                         i_DataCell.setCellType(v_CellType);
                         i_DataCell.setCellValue(v_RValue.getValue().toString());
-                        
-                        // 自动单元格高度
-                        if ( v_RValue.isAutoHeight() )
+                    }
+                    
+                    // 自动单元格高度
+                    if ( v_RValue.isAutoHeight() )
+                    {
+                        float v_AutoHeight = ExcelHelp.calcCellAutoHeight(v_RValue.getValue().toString() ,i_TemplateCell);
+                    
+                        if ( v_AutoHeight > i_DataCell.getRow().getHeightInPoints() )
                         {
-                            float v_AutoHeight = ExcelHelp.calcCellAutoHeight(v_RValue.getValue().toString() ,i_TemplateCell);
-                        
-                            if ( v_AutoHeight > i_DataCell.getRow().getHeightInPoints() )
-                            {
-                                i_DataCell.getRow().setHeightInPoints(v_AutoHeight);
-                            }
+                            i_DataCell.getRow().setHeightInPoints(v_AutoHeight);
                         }
                     }
                 }
@@ -2500,7 +2505,7 @@ public class JavaToExcel
         else if ( v_CellType == CellType.FORMULA) 
         {
             i_DataCell.setCellType(v_CellType);
-            i_DataCell.setCellFormula(i_TemplateCell.getCellFormula());
+            i_DataCell.setCellFormula(ExcelFormula.calcFormulaOffset(i_TemplateCell ,i_DataCell));
         } 
         else 
         {

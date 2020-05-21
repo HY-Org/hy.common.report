@@ -69,6 +69,9 @@ public class ImageReportBean extends SerializableDef
 	/** 参数4 */
 	private String paramKey4;
 	
+	/** 参数5 */
+	private String paramKey5;
+	
 	/** 参数数值1 */
 	private String paramValue1;
 	
@@ -558,6 +561,26 @@ public class ImageReportBean extends SerializableDef
     public void setImgPath(String imgPath)
     {
         this.imgPath = imgPath;
+    }
+
+    
+    /**
+     * 获取：参数5
+     */
+    public String getParamKey5()
+    {
+        return paramKey5;
+    }
+
+    
+    /**
+     * 设置：参数5
+     * 
+     * @param paramKey5 
+     */
+    public void setParamKey5(String paramKey5)
+    {
+        this.paramKey5 = paramKey5;
     }
 	
 }

@@ -158,7 +158,8 @@ public class RWorkbook
             CellStyle v_TemplateCellStyle = i_RTemplate.getTemplateSheet().getWorkbook().getCellStyleAt(i_IDX);
             ExcelHelp.copyCellStyle(v_TemplateCellStyle ,v_DataCellStyle);
             
-            v_DataCellStyle.setFont(this.getFont(i_RTemplate ,v_TemplateCellStyle.getFontIndex()));
+            // 2020-05-21 Del 不要此句，Excel的样式准确。
+            // v_DataCellStyle.setFont(this.getFont(i_RTemplate ,v_TemplateCellStyle.getFontIndex()));
             
             this.cellStyles.putRow(i_RTemplate ,String.valueOf(i_IDX) ,v_DataCellStyle);
         }
