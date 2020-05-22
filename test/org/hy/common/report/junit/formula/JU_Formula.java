@@ -262,6 +262,28 @@ public class JU_Formula
                 v_Data.setPropertyValue(v_PIndex ,v_PIndex + "");
             }
             
+            // Java生成动态Excel公式
+            if ( i % 5 == 1 )
+            {
+                v_Data.setDyForumla("=SUM(A1:A9)");
+            }
+            else if ( i % 5 == 2 )
+            {
+                v_Data.setDyForumla("=SUM(B1:B9)");
+            }
+            else  if ( i % 5 == 3 )
+            {
+                v_Data.setDyForumla("=SUM(C1:C9)");
+            }
+            else  if ( i % 5 == 4 )
+            {
+                v_Data.setDyForumla("=SUM(D1:D9)");
+            }
+            else
+            {
+                v_Data.setDyForumla("=SUM(E1:E9)");
+            }
+            
             v_Datas.add(v_Data);
         }
         

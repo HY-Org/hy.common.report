@@ -2460,11 +2460,23 @@ public class JavaToExcel
                                 i_DataCell.setCellValue(Double.parseDouble(v_RValue.getValue().toString()));
                             }
                         }
+                        // 如果填充值首字母为等号“=”，按Excel公式填充
+                        else if ( v_RValue.getValue().toString().trim().startsWith("=") )
+                        {
+                            i_DataCell.setCellType(CellType.FORMULA);
+                            i_DataCell.setCellFormula(v_RValue.getValue().toString().trim().substring(1));
+                        }
                         else
                         {
                             i_DataCell.setCellType(v_CellType);
                             i_DataCell.setCellValue(v_RValue.getValue().toString());
                         }
+                    }
+                    // 如果填充值首字母为等号“=”，按Excel公式填充
+                    else if ( v_RValue.getValue().toString().trim().startsWith("=") )
+                    {
+                        i_DataCell.setCellType(CellType.FORMULA);
+                        i_DataCell.setCellFormula(v_RValue.getValue().toString().trim().substring(1));
                     }
                     else
                     {

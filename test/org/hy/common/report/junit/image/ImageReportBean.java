@@ -89,6 +89,9 @@ public class ImageReportBean extends SerializableDef
 	
 	/** 二维码图片 */
 	private String imgPath;
+	
+	/** 动态公式 */
+	private String dyForumla;
 
 	
 	
@@ -581,6 +584,26 @@ public class ImageReportBean extends SerializableDef
     public void setParamKey5(String paramKey5)
     {
         this.paramKey5 = paramKey5;
+    }
+
+    
+    /**
+     * 获取：动态公式
+     */
+    public String getDyForumla()
+    {
+        return dyForumla;
+    }
+
+
+    /**
+     * 设置：动态公式
+     * 
+     * @param dyForumla 
+     */
+    public void setDyForumla(String dyForumla)
+    {
+        this.dyForumla = dyForumla;
     }
 	
 }

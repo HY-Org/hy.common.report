@@ -31,7 +31,7 @@ public class ExcelFormula
     
     /** 列举Excel公式中的关键字 */
     public static        String [] $Formulas = {"=" ,"+" ,"-" ,"*" ,"/"
-                                              ,"(" ,")" ,"," ,"'" ,"\""
+                                              ,"(" ,")" ,","
                                               ,":"
                                               ,"ABS("
                                               ,"ACCRINT("

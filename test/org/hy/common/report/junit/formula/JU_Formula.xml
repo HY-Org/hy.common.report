@@ -22,7 +22,7 @@
 
             <!-- 定义报表数据在模板中位置 -->
             <dataBeginRow>2</dataBeginRow>
-            <dataEndRow>7</dataEndRow>
+            <dataEndRow>9</dataEndRow>
 
             <!-- 定义外形尺寸数据对应的Java类型 -->
             <dataClass>org.hy.common.report.junit.image.ImageReportBean</dataClass>
