@@ -740,7 +740,9 @@ public class ExcelFormula
             return null;
         }
         
-        String v_CellExcelID = StringHelp.replaceAll(i_CellExcelID.trim().toUpperCase() ,"$" ,"");
+        String [] v_CEIDArr  = i_CellExcelID.split("!");
+        String v_CEID        = v_CEIDArr[v_CEIDArr.length - 1];
+        String v_CellExcelID = StringHelp.replaceAll(v_CEID.trim().toUpperCase() ,"$" ,"");
         String v_RowName     = StringHelp.replaceAll(v_CellExcelID ,$A_TO_Z ,new String [] {""});
         
         if ( Help.isNull(v_RowName) || !Help.isNumber(v_RowName) || StringHelp.isContains(v_RowName ,"." ,"-" ," ") )
@@ -760,8 +762,8 @@ public class ExcelFormula
         
         v_Ret.setRowNo( v_RowNo - 1);
         v_Ret.setColNo(StringHelp.reABC26(v_ColName));
-        v_Ret.setFixedRow(i_CellExcelID.trim().indexOf("$") > 0);
-        v_Ret.setFixedCol(i_CellExcelID.trim().startsWith("$"));
+        v_Ret.setFixedRow(v_CEID.trim().indexOf("$") > 0);
+        v_Ret.setFixedCol(v_CEID.trim().startsWith("$"));
         
         return v_Ret;
     }

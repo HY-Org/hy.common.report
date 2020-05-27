@@ -756,13 +756,9 @@ public class ExcelHelp
             v_ToPrintAreaBuffer.append(v_ToPrintArea).append(",");
         }
         
-        String [] v_A_TO_Z = {"A" ,"B" ,"C" ,"D" ,"E" ,"F" ,"G"
-                             ,"H" ,"I" ,"J" ,"K" ,"L" ,"M" ,"N"
-                             ,"O" ,"P" ,"Q" ,"R" ,"S" ,"T"
-                             ,"U" ,"V" ,"W" ,"X" ,"Y" ,"Z"};
         String [] v_SEArr    = v_FromPrintArea.split(":");
-        int    v_StartRow    = Integer.parseInt(StringHelp.replaceAll(v_SEArr[0] ,v_A_TO_Z ,v_RepalceSpace));
-        int    v_EndRow      = Integer.parseInt(StringHelp.replaceAll(v_SEArr[1] ,v_A_TO_Z ,v_RepalceSpace));
+        int    v_StartRow    = ExcelFormula.cellIDtoJava(v_SEArr[0]).getRowNo() + 1;
+        int    v_EndRow      = ExcelFormula.cellIDtoJava(v_SEArr[1]).getRowNo() + 1;
         int    v_PageRowSize = v_EndRow - v_StartRow + 1;
         String v_StartColumn = StringHelp.replaceAll(v_SEArr[0] ,v_StartRow + "" ,"");
         String v_EndColumn   = StringHelp.replaceAll(v_SEArr[1] ,v_EndRow   + "" ,"");
