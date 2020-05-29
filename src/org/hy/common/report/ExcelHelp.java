@@ -1693,8 +1693,6 @@ public class ExcelHelp
             XSSFCellStyle v_ToCellStyle   = (XSSFCellStyle)i_ToCellStyle;
             XSSFCellStyle v_FromCellStyle = (XSSFCellStyle)i_FromCellStyle;
             
-            v_ToCellStyle.cloneStyleFrom(v_FromCellStyle);
-            
             v_ToCellStyle.setAlignment(          v_FromCellStyle.getAlignmentEnum());
             v_ToCellStyle.setDataFormat(         v_FromCellStyle.getDataFormat());
             
