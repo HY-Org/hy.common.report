@@ -1,8 +1,17 @@
 package org.hy.common.report.junit.font;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Date;
 import org.hy.common.report.ExcelHelp;
 import org.hy.common.report.ReportHelp;
@@ -88,6 +97,29 @@ public class JU_FontReport
         RWorkbook v_RWorkbook02 = ReportHelp.toExcel(v_Datas ,v_RTemplate);
         
         ExcelHelp.save(v_RWorkbook02.getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\FontReport_" + Date.getNowTime().getFull_ID() + ".xlsx");
+    }
+    
+    
+    
+    @Test
+    public void test_FontOne() throws IOException
+    {
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("sheet 01");
+        Row row = sheet.createRow(1);
+        Font font = wb.createFont();
+        font.setBold(true);
+        font.setColor((short) 13);
+        font.setFontHeightInPoints((short) 24);
+        font.setFontName("宋体");
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setFont(font);
+        Cell cell = row.createCell(1);
+        cell.setCellValue("这是测试字体格式的");
+        cell.setCellStyle(cellStyle);
+        FileOutputStream fileOutputStream = new FileOutputStream("D://font.xlsx");
+        wb.write(fileOutputStream);
+        wb.close();
     }
     
 }

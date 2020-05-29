@@ -72,7 +72,7 @@ public class JU_ImageReport02
                 v_Data.setPropertyValue(v_PIndex ,i + "-" + v_PIndex);
             }
             
-            v_Data.setImgPath("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image02\\1.png");
+            v_Data.setImgPath("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image02\\" + (i % 3 + 1) + ".png");
             v_Datas.add(v_Data);
         }
         
@@ -116,6 +116,21 @@ public class JU_ImageReport02
         RWorkbook v_RWorkbook04 = ReportHelp.toExcel(v_Datas ,v_RTemplate);
         
         ExcelHelp.save(v_RWorkbook04.getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ImageReport_" + Date.getNowTime().getFull_ID() + ".xlsx");
+    }
+    
+    
+    
+    @Test
+    public void test_Image05() throws RTemplateException
+    {
+        RTemplate             v_RTemplate = (RTemplate)XJava.getObject("Report_Image05_xlsx");
+        List<ImageReportBean> v_Datas     = this.getDatas(3);
+        
+        RWorkbook v_RWorkbook05 = ReportHelp.toExcel(v_Datas ,v_RTemplate);
+        v_RWorkbook05 = ReportHelp.toExcel(v_RWorkbook05 ,v_Datas ,v_RTemplate ,true);
+        v_RWorkbook05 = ReportHelp.toExcel(v_RWorkbook05 ,v_Datas ,v_RTemplate ,true);
+        
+        ExcelHelp.save(v_RWorkbook05.getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ImageReport_" + Date.getNowTime().getFull_ID() + ".xlsx");
     }
     
 }

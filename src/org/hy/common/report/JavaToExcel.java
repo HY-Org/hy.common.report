@@ -1441,8 +1441,7 @@ public class JavaToExcel
      */
     public final static int copyRowByBlankSpace(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow) 
     {
-        i_DataRow.setHeight(    i_TemplateRow.getHeight());
-        i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
+        ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
         int v_CellCount = i_TemplateRow.getLastCellNum();
         
@@ -1487,8 +1486,7 @@ public class JavaToExcel
      */
     public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
     {
-        i_DataRow.setHeight(    i_TemplateRow.getHeight());
-        i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
+        ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
         int     v_RowNum    = i_DataRow.getRowNum();
         int     v_CellCount = i_TemplateRow.getLastCellNum();
@@ -1680,8 +1678,7 @@ public class JavaToExcel
      */
     public final static int copyRowPage(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
     {
-        i_DataRow.setHeight(    i_TemplateRow.getHeight());
-        i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
+        ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
         int     v_RowNum    = i_DataRow.getRowNum();
         int     v_CellCount = i_TemplateRow.getLastCellNum();
@@ -1917,8 +1914,7 @@ public class JavaToExcel
      */
     public final static int copyRowPageHeader(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
     {
-        i_DataRow.setHeight(    i_TemplateRow.getHeight());
-        i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
+        ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
         int     v_RowNum    = i_DataRow.getRowNum();
         int     v_CellCount = i_TemplateRow.getLastCellNum();
@@ -2117,8 +2113,7 @@ public class JavaToExcel
      */
     public final static int copyRowPageFooter(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
     {
-        i_DataRow.setHeight(    i_TemplateRow.getHeight());
-        i_DataRow.setZeroHeight(i_TemplateRow.getZeroHeight());
+        ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
         int     v_RowNum    = i_DataRow.getRowNum();
         int     v_CellCount = i_TemplateRow.getLastCellNum();

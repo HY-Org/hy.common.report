@@ -51,6 +51,13 @@ public class JU_Formula
     
     
     
+    public static void main(String [] i_Args) throws RTemplateException, Exception
+    {
+        new JU_Formula().test_Formula();
+    }
+    
+    
+    
     /**
      * 测试：带公式的报表生成
      * 

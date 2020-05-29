@@ -3,11 +3,15 @@ package org.hy.common.report.bean;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.hy.common.TablePartitionRID;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.hy.common.Help;
 import org.hy.common.report.ExcelHelp;
 
 
@@ -24,6 +28,7 @@ import org.hy.common.report.ExcelHelp;
  *                                   建议人：李浩
  *              v2.1  2017-09-20  1. 修复：getCellStyleByCopy() 在动态改变单元格颜色时，可能出现颜色ID相同后，相互覆盖的问题。
  *                                2. 修复：getFontByCopy()      在动态改变单元格字体时，可能出现字体ID相同后，相互覆盖的问题。
+ *              v3.0  2020-05-29  1. 添加：字体ID、样式ID生成，即唯一性的维护按新规则，不再按字体索引、样式索引管理。
  */
 public class RWorkbook
 {
@@ -35,37 +40,33 @@ public class RWorkbook
      * 工作薄所用到的模板中的字体信息。
      * 
      * 此字体为已在工作薄中创建过的字体，是本工作薄的字体对象，不是模板的。
-     * 但字体的索引位置与模板保质一样
      * 
-     * 每个分区表中的主键是：模板字体的位置索引
+     * Map.key 为字体ID
      */
-    private TablePartitionRID<RTemplate ,Font> fonts;
+    private Map<String ,Font> fonts;
     
     /** 
      * 工作薄所用到的模板中的单元格样式信息。
      * 
      * 此单元格样式为已在工作薄中创建过的单元格样式，是本工作薄的单元格样式对象，不是模板的。
-     * 但单元格样式的索引位置与模板保质一样
      * 
-     * 每个分区表中的主键是：模板单元格样式的位置索引
+     * Map.key 为样式ID
      */
-    private TablePartitionRID<RTemplate ,CellStyle> cellStyles;
-    
-    /**
-     * 第三方用户动态通过克隆创建出来的字体。
-     * 
-     * Map.key    为第三方自行定义的标识
-     * Map.value  为 this.fonts 中的分区主键
-     */
-    private Map<String ,Short> fontsByCopy;
+    private Map<String ,CellStyle> cellStyles;
     
     /**
      * 第三方用户动态通过克隆创建出来的样式。
      * 
      * Map.key    为第三方自行定义的标识
-     * Map.value  为 this.cellStyles 中的分区主键
      */
-    private Map<String ,Short> cellStylesByCopy;
+    private Map<String ,CellStyle> cellStylesByCopy;
+    
+    /**
+     * 第三方用户动态通过克隆创建出来的字体。
+     * 
+     * Map.key    为第三方自行定义的标识
+     */
+    private Map<String ,Font> fontsByCopy;
 
     
     
@@ -79,10 +80,9 @@ public class RWorkbook
     public RWorkbook(Workbook i_Workbook)
     {
         this.workbook         = i_Workbook;
-        this.fonts            = new TablePartitionRID<RTemplate ,Font>();
-        this.cellStyles       = new TablePartitionRID<RTemplate ,CellStyle>();
-        this.fontsByCopy      = new Hashtable<String ,Short>();
-        this.cellStylesByCopy = new Hashtable<String ,Short>();
+        this.fonts            = new Hashtable<String ,Font>();
+        this.cellStyles       = new Hashtable<String ,CellStyle>();
+        this.cellStylesByCopy = new Hashtable<String ,CellStyle>();
     }
     
     
@@ -105,6 +105,280 @@ public class RWorkbook
     
     
     /**
+     * 生成字体ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-29
+     * @version     v1.0
+     *
+     * @param i_Font
+     * @return
+     */
+    public static String makeFontID(Font i_Font)
+    {
+        StringBuilder v_Buffer = new StringBuilder();
+        
+        if ( i_Font instanceof HSSFFont )
+        {
+            HSSFFont v_Font = (HSSFFont)i_Font;
+            
+            v_Buffer.append(Help.NVL(v_Font.getFontName() ,"FN"));
+            v_Buffer.append("_");
+            v_Buffer.append(v_Font.getFontHeight());
+            v_Buffer.append("_");
+            v_Buffer.append(v_Font.getFontHeightInPoints());
+            v_Buffer.append("_B");
+            v_Buffer.append(v_Font.getBold() ? "1" : "0");
+            v_Buffer.append("_I");
+            v_Buffer.append(v_Font.getItalic() ? "1" : "0");
+            v_Buffer.append("_S");
+            v_Buffer.append(v_Font.getStrikeout() ? "1" : "0");
+            v_Buffer.append("_U");
+            v_Buffer.append(v_Font.getUnderline());
+            v_Buffer.append("_T");
+            v_Buffer.append(v_Font.getTypeOffset());
+            v_Buffer.append("_C");
+            v_Buffer.append(v_Font.getColor());
+            v_Buffer.append("_");
+            v_Buffer.append(v_Font.getCharSet());
+        }
+        else if ( i_Font instanceof XSSFFont )
+        {
+            XSSFFont v_Font = (XSSFFont)i_Font;
+            
+            v_Buffer.append(Help.NVL(v_Font.getFontName() ,"FN"));
+            v_Buffer.append("_");
+            v_Buffer.append(v_Font.getFontHeight());
+            v_Buffer.append("_");
+            v_Buffer.append(v_Font.getFontHeightInPoints());
+            v_Buffer.append("_B");
+            v_Buffer.append(v_Font.getBold() ? "1" : "0");
+            v_Buffer.append("_I");
+            v_Buffer.append(v_Font.getItalic() ? "1" : "0");
+            v_Buffer.append("_S");
+            v_Buffer.append(v_Font.getStrikeout() ? "1" : "0");
+            v_Buffer.append("_U");
+            v_Buffer.append(v_Font.getUnderline());
+            v_Buffer.append("_T");
+            v_Buffer.append(v_Font.getTypeOffset());
+            v_Buffer.append("_TC");
+            v_Buffer.append(v_Font.getThemeColor());
+            v_Buffer.append("_");
+            v_Buffer.append(v_Font.getCharSet());
+            v_Buffer.append("_S");
+            v_Buffer.append(v_Font.getScheme());
+            
+            v_Buffer.append("_C");
+            if ( v_Font.getXSSFColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_Font.getXSSFColor().getARGBHex() ,v_Font.getColor()));
+            }
+            else
+            {
+                v_Buffer.append(v_Font.getColor());
+            }
+        }
+        
+        return v_Buffer.toString();
+    }
+    
+    
+    
+    /**
+     * 生成样式ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-29
+     * @version     v1.0
+     *
+     * @param i_CellStyle
+     * @param i_Font
+     * @return
+     */
+    public static String makeCellStyleID(CellStyle i_CellStyle ,Font i_Font)
+    {
+        StringBuilder v_Buffer = new StringBuilder();
+        
+        if ( i_CellStyle instanceof HSSFCellStyle )
+        {
+            HSSFCellStyle v_CellStyle = (HSSFCellStyle)i_CellStyle;
+            
+            v_Buffer.append(v_CellStyle.getAlignmentEnum());
+            v_Buffer.append("_DF");
+            v_Buffer.append(v_CellStyle.getDataFormat());
+            
+            // 边框和边框颜色
+            v_Buffer.append("_BB");
+            v_Buffer.append(v_CellStyle.getBorderBottomEnum());
+            v_Buffer.append("_BL");
+            v_Buffer.append(v_CellStyle.getBorderLeftEnum());
+            v_Buffer.append("_BR");
+            v_Buffer.append(v_CellStyle.getBorderRightEnum());
+            v_Buffer.append("_BT");
+            v_Buffer.append(v_CellStyle.getBorderTopEnum());
+            v_Buffer.append("_CBL");
+            v_Buffer.append(v_CellStyle.getLeftBorderColor());
+            v_Buffer.append("_CBR");
+            v_Buffer.append(v_CellStyle.getRightBorderColor());
+            v_Buffer.append("_CBT");
+            v_Buffer.append(v_CellStyle.getTopBorderColor());
+            v_Buffer.append("_CBB");
+            v_Buffer.append(v_CellStyle.getBottomBorderColor());
+            
+            // 背景和前景
+            v_Buffer.append("_CFB");
+            v_Buffer.append(v_CellStyle.getFillBackgroundColor());
+            v_Buffer.append("_CFF");
+            v_Buffer.append(v_CellStyle.getFillForegroundColor());
+            v_Buffer.append("_CFP");
+            v_Buffer.append(v_CellStyle.getFillPatternEnum());
+            v_Buffer.append("_H");
+            v_Buffer.append(v_CellStyle.getHidden());
+            
+            // 首行缩进
+            v_Buffer.append("_I");
+            v_Buffer.append(v_CellStyle.getIndention());
+            v_Buffer.append("_L");
+            v_Buffer.append(v_CellStyle.getLocked());
+
+            // 旋转
+            v_Buffer.append("_SF");
+            v_Buffer.append(v_CellStyle.getShrinkToFit());
+            v_Buffer.append("_R");
+            v_Buffer.append(v_CellStyle.getRotation());
+            v_Buffer.append("_VA");
+            v_Buffer.append(v_CellStyle.getVerticalAlignmentEnum());
+            v_Buffer.append("_WT");
+            v_Buffer.append(v_CellStyle.getWrapText());
+            
+            v_Buffer.append("_QP");
+            v_Buffer.append(v_CellStyle.getQuotePrefixed());
+            v_Buffer.append("_RO");
+            v_Buffer.append(v_CellStyle.getReadingOrder());
+            v_Buffer.append("_USN");
+            v_Buffer.append(v_CellStyle.getUserStyleName());
+        }
+        else if ( i_CellStyle instanceof XSSFCellStyle )
+        {
+            XSSFCellStyle v_CellStyle = (XSSFCellStyle)i_CellStyle;
+            
+            v_Buffer.append(v_CellStyle.getAlignmentEnum());
+            v_Buffer.append("_DF");
+            v_Buffer.append(v_CellStyle.getDataFormat());
+            
+            // 边框和边框颜色
+            v_Buffer.append("_BB");
+            v_Buffer.append(v_CellStyle.getBorderBottomEnum());
+            v_Buffer.append("_BL");
+            v_Buffer.append(v_CellStyle.getBorderLeftEnum());
+            v_Buffer.append("_BR");
+            v_Buffer.append(v_CellStyle.getBorderRightEnum());
+            v_Buffer.append("_BT");
+            v_Buffer.append(v_CellStyle.getBorderTopEnum());
+            
+            v_Buffer.append("_CBL");
+            if ( v_CellStyle.getLeftBorderXSSFColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_CellStyle.getLeftBorderXSSFColor().getARGBHex() ,v_CellStyle.getLeftBorderColor()));
+            }
+            else
+            {
+                v_Buffer.append(v_CellStyle.getLeftBorderColor());
+            }
+            
+            v_Buffer.append("_CBR");
+            if ( v_CellStyle.getRightBorderXSSFColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_CellStyle.getRightBorderXSSFColor().getARGBHex() ,v_CellStyle.getRightBorderColor()));
+            }
+            else
+            {
+                v_Buffer.append(v_CellStyle.getRightBorderColor());
+            }
+            
+            v_Buffer.append("_CBT");
+            if ( v_CellStyle.getTopBorderXSSFColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_CellStyle.getTopBorderXSSFColor().getARGBHex() ,v_CellStyle.getTopBorderColor()));
+            }
+            else
+            {
+                v_Buffer.append(v_CellStyle.getTopBorderColor());
+            }
+            
+            v_Buffer.append("_CBB");
+            if ( v_CellStyle.getBottomBorderXSSFColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_CellStyle.getBottomBorderXSSFColor().getARGBHex() ,v_CellStyle.getBottomBorderColor()));
+            }
+            else
+            {
+                v_Buffer.append(v_CellStyle.getBottomBorderColor());
+            }
+            
+            // 背景和前景
+            v_Buffer.append("_CFB");
+            if ( v_CellStyle.getFillBackgroundXSSFColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_CellStyle.getFillBackgroundXSSFColor().getARGBHex() ,v_CellStyle.getFillBackgroundColor()));
+            }
+            else if ( v_CellStyle.getFillBackgroundColorColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_CellStyle.getFillBackgroundColorColor().getARGBHex() ,v_CellStyle.getFillBackgroundColor()));
+            }
+            else
+            {
+                v_Buffer.append(v_CellStyle.getFillBackgroundColor());
+            }
+            
+            v_Buffer.append("_CFF");
+            if ( v_CellStyle.getFillForegroundXSSFColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_CellStyle.getFillForegroundXSSFColor().getARGBHex() ,v_CellStyle.getFillForegroundColor()));
+            }
+            else if ( v_CellStyle.getFillForegroundColorColor() != null )
+            {
+                v_Buffer.append(Help.NVL(v_CellStyle.getFillForegroundColorColor().getARGBHex() ,v_CellStyle.getFillForegroundColor()));
+            }
+            else
+            {
+                v_Buffer.append(v_CellStyle.getFillForegroundColor());
+            }
+            
+            v_Buffer.append("_CFP");
+            v_Buffer.append(v_CellStyle.getFillPatternEnum());
+            v_Buffer.append("_H");
+            v_Buffer.append(v_CellStyle.getHidden());
+            
+            // 首行缩进
+            v_Buffer.append("_I");
+            v_Buffer.append(v_CellStyle.getIndention());
+            v_Buffer.append("_L");
+            v_Buffer.append(v_CellStyle.getLocked());
+
+            // 旋转
+            v_Buffer.append("_SF");
+            v_Buffer.append(v_CellStyle.getShrinkToFit());
+            v_Buffer.append("_R");
+            v_Buffer.append(v_CellStyle.getRotation());
+            v_Buffer.append("_VA");
+            v_Buffer.append(v_CellStyle.getVerticalAlignmentEnum());
+            v_Buffer.append("_WT");
+            v_Buffer.append(v_CellStyle.getWrapText());
+            
+            v_Buffer.append("_QP");
+            v_Buffer.append(v_CellStyle.getQuotePrefixed());
+        }
+        
+        v_Buffer.append("_CSF_");
+        v_Buffer.append(makeFontID(i_Font));
+        
+        return v_Buffer.toString();
+    }
+    
+    
+    
+    /**
      * 获取模板指定位置上的已转为本工作薄的字体
      * 
      * 目前看，只用于2003的版本(*.xls)，2007的版本是可以直接 setFont() 方法设置字体的。
@@ -119,17 +393,19 @@ public class RWorkbook
      */
     public synchronized Font getFont(RTemplate i_RTemplate ,int i_IDX)
     {
-        Font v_DataFont = this.fonts.getRow(i_RTemplate ,String.valueOf(i_IDX));
+        Font   v_FromFont = i_RTemplate.getTemplateSheet().getWorkbook().getFontAt((short)i_IDX);
+        String v_FontID   = makeFontID(v_FromFont);
+        Font   v_ToFont   = this.fonts.get(v_FontID);
         
-        if ( v_DataFont == null )
+        if ( v_ToFont == null )
         {
-            v_DataFont = this.workbook.createFont();
-            ExcelHelp.copyFont(i_RTemplate.getTemplateSheet().getWorkbook().getFontAt((short)i_IDX) ,v_DataFont);
+            v_ToFont = this.workbook.createFont();
+            ExcelHelp.copyFont(v_FromFont ,v_ToFont);
             
-            this.fonts.putRow(i_RTemplate ,String.valueOf(i_IDX) ,v_DataFont);
+            this.fonts.put(v_FontID ,v_ToFont);
         }
         
-        return v_DataFont;
+        return v_ToFont;
     }
     
     
@@ -149,22 +425,24 @@ public class RWorkbook
      */
     public synchronized CellStyle getCellStyle(RTemplate i_RTemplate ,int i_IDX)
     {
-        CellStyle v_DataCellStyle = this.cellStyles.getRow(i_RTemplate ,String.valueOf(i_IDX));
+        CellStyle v_FromCellStyle = i_RTemplate.getTemplateSheet().getWorkbook().getCellStyleAt(i_IDX);
+        Font      v_FromFont      = i_RTemplate.getTemplateSheet().getWorkbook().getFontAt(v_FromCellStyle.getFontIndex());
+        String    v_CellStyleID   = makeCellStyleID(v_FromCellStyle ,v_FromFont);
+        CellStyle v_ToCellStyle   = this.cellStyles.get(v_CellStyleID);
         
-        if ( v_DataCellStyle == null )
+        if ( v_ToCellStyle == null )
         {
-            v_DataCellStyle = this.workbook.createCellStyle();
+            v_ToCellStyle = this.workbook.createCellStyle();
             
-            CellStyle v_TemplateCellStyle = i_RTemplate.getTemplateSheet().getWorkbook().getCellStyleAt(i_IDX);
-            ExcelHelp.copyCellStyle(v_TemplateCellStyle ,v_DataCellStyle);
+            ExcelHelp.copyCellStyle(v_FromCellStyle ,v_ToCellStyle);
+            Font v_ToFont = this.getFont(i_RTemplate ,v_FromFont.getIndex());
             
-            // 2020-05-21 Del 不要此句，Excel的样式准确。
-            // v_DataCellStyle.setFont(this.getFont(i_RTemplate ,v_TemplateCellStyle.getFontIndex()));
+            v_ToCellStyle.setFont(v_ToFont);
             
-            this.cellStyles.putRow(i_RTemplate ,String.valueOf(i_IDX) ,v_DataCellStyle);
+            this.cellStyles.put(v_CellStyleID ,v_ToCellStyle);
         }
         
-        return v_DataCellStyle;
+        return v_ToCellStyle;
     }
     
     
@@ -182,25 +460,24 @@ public class RWorkbook
      */
     public synchronized CellStyle getCellStyleByCopy(String i_ID ,Cell i_DataCell ,RTemplate i_RTemplate)
     {
-        Short     v_CellStyleID = this.cellStylesByCopy.get(i_ID);
-        CellStyle v_CellStyle   = null;
+        CellStyle v_NewCellStyle = this.cellStylesByCopy.get(i_ID);
         
-        if ( v_CellStyleID == null )
+        if ( v_NewCellStyle == null )
         {
-            v_CellStyle = this.workbook.createCellStyle();
+            v_NewCellStyle = this.workbook.createCellStyle();
             
-            ExcelHelp.copyCellStyle(i_DataCell.getCellStyle(), v_CellStyle);
+            ExcelHelp.copyCellStyle(i_DataCell.getCellStyle(), v_NewCellStyle);
             
-            // 2017-09-20 动态格式的ID均加 Short.MAX_VALUE
-            this.cellStyles.putRow(i_RTemplate ,String.valueOf(Short.MAX_VALUE + v_CellStyle.getIndex()) ,v_CellStyle);
-            this.cellStylesByCopy.put(i_ID ,v_CellStyle.getIndex());
-        }
-        else
-        {
-            v_CellStyle = this.getCellStyle(i_RTemplate ,Short.MAX_VALUE + v_CellStyleID);
+            Font v_FromFont = this.workbook.getFontAt(i_DataCell.getCellStyle().getFontIndex());
+            Font v_NewFont  = this.workbook.createFont();
+            ExcelHelp.copyFont(v_FromFont ,v_NewFont);
+            
+            v_NewCellStyle.setFont(v_NewFont);
+            
+            this.cellStylesByCopy.put(i_ID ,v_NewCellStyle);
         }
         
-        return v_CellStyle;
+        return v_NewCellStyle;
     }
     
     
@@ -218,25 +495,18 @@ public class RWorkbook
      */
     public synchronized Font getFontByCopy(String i_ID ,Cell i_DataCell ,RTemplate i_RTemplate)
     {
-        Short v_FontID = this.fontsByCopy.get(i_ID);
-        Font  v_Font   = null;
+        Font v_NewFont = this.fontsByCopy.get(i_ID);
         
-        if ( v_FontID == null )
+        if ( v_NewFont == null )
         {
-            v_Font = this.workbook.createFont();
+            v_NewFont = this.workbook.createFont();
             
-            ExcelHelp.copyFont(this.workbook.getFontAt(i_DataCell.getCellStyle().getFontIndex()) ,v_Font);
+            ExcelHelp.copyFont(this.workbook.getFontAt(i_DataCell.getCellStyle().getFontIndex()) ,v_NewFont);
             
-            // 2017-09-20 动态格式的ID均加 Short.MAX_VALUE
-            this.fonts.putRow(i_RTemplate ,String.valueOf(Short.MAX_VALUE + v_Font.getIndex()) ,v_Font);
-            this.fontsByCopy.put(i_ID ,v_Font.getIndex());
-        }
-        else
-        {
-            v_Font = this.getFont(i_RTemplate ,Short.MAX_VALUE + v_FontID);
+            this.fontsByCopy.put(i_ID ,v_NewFont);
         }
         
-        return v_Font;
+        return v_NewFont;
     }
     
     
@@ -264,14 +534,13 @@ public class RWorkbook
     
     
     /**
-     * 获取：工作薄所用到的模板中的字体信息。
+     * 工作薄所用到的模板中的字体信息。
      * 
      * 此字体为已在工作薄中创建过的字体，是本工作薄的字体对象，不是模板的。
-     * 但字体的索引位置与模板保质一样
      * 
-     * 每个分区表中的主键是：原模板字体的位置索引
+     * Map.key 为字体ID
      */
-    public TablePartitionRID<RTemplate ,Font> getFonts()
+    public Map<String ,Font> getFonts()
     {
         return fonts;
     }
@@ -279,16 +548,15 @@ public class RWorkbook
     
     
     /**
-     * 设置：工作薄所用到的模板中的字体信息。
+     * 工作薄所用到的模板中的字体信息。
      * 
      * 此字体为已在工作薄中创建过的字体，是本工作薄的字体对象，不是模板的。
-     * 但字体的索引位置与模板保质一样
      * 
-     * 每个分区表中的主键是：原模板字体的位置索引
+     * Map.key 为字体ID
      * 
      * @param fonts 
      */
-    public void setFonts(TablePartitionRID<RTemplate ,Font> fonts)
+    public void setFonts(Map<String ,Font> fonts)
     {
         this.fonts = fonts;
     }
@@ -296,14 +564,13 @@ public class RWorkbook
 
     
     /**
-     * 获取：工作薄所用到的模板中的单元格样式信息。
+     * 工作薄所用到的模板中的单元格样式信息。
      * 
      * 此单元格样式为已在工作薄中创建过的单元格样式，是本工作薄的单元格样式对象，不是模板的。
-     * 但单元格样式的索引位置与模板保质一样
      * 
-     * 每个分区表中的主键是：模板单元格样式的位置索引
+     * Map.key 为样式ID
      */
-    public TablePartitionRID<RTemplate ,CellStyle> getCellStyles()
+    public Map<String ,CellStyle> getCellStyles()
     {
         return cellStyles;
     }
@@ -311,16 +578,15 @@ public class RWorkbook
     
 
     /**
-     * 设置：工作薄所用到的模板中的单元格样式信息。
+     * 工作薄所用到的模板中的单元格样式信息。
      * 
      * 此单元格样式为已在工作薄中创建过的单元格样式，是本工作薄的单元格样式对象，不是模板的。
-     * 但单元格样式的索引位置与模板保质一样
      * 
-     * 每个分区表中的主键是：模板单元格样式的位置索引
+     * Map.key 为样式ID
      * 
      * @param cellStyles 
      */
-    public void setCellStyles(TablePartitionRID<RTemplate ,CellStyle> cellStyles)
+    public void setCellStyles(Map<String ,CellStyle> cellStyles)
     {
         this.cellStyles = cellStyles;
     }

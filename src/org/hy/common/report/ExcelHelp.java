@@ -18,10 +18,12 @@ import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
 import org.apache.poi.hssf.usermodel.HSSFPictureData;
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -37,6 +39,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFDrawing;
+import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -46,6 +49,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.apache.poi.xssf.usermodel.XSSFPictureData;
 import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -82,6 +86,7 @@ import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProp
  *              v3.3  2017-12-07  添加：saveToInputStream()方法，将Excel文件数据保存成流信息。
  *              v3.4  2018-05-07  修正：占位符所在单元格有空格时，无法正确匹配占位符的解析信息。发现人：张宇
  *              v4.0  2020-05-14  添加：打印设置参数中的垂直居中、水平居中。发现人：雷伟松
+ *              v4.1  2020-05-29  添加：复制行高
  */
 public class ExcelHelp
 {
@@ -600,6 +605,40 @@ public class ExcelHelp
                 int v_Width = i_FromSheet.getColumnWidth(v_ColumnIndex);
                 v_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
             }
+        }
+    }
+    
+    
+    
+    /**
+     * 复制行高
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-05-29
+     * @version     v1.0
+     *
+     * @param i_FromRow
+     * @param io_ToRow
+     */
+    public final static void copyRowHeight(Row i_FromRow ,Row io_ToRow)
+    {
+        if ( i_FromRow instanceof HSSFRow )
+        {
+            io_ToRow.setHeight(        ((HSSFRow)i_FromRow).getHeight());
+            io_ToRow.setHeightInPoints(((HSSFRow)i_FromRow).getHeightInPoints());
+            io_ToRow.setZeroHeight(    ((HSSFRow)i_FromRow).getZeroHeight());
+        }
+        else if ( i_FromRow instanceof SXSSFRow )
+        {
+            io_ToRow.setHeight(        ((SXSSFRow)i_FromRow).getHeight());
+            io_ToRow.setHeightInPoints(((SXSSFRow)i_FromRow).getHeightInPoints());
+            io_ToRow.setZeroHeight(    ((SXSSFRow)i_FromRow).getZeroHeight());
+        }
+        else if ( i_FromRow instanceof XSSFRow )
+        {
+            io_ToRow.setHeight(        ((XSSFRow)i_FromRow).getHeight());
+            io_ToRow.setHeightInPoints(((XSSFRow)i_FromRow).getHeightInPoints());
+            io_ToRow.setZeroHeight(    ((XSSFRow)i_FromRow).getZeroHeight());
         }
     }
     
@@ -1524,16 +1563,48 @@ public class ExcelHelp
      */
     public final static void copyFont(Font i_FromFont ,Font i_ToFont)
     {
-        i_ToFont.setBold(              i_FromFont.getBold());
-        i_ToFont.setCharSet(           i_FromFont.getCharSet());
-        i_ToFont.setColor(             i_FromFont.getColor());
-        i_ToFont.setFontHeight(        i_FromFont.getFontHeight());
-        i_ToFont.setFontHeightInPoints(i_FromFont.getFontHeightInPoints());
-        i_ToFont.setFontName(          i_FromFont.getFontName());
-        i_ToFont.setItalic(            i_FromFont.getItalic());
-        i_ToFont.setStrikeout(         i_FromFont.getStrikeout());
-        i_ToFont.setTypeOffset(        i_FromFont.getTypeOffset());
-        i_ToFont.setUnderline(         i_FromFont.getUnderline());
+        if ( i_FromFont instanceof HSSFFont )
+        {
+            HSSFFont v_FromFont = (HSSFFont)i_FromFont;
+            HSSFFont v_ToFont   = (HSSFFont)i_ToFont;
+            
+            v_ToFont.setBold(              v_FromFont.getBold());
+            v_ToFont.setCharSet(           v_FromFont.getCharSet());
+            v_ToFont.setColor(             v_FromFont.getColor());
+            v_ToFont.setFontHeight(        v_FromFont.getFontHeight());
+            v_ToFont.setFontHeightInPoints(v_FromFont.getFontHeightInPoints());
+            v_ToFont.setFontName(          v_FromFont.getFontName());
+            v_ToFont.setItalic(            v_FromFont.getItalic());
+            v_ToFont.setStrikeout(         v_FromFont.getStrikeout());
+            v_ToFont.setTypeOffset(        v_FromFont.getTypeOffset());
+            v_ToFont.setUnderline(         v_FromFont.getUnderline());
+        }
+        else if ( i_FromFont instanceof XSSFFont )
+        {
+            XSSFFont v_FromFont = (XSSFFont)i_FromFont;
+            XSSFFont v_ToFont   = (XSSFFont)i_ToFont;
+            
+            if ( v_FromFont.getXSSFColor() != null )
+            {
+                v_ToFont.setColor(         v_FromFont.getXSSFColor());
+            }
+            else
+            {
+                v_ToFont.setColor(         v_FromFont.getColor());
+            }
+            v_ToFont.setBold(              v_FromFont.getBold());
+            v_ToFont.setCharSet(           v_FromFont.getCharSet());
+            v_ToFont.setFamily(            v_FromFont.getFamily());
+            v_ToFont.setFontHeight(        v_FromFont.getFontHeight());
+            v_ToFont.setFontHeightInPoints(v_FromFont.getFontHeightInPoints());
+            v_ToFont.setFontName(          v_FromFont.getFontName());
+            v_ToFont.setItalic(            v_FromFont.getItalic());
+            v_ToFont.setScheme(            v_FromFont.getScheme());
+            v_ToFont.setStrikeout(         v_FromFont.getStrikeout());
+            v_ToFont.setThemeColor(        v_FromFont.getThemeColor());
+            v_ToFont.setTypeOffset(        v_FromFont.getTypeOffset());
+            v_ToFont.setUnderline(         v_FromFont.getUnderline());
+        }
     }
     
     
@@ -1566,6 +1637,8 @@ public class ExcelHelp
     /**
      * 复制单元格样式
      * 
+     * 注：不复制字体
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2017-03-18
      * @version     v1.0
@@ -1575,43 +1648,139 @@ public class ExcelHelp
      */
     public final static void copyCellStyle(CellStyle i_FromCellStyle ,CellStyle i_ToCellStyle)
     {
+        // i_ToCellStyle.cloneStyleFrom(i_FromCellStyle);
+        
         if ( i_FromCellStyle instanceof HSSFCellStyle )
         {
-            i_ToCellStyle.cloneStyleFrom(i_FromCellStyle);
-            /*
-            i_ToCellStyle.setAlignment(          i_FromCellStyle.getAlignmentEnum());
-            i_ToCellStyle.setDataFormat(         i_FromCellStyle.getDataFormat());
+            HSSFCellStyle v_ToCellStyle   = (HSSFCellStyle)i_ToCellStyle;
+            HSSFCellStyle v_FromCellStyle = (HSSFCellStyle)i_FromCellStyle;
+            
+            v_ToCellStyle.setAlignment(          v_FromCellStyle.getAlignmentEnum());
+            v_ToCellStyle.setDataFormat(         v_FromCellStyle.getDataFormat());
             
             // 边框和边框颜色
-            i_ToCellStyle.setBorderBottom(       i_FromCellStyle.getBorderBottomEnum());
-            i_ToCellStyle.setBorderLeft(         i_FromCellStyle.getBorderLeftEnum());
-            i_ToCellStyle.setBorderRight(        i_FromCellStyle.getBorderRightEnum());
-            i_ToCellStyle.setBorderTop(          i_FromCellStyle.getBorderTopEnum());
-            i_ToCellStyle.setLeftBorderColor(    i_FromCellStyle.getLeftBorderColor());
-            i_ToCellStyle.setRightBorderColor(   i_FromCellStyle.getRightBorderColor());
-            i_ToCellStyle.setTopBorderColor(     i_FromCellStyle.getTopBorderColor());
-            i_ToCellStyle.setBottomBorderColor(  i_FromCellStyle.getBottomBorderColor());
+            v_ToCellStyle.setBorderBottom(       v_FromCellStyle.getBorderBottomEnum());
+            v_ToCellStyle.setBorderLeft(         v_FromCellStyle.getBorderLeftEnum());
+            v_ToCellStyle.setBorderRight(        v_FromCellStyle.getBorderRightEnum());
+            v_ToCellStyle.setBorderTop(          v_FromCellStyle.getBorderTopEnum());
+            v_ToCellStyle.setLeftBorderColor(    v_FromCellStyle.getLeftBorderColor());
+            v_ToCellStyle.setRightBorderColor(   v_FromCellStyle.getRightBorderColor());
+            v_ToCellStyle.setTopBorderColor(     v_FromCellStyle.getTopBorderColor());
+            v_ToCellStyle.setBottomBorderColor(  v_FromCellStyle.getBottomBorderColor());
             
             // 背景和前景
-            i_ToCellStyle.setFillBackgroundColor(i_FromCellStyle.getFillBackgroundColor());
-            i_ToCellStyle.setFillForegroundColor(i_FromCellStyle.getFillForegroundColor());
-            i_ToCellStyle.setFillPattern(        i_FromCellStyle.getFillPatternEnum());
-            i_ToCellStyle.setHidden(             i_FromCellStyle.getHidden());
+            v_ToCellStyle.setFillBackgroundColor(v_FromCellStyle.getFillBackgroundColor());
+            v_ToCellStyle.setFillForegroundColor(v_FromCellStyle.getFillForegroundColor());
+            v_ToCellStyle.setFillPattern(        v_FromCellStyle.getFillPatternEnum());
+            v_ToCellStyle.setHidden(             v_FromCellStyle.getHidden());
             
             // 首行缩进
-            i_ToCellStyle.setIndention(          i_FromCellStyle.getIndention());
-            i_ToCellStyle.setLocked(             i_FromCellStyle.getLocked());
+            v_ToCellStyle.setIndention(          v_FromCellStyle.getIndention());
+            v_ToCellStyle.setLocked(             v_FromCellStyle.getLocked());
   
             // 旋转
-            i_ToCellStyle.setShrinkToFit(        i_FromCellStyle.getShrinkToFit());
-            i_ToCellStyle.setRotation(           i_FromCellStyle.getRotation());
-            i_ToCellStyle.setVerticalAlignment(  i_FromCellStyle.getVerticalAlignmentEnum());
-            i_ToCellStyle.setWrapText(           i_FromCellStyle.getWrapText());
-            */
+            v_ToCellStyle.setShrinkToFit(        v_FromCellStyle.getShrinkToFit());
+            v_ToCellStyle.setRotation(           v_FromCellStyle.getRotation());
+            v_ToCellStyle.setVerticalAlignment(  v_FromCellStyle.getVerticalAlignmentEnum());
+            v_ToCellStyle.setWrapText(           v_FromCellStyle.getWrapText());
+            
+            v_ToCellStyle.setQuotePrefixed(      v_FromCellStyle.getQuotePrefixed());
+            v_ToCellStyle.setReadingOrder(       v_FromCellStyle.getReadingOrder());
+            v_ToCellStyle.setUserStyleName(      v_FromCellStyle.getUserStyleName());
         }
         else if ( i_FromCellStyle instanceof XSSFCellStyle )
         {
-            i_ToCellStyle.cloneStyleFrom(i_FromCellStyle);
+            XSSFCellStyle v_ToCellStyle   = (XSSFCellStyle)i_ToCellStyle;
+            XSSFCellStyle v_FromCellStyle = (XSSFCellStyle)i_FromCellStyle;
+            
+            v_ToCellStyle.cloneStyleFrom(v_FromCellStyle);
+            
+            v_ToCellStyle.setAlignment(          v_FromCellStyle.getAlignmentEnum());
+            v_ToCellStyle.setDataFormat(         v_FromCellStyle.getDataFormat());
+            
+            // 边框
+            v_ToCellStyle.setBorderBottom(       v_FromCellStyle.getBorderBottomEnum());
+            v_ToCellStyle.setBorderLeft(         v_FromCellStyle.getBorderLeftEnum());
+            v_ToCellStyle.setBorderRight(        v_FromCellStyle.getBorderRightEnum());
+            v_ToCellStyle.setBorderTop(          v_FromCellStyle.getBorderTopEnum());
+            
+            // 边框颜色
+            if ( v_FromCellStyle.getLeftBorderXSSFColor() != null )
+            {
+                v_ToCellStyle.setLeftBorderColor(v_FromCellStyle.getLeftBorderXSSFColor());
+            }
+            else
+            {
+                v_ToCellStyle.setLeftBorderColor(v_FromCellStyle.getLeftBorderColor());
+            }
+            
+            if ( v_FromCellStyle.getRightBorderXSSFColor() != null )
+            {
+                v_ToCellStyle.setRightBorderColor(v_FromCellStyle.getRightBorderXSSFColor());
+            }
+            else
+            {
+                v_ToCellStyle.setRightBorderColor(v_FromCellStyle.getRightBorderColor());
+            }
+            
+            if ( v_FromCellStyle.getTopBorderXSSFColor() != null )
+            {
+                v_ToCellStyle.setTopBorderColor(v_FromCellStyle.getTopBorderXSSFColor());
+            }
+            else
+            {
+                v_ToCellStyle.setTopBorderColor(v_FromCellStyle.getTopBorderColor());
+            }
+            
+            if ( v_FromCellStyle.getBottomBorderXSSFColor() != null )
+            {
+                v_ToCellStyle.setTopBorderColor(v_FromCellStyle.getBottomBorderXSSFColor());
+            }
+            else
+            {
+                v_ToCellStyle.setTopBorderColor(v_FromCellStyle.getBottomBorderColor());
+            }
+            
+            // 背景和前景
+            if ( v_FromCellStyle.getFillBackgroundXSSFColor() != null )
+            {
+                v_ToCellStyle.setFillBackgroundColor(v_FromCellStyle.getFillBackgroundXSSFColor());
+            }
+            else if ( v_FromCellStyle.getFillBackgroundColorColor() != null )
+            {
+                v_ToCellStyle.setFillBackgroundColor(v_FromCellStyle.getFillBackgroundColorColor());
+            }
+            else
+            {
+                v_ToCellStyle.setFillBackgroundColor(v_FromCellStyle.getFillBackgroundColor());
+            }
+            
+            if ( v_FromCellStyle.getFillForegroundXSSFColor() != null )
+            {
+                v_ToCellStyle.setFillForegroundColor(v_FromCellStyle.getFillForegroundXSSFColor());
+            }
+            else if ( v_FromCellStyle.getFillForegroundColorColor() != null )
+            {
+                v_ToCellStyle.setFillForegroundColor(v_FromCellStyle.getFillForegroundColorColor());
+            }
+            else
+            {
+                v_ToCellStyle.setFillForegroundColor(v_FromCellStyle.getFillForegroundColor());
+            }
+            v_ToCellStyle.setFillPattern(        v_FromCellStyle.getFillPatternEnum());
+            v_ToCellStyle.setHidden(             v_FromCellStyle.getHidden());
+            
+            // 首行缩进
+            v_ToCellStyle.setIndention(          v_FromCellStyle.getIndention());
+            v_ToCellStyle.setLocked(             v_FromCellStyle.getLocked());
+  
+            // 旋转
+            v_ToCellStyle.setShrinkToFit(        v_FromCellStyle.getShrinkToFit());
+            v_ToCellStyle.setRotation(           v_FromCellStyle.getRotation());
+            v_ToCellStyle.setVerticalAlignment(  v_FromCellStyle.getVerticalAlignmentEnum());
+            v_ToCellStyle.setWrapText(           v_FromCellStyle.getWrapText());
+            
+            v_ToCellStyle.setQuotePrefixed(      v_FromCellStyle.getQuotePrefixed());
         }
     }
     
