@@ -1,11 +1,19 @@
 package org.hy.common.report.event;
 
+import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
@@ -40,6 +48,7 @@ import org.hy.common.report.bean.RWorkbook;
  *                                     建议人：杨东
  *              v4.0  2019-05-30  添加：图片的横向、纵向缩放比例
  *              v4.1  2020-04-10  添加：在多个不同模板，以追加模式写入时，对模板中图片作偏移量的修正。
+ *              v5.0  2020-07-01  修复：对于jpg 图片可能会造成蒙一层粉红色的背景的问题。发现人、方案人：雷伟松
  */
 public class ImageListener implements ValueListener
 {
@@ -85,6 +94,55 @@ public class ImageListener implements ValueListener
     
     /** 与单元格左侧的边距。先将图片大小设置好后导出报表看看，再微调此值 */
     protected Integer marginLeft;
+    
+    
+    
+    /**
+     * 将Image转为BufferedImage。
+     * 
+     * 可用于解决：jpg 图片可能会造成蒙一层粉红色的背景的问题
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-07-01
+     * @version     v1.0
+     *
+     * @param i_Image
+     * @return
+     */
+    public static BufferedImage toBufferedImage(Image i_Image) 
+    {
+        if (i_Image instanceof BufferedImage) 
+        {
+            return (BufferedImage) i_Image;
+        }
+        
+        Image               v_Image         = new ImageIcon(i_Image).getImage();
+        BufferedImage       v_BufferedImage = null;
+        GraphicsEnvironment v_GraphicsEnv   = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        try 
+        {
+            GraphicsDevice        v_GraphicsDevice = v_GraphicsEnv.getDefaultScreenDevice();
+            GraphicsConfiguration v_GraphicsConfig = v_GraphicsDevice.getDefaultConfiguration();
+            
+            v_BufferedImage = v_GraphicsConfig.createCompatibleImage(v_Image.getWidth(null), v_Image.getHeight(null), Transparency.OPAQUE);
+        } 
+        catch (HeadlessException exce) 
+        {
+            exce.printStackTrace();
+        }
+ 
+        if ( v_BufferedImage == null ) 
+        {
+            v_BufferedImage = new BufferedImage(v_Image.getWidth(null), v_Image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+        }
+        
+        Graphics v_Graphics = v_BufferedImage.createGraphics();
+ 
+        v_Graphics.drawImage(v_Image, 0, 0, null);
+        v_Graphics.dispose();
+ 
+        return v_BufferedImage;
+    }
     
     
     
@@ -465,11 +523,19 @@ public class ImageListener implements ValueListener
             // 读取图片
             if ( v_ImageName.startsWith("file:") )
             {
-                v_BufferImage = ImageIO.read(new URL(v_ImageName));
+                Image v_Image = Toolkit.getDefaultToolkit().getImage(new URL(v_ImageName));
+                v_BufferImage = ImageListener.toBufferedImage(v_Image);
+                
+                // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY) 
+                // v_BufferImage = ImageIO.read(new URL(v_ImageName));  
             }
             else
             {
-                v_BufferImage = ImageIO.read(new File(v_ImageName));
+                Image v_Image = Toolkit.getDefaultToolkit().getImage(v_ImageName);
+                v_BufferImage = ImageListener.toBufferedImage(v_Image);
+                
+                // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY) 
+                // v_BufferImage = ImageIO.read(new File(v_ImageName));
             }
             
             // 缩放图片
