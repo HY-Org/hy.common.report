@@ -51,7 +51,7 @@ public class JU_ImageIsPink
     public void test_ImageIsPink() throws RTemplateException
     {
         RTemplate         v_RTemplate = (RTemplate)XJava.getObject("Report_ImageIsPink");
-        List<Image03Data> v_Datas     = this.getDatas(1);
+        List<Image03Data> v_Datas     = this.getDatas(3);
         
         RWorkbook v_RWorkbook = ReportHelp.toExcel(v_Datas ,v_RTemplate);
         
@@ -72,13 +72,18 @@ public class JU_ImageIsPink
      */
     public List<Image03Data> getDatas(int i_Size)
     {
-        List<Image03Data> v_Datas = new ArrayList<Image03Data>();
+        List<String>      v_Images = new ArrayList<String>();
+        List<Image03Data> v_Datas  = new ArrayList<Image03Data>();
+        
+        v_Images.add("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image03\\1问题源.jpg");
+        v_Images.add("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image03\\2白色背景.png");
+        v_Images.add("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image03\\3透明图.png");
         
         for (int i=1; i<=i_Size; i++)
         {
             Image03Data v_Data = new Image03Data();
             
-            v_Data.setImage("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image03\\1.jpg");
+            v_Data.setImage(v_Images.get(i % v_Images.size()));
             v_Datas.add(v_Data);
         }
         

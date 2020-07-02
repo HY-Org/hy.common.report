@@ -26,6 +26,7 @@ import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.hy.common.Help;
+import org.hy.common.StringHelp;
 import org.hy.common.file.FileHelp;
 import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
@@ -107,9 +108,10 @@ public class ImageListener implements ValueListener
      * @version     v1.0
      *
      * @param i_Image
+     * @param i_ImageType   图片的类型，即扩展名称
      * @return
      */
-    public static BufferedImage toBufferedImage(Image i_Image) 
+    public static BufferedImage toBufferedImage(Image i_Image ,String i_ImageType) 
     {
         if (i_Image instanceof BufferedImage) 
         {
@@ -119,12 +121,19 @@ public class ImageListener implements ValueListener
         Image               v_Image         = new ImageIcon(i_Image).getImage();
         BufferedImage       v_BufferedImage = null;
         GraphicsEnvironment v_GraphicsEnv   = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        int                 v_Transparency  = Transparency.TRANSLUCENT;
+        
+        if ( "jpg".equalsIgnoreCase(i_ImageType) )
+        {
+            v_Transparency = Transparency.OPAQUE;
+        }
+        
         try 
         {
             GraphicsDevice        v_GraphicsDevice = v_GraphicsEnv.getDefaultScreenDevice();
             GraphicsConfiguration v_GraphicsConfig = v_GraphicsDevice.getDefaultConfiguration();
             
-            v_BufferedImage = v_GraphicsConfig.createCompatibleImage(v_Image.getWidth(null), v_Image.getHeight(null), Transparency.OPAQUE);
+            v_BufferedImage = v_GraphicsConfig.createCompatibleImage(v_Image.getWidth(null), v_Image.getHeight(null), v_Transparency);
         } 
         catch (HeadlessException exce) 
         {
@@ -524,7 +533,7 @@ public class ImageListener implements ValueListener
             if ( v_ImageName.startsWith("file:") )
             {
                 Image v_Image = Toolkit.getDefaultToolkit().getImage(new URL(v_ImageName));
-                v_BufferImage = ImageListener.toBufferedImage(v_Image);
+                v_BufferImage = ImageListener.toBufferedImage(v_Image ,v_ImageType);
                 
                 // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY) 
                 // v_BufferImage = ImageIO.read(new URL(v_ImageName));  
@@ -532,7 +541,7 @@ public class ImageListener implements ValueListener
             else
             {
                 Image v_Image = Toolkit.getDefaultToolkit().getImage(v_ImageName);
-                v_BufferImage = ImageListener.toBufferedImage(v_Image);
+                v_BufferImage = ImageListener.toBufferedImage(v_Image ,v_ImageType);
                 
                 // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY) 
                 // v_BufferImage = ImageIO.read(new File(v_ImageName));
