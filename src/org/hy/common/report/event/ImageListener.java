@@ -26,7 +26,6 @@ import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.hy.common.Help;
-import org.hy.common.StringHelp;
 import org.hy.common.file.FileHelp;
 import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
@@ -137,12 +136,19 @@ public class ImageListener implements ValueListener
         } 
         catch (HeadlessException exce) 
         {
-            exce.printStackTrace();
+            // 这里不报异常。而是交给后面的if语句判定
+            // exce.printStackTrace();
         }
- 
+        
         if ( v_BufferedImage == null ) 
         {
-            v_BufferedImage = new BufferedImage(v_Image.getWidth(null), v_Image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            v_Transparency = BufferedImage.TYPE_INT_RGB;
+            if ( "png".equalsIgnoreCase(i_ImageType) )
+            {
+                v_Transparency = BufferedImage.TYPE_INT_ARGB;
+            }
+            
+            v_BufferedImage = new BufferedImage(v_Image.getWidth(null), v_Image.getHeight(null), v_Transparency);
         }
         
         Graphics v_Graphics = v_BufferedImage.createGraphics();

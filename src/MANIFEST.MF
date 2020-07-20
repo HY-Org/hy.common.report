@@ -1,5 +1,5 @@
-Manifest-Version: 3.2.4
+Manifest-Version: 3.2.5
 Created-By: HY.ZhengWei@qq.com  2017
-Specification-Version: 3.2.4.S46  2020-07-02
+Specification-Version: 3.2.5.S46  2020-07-20
 SourceCode: https://github.com/HY-ZhengWei/hy.common.report
 Build-JDK: 1.8

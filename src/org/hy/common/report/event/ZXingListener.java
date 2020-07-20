@@ -124,7 +124,7 @@ public class ZXingListener extends ImageListener implements ValueListener
      * @param i_DataWorkbook  数据工作薄对象
      * @param i_RSystemValue  系统变量信息
      * @param i_Datas         本行对应的数据
-     * @param i_Value         反射出来的变量名称对应的值（图片文件的全路径）
+     * @param i_Value         反射出来的变量名称对应的值（二维码原文）
      * @return 
      */
     public String getValue(RTemplate i_RTemplate ,Cell i_TemplateCell ,Cell i_DataCell ,RWorkbook i_DataWorkbook ,RSystemValue i_RSystemValue ,Object i_Datas ,Object i_Value)
@@ -192,7 +192,7 @@ public class ZXingListener extends ImageListener implements ValueListener
         int v_PictureIndex = i_DataCell.getSheet().getWorkbook().addPicture(v_ByteArrayOut.toByteArray() ,v_PictureType);
         Picture v_Picture  = v_Drawing.createPicture(v_ClientAnchor ,v_PictureIndex);
         
-        this.resizeMarginLeftTop(v_Picture);
+        this.resizeMarginLeftTop(v_Picture ,null ,this.isScale ,Help.NVL(this.scaleX ,1D) ,Help.NVL(this.scaleY ,1D));
         
         return "";
     }
