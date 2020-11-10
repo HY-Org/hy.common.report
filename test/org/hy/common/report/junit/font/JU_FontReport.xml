@@ -18,7 +18,7 @@
 
             <!-- 定义报表数据在模板中位置 -->
             <dataBeginRow>0</dataBeginRow>
-            <dataEndRow>2</dataEndRow>
+            <dataEndRow>3</dataEndRow>
 
             <!-- 定义外形尺寸数据对应的Java类型 -->
             <dataClass>org.hy.common.report.junit.font.FontTest</dataClass>

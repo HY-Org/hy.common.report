@@ -71,9 +71,10 @@ import org.hy.common.report.event.ValueListener;
  *              v4.6  2017-09-20  修复：批注只能生成一行的问题。
  *              v4.7  2018-06-11  修复：模板空白行（无任何数据）时，可能返回NULL时，只添加一行空白行。
  *              v5.0  2018-06-22  添加：在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
- *              V5.1  2018-09-19  修复：复文本格式化调用方法applyFont(...)异常的问题。发现人：李秉坤
- *              V6.0  2020-05-11  添加：打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果。发现人：雷伟松
- *              V7.0  2020-05-21  添加：支持Excel公式的偏移计算及赋值
+ *              v5.1  2018-09-19  修复：复文本格式化调用方法applyFont(...)异常的问题。发现人：李秉坤
+ *              v6.0  2020-05-11  添加：打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果。发现人：雷伟松
+ *              v7.0  2020-05-21  添加：支持Excel公式的偏移计算及赋值
+ *              v8.0  2020-11-10  添加：支持分项统计的小计在明细数据之前或之后的功能。建议人：尚仁强
  */
 public class JavaToExcel
 {
@@ -506,12 +507,27 @@ public class JavaToExcel
             if ( i_RTemplate.getRowCountSubtotal() >= 1 )
             {
                 // 模板中有小计的
-                for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
+                if ( RTemplate.$SubTotalPosition_Top.equals(i_RTemplate.getSubtotalPosition()) )
                 {
-                    writeData(    v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
-                    writeSubtotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
-                    
-                    v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
+                    // 小计在明细数据之前
+                    for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
+                    {
+                        writeSubtotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        writeData(    v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        
+                        v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
+                    }
+                }
+                else
+                {
+                    // 小计在明细数据之后
+                    for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
+                    {
+                        writeData(    v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        writeSubtotal(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
+                        
+                        v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
+                    }
                 }
             }
             else
@@ -2489,6 +2505,11 @@ public class JavaToExcel
                             i_DataCell.getRow().setHeightInPoints(v_AutoHeight);
                         }
                     }
+                    
+                    if ( StringHelp.isContains(v_ValueName ,true ,RTemplate.$Value_LimitBefore ,RTemplate.$Value_LimitEnd) )
+                    {
+                        copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell ,v_ValueName ,v_RValue.getValue().toString());
+                    }
                 }
                 else
                 {
@@ -2538,6 +2559,83 @@ public class JavaToExcel
      * @param i_DataCell          数据单元格
      */
     public final static void copyRichTextStyle(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell) 
+    {
+        int    v_FontCount = i_TemplateRichText.numFormattingRuns();
+        String v_Text      = i_TemplateRichText.toString();
+        int    v_TextLen   = v_Text.length();
+        
+        if ( v_FontCount >= 1 )
+        {
+            RichTextString v_DataRichText = null;
+            
+            if ( i_TemplateRichText instanceof HSSFRichTextString )
+            {
+                HSSFRichTextString v_TemplateRichText = (HSSFRichTextString)i_TemplateRichText;
+                v_DataRichText = new HSSFRichTextString(v_Text);
+                
+                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+                {
+                    int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
+                    short v_IDX        = v_TemplateRichText.getFontOfFormattingRun(v_FontIndex);
+                    Font  v_DataFont   = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
+                    
+                    if ( v_TextLen > 0 )
+                    {
+                        v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                    }
+                }
+                
+                i_DataCell.setCellValue(v_DataRichText);
+            }
+            else if ( i_TemplateRichText instanceof XSSFRichTextString )
+            {
+                XSSFRichTextString v_TemplateRichText = (XSSFRichTextString)i_TemplateRichText;
+                v_DataRichText = new XSSFRichTextString(v_Text);//i_DataCell.getRow().getSheet().getWorkbook().getCreationHelper().createRichTextString(v_Text);
+                
+                for (int v_FontIndex=0; v_FontIndex<v_FontCount; v_FontIndex++) 
+                {
+                    int      v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
+                    XSSFFont v_TemplateFont = v_TemplateRichText.getFontOfFormattingRun(v_FontIndex);
+                    
+                    if ( v_TemplateFont != null )
+                    {
+                        v_TemplateFont  = ExcelHelp.findFont((XSSFWorkbook)i_RTemplate.getTemplateSheet().getWorkbook() ,v_TemplateFont);
+                        int  v_IDX      = v_TemplateFont.getIndex();
+                        Font v_DataFont = i_DataWorkbook.getFont(i_RTemplate ,v_IDX);
+                        
+                        if ( v_TextLen > 0 )
+                        {
+                            v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                        }
+                    }
+                }
+                
+                i_DataCell.setCellValue(v_DataRichText);
+            }
+        }
+        else
+        {
+            i_DataCell.setCellValue(v_Text);
+        }
+    }
+    
+    
+    
+    /**
+     * 复制高级文本及格式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2020-09-04
+     * @version     v1.0
+     *
+     * @param i_RTemplate         模板对象
+     * @param i_TemplateRichText  高级文本对象
+     * @param i_DataWorkbook      数据工作薄
+     * @param i_DataCell          数据单元格
+     * @param i_Name              占位符的名称
+     * @param i_Value             占位符的数值
+     */
+    public final static void copyRichTextStyle(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,String i_Name ,String i_Value) 
     {
         int    v_FontCount = i_TemplateRichText.numFormattingRuns();
         String v_Text      = i_TemplateRichText.toString();

@@ -24,6 +24,8 @@ public class FontTest extends SerializableDef
     
     private String fontInfo03;
     
+    private String world;
+    
     
     
     /**
@@ -71,6 +73,18 @@ public class FontTest extends SerializableDef
     public void setFontInfo03(String fontInfo03)
     {
         this.fontInfo03 = fontInfo03;
+    }
+
+    
+    public String getWorld()
+    {
+        return world;
+    }
+
+    
+    public void setWorld(String world)
+    {
+        this.world = world;
     }
     
 }

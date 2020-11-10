@@ -252,6 +252,7 @@ __动态行和小计报表的XML配置举例__
 			<dataEndRow>2</dataEndRow>
 			<subtotalBeginRow>3</subtotalBeginRow>   <!-- 报表小计的开始行号（包括此行）。下标从零开始 -->
 			<subtotalEndRow>4</subtotalEndRow>       <!-- 报表小计的结束行号（包括此行）。下标从零开始 -->
+			<subtotalPosition>top</subtotalPosition> <!-- 报表小计的位置（在明细数据之前或之后） -->
 			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
 		</template>
 		
@@ -259,6 +260,10 @@ __动态行和小计报表的XML配置举例__
 	
 </config>
 ```
+
+
+__小计位置在明细数据之前__
+![image](images/Subtotal_Result_Top.png)
 
 
 

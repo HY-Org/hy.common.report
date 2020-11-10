@@ -51,6 +51,7 @@ import org.hy.common.xml.SerializableDef;
  *                                       防止同一Excel文件生成多个模板对象时，无法区别模板实例。建议人：邹德福
  *              v6.0  2020-05-11  添加：打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果。
  *                                      发现人：雷伟松
+ *              v7.0  2020-11-10  添加：支持分项统计的小计在明细数据之前或之后的功能。建议人：尚仁强
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -86,6 +87,14 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     
     
+    /** 报表小计的输出位置（top：在明细数据之前输出小计；bottom） */
+    public final static String         $SubTotalPosition_Top         = "top";
+    
+    /** 报表小计的输出位置（top：在明细数据之前输出小计；bottom） */
+    public final static String         $SubTotalPosition_Bottom      = "bottom";
+    
+    
+    
     /** 纵深扩展--表示从左到右的方向，一行或多行为一个对象数据 */
     public final static Integer       $Direction_Vertical            = 0;
     
@@ -95,10 +104,10 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     
     /** 变量名称的前置限定符 */
-    private final static String       $Value_LimitBefore             = "{";
+    public  final static String       $Value_LimitBefore             = "{";
     
     /** 变量名称的后置限定符 */
-    private final static String       $Value_LimitEnd                = "}";
+    public  final static String       $Value_LimitEnd                = "}";
     
     /** 通过正则表达式解释变量名的前半部分。整体格式如：{:Key} */
     private final static String       $Pattern_Values_Before         = "\\" + $Value_LimitBefore;
@@ -188,6 +197,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     /** 报表小计的结束行号（包括此行）。下标从零开始 */
     private Integer                    subtotalEndRow;
+    
+    /** 报表小计的输出位置（top：在明细数据之前输出小计；bottom）。默认是：bottom */
+    private String                     subtotalPosition;
     
     /** 合计内容的开始行号（包括此行）。下标从零开始 */
     private Integer                    totalBeginRow;
@@ -300,6 +312,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.isBig                = true;
         this.isCheck              = true;
         this.pageBreakMode        = "auto";
+        this.subtotalPosition     = $SubTotalPosition_Bottom;
         this.rowAccessWindowSize  = SXSSFWorkbook.DEFAULT_WINDOW_SIZE * 10;
         this.titlePageHeaderFirstWriteByRow           = 0;
         this.titlePageHeaderFirstWriteByRealDataCount = 0;
@@ -1779,6 +1792,31 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     public void setSubtotalEndRow(Integer subtotalEndRow)
     {
         this.subtotalEndRow = subtotalEndRow;
+    }
+    
+    
+    /**
+     * 获取：报表小计的输出位置（top：在明细数据之前输出小计；bottom）。默认是：bottom
+     */
+    public String getSubtotalPosition()
+    {
+        return subtotalPosition;
+    }
+
+    
+    /**
+     * 设置：报表小计的输出位置（top：在明细数据之前输出小计；bottom）。默认是：bottom
+     * 
+     * @param subtotalPosition 
+     */
+    public void setSubtotalPosition(String i_SubtotalPosition)
+    {
+        this.subtotalPosition = Help.NVL(i_SubtotalPosition ,$SubTotalPosition_Bottom);
+        
+        if ( !$SubTotalPosition_Top.equals(this.subtotalPosition) && !$SubTotalPosition_Bottom.equals(this.subtotalPosition) )
+        {
+            this.subtotalPosition = $SubTotalPosition_Bottom;
+        }
     }
 
 
