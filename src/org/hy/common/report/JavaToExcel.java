@@ -2506,7 +2506,7 @@ public class JavaToExcel
                         }
                     }
                     
-                    if ( StringHelp.isContains(v_ValueName ,true ,RTemplate.$Value_LimitBefore ,RTemplate.$Value_LimitEnd) )
+                    if ( StringHelp.isContains(v_ValueName ,true ,i_RTemplate.getValueSign() ,RTemplate.$Value_LimitBefore ,RTemplate.$Value_LimitEnd) )
                     {
                         copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell ,v_ValueName ,v_RValue.getValue().toString());
                     }
@@ -2637,9 +2637,12 @@ public class JavaToExcel
      */
     public final static void copyRichTextStyle(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,String i_Name ,String i_Value) 
     {
-        int    v_FontCount = i_TemplateRichText.numFormattingRuns();
-        String v_Text      = i_TemplateRichText.toString();
-        int    v_TextLen   = v_Text.length();
+       int    v_FontCount       = i_TemplateRichText.numFormattingRuns();
+        String v_Text            = i_TemplateRichText.toString();
+        int    v_TextLen         = v_Text.length();
+        int    v_TextStartIndex  = v_Text.indexOf(RTemplate.$Value_LimitBefore + i_RTemplate.getValueSign());
+        int    v_ValueLen        = i_Value.length();
+        int    v_DiffLen         = v_ValueLen - v_TextLen;
         
         if ( v_FontCount >= 1 )
         {
@@ -2648,7 +2651,7 @@ public class JavaToExcel
             if ( i_TemplateRichText instanceof HSSFRichTextString )
             {
                 HSSFRichTextString v_TemplateRichText = (HSSFRichTextString)i_TemplateRichText;
-                v_DataRichText = new HSSFRichTextString(v_Text);
+                v_DataRichText = new HSSFRichTextString(i_Value);
                 
                 for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
                 {
@@ -2658,7 +2661,12 @@ public class JavaToExcel
                     
                     if ( v_TextLen > 0 )
                     {
-                        v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                        if ( v_FirstIndex > v_TextStartIndex )
+                        {
+                            v_FirstIndex += v_DiffLen;
+                        }
+                        
+                        v_DataRichText.applyFont(v_FirstIndex, v_ValueLen, v_DataFont);
                     }
                 }
                 
@@ -2667,7 +2675,7 @@ public class JavaToExcel
             else if ( i_TemplateRichText instanceof XSSFRichTextString )
             {
                 XSSFRichTextString v_TemplateRichText = (XSSFRichTextString)i_TemplateRichText;
-                v_DataRichText = new XSSFRichTextString(v_Text);//i_DataCell.getRow().getSheet().getWorkbook().getCreationHelper().createRichTextString(v_Text);
+                v_DataRichText = new XSSFRichTextString(i_Value);//i_DataCell.getRow().getSheet().getWorkbook().getCreationHelper().createRichTextString(v_Text);
                 
                 for (int v_FontIndex=0; v_FontIndex<v_FontCount; v_FontIndex++) 
                 {
@@ -2682,7 +2690,12 @@ public class JavaToExcel
                         
                         if ( v_TextLen > 0 )
                         {
-                            v_DataRichText.applyFont(v_FirstIndex, v_TextLen, v_DataFont);
+                            if ( v_FirstIndex > v_TextStartIndex )
+                            {
+                                v_FirstIndex += v_DiffLen;
+                            }
+                            
+                            v_DataRichText.applyFont(v_FirstIndex, v_ValueLen, v_DataFont);
                         }
                     }
                 }
@@ -2692,7 +2705,7 @@ public class JavaToExcel
         }
         else
         {
-            i_DataCell.setCellValue(v_Text);
+            i_DataCell.setCellValue(i_Value);
         }
     }
     

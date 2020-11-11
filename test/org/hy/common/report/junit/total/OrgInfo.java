@@ -24,6 +24,8 @@ public class OrgInfo
     private String                 orgNo;
     
     private String                 orgName;
+    
+    private String                 reportTime;
 
     private List<StaffInfo>        staffs;
     
@@ -98,6 +100,18 @@ public class OrgInfo
     public void setStaffMap(Map<String ,StaffInfo> staffMap)
     {
         this.staffMap = staffMap;
+    }
+
+
+    public String getReportTime()
+    {
+        return reportTime;
+    }
+
+    
+    public void setReportTime(String reportTime)
+    {
+        this.reportTime = reportTime;
     }
 
 }

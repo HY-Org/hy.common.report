@@ -44,6 +44,7 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
@@ -1584,14 +1585,6 @@ public class ExcelHelp
             XSSFFont v_FromFont = (XSSFFont)i_FromFont;
             XSSFFont v_ToFont   = (XSSFFont)i_ToFont;
             
-            if ( v_FromFont.getXSSFColor() != null )
-            {
-                v_ToFont.setColor(         v_FromFont.getXSSFColor());
-            }
-            else
-            {
-                v_ToFont.setColor(         v_FromFont.getColor());
-            }
             v_ToFont.setBold(              v_FromFont.getBold());
             v_ToFont.setCharSet(           v_FromFont.getCharSet());
             v_ToFont.setFamily(            v_FromFont.getFamily());
@@ -1601,9 +1594,28 @@ public class ExcelHelp
             v_ToFont.setItalic(            v_FromFont.getItalic());
             v_ToFont.setScheme(            v_FromFont.getScheme());
             v_ToFont.setStrikeout(         v_FromFont.getStrikeout());
-            v_ToFont.setThemeColor(        v_FromFont.getThemeColor());
             v_ToFont.setTypeOffset(        v_FromFont.getTypeOffset());
             v_ToFont.setUnderline(         v_FromFont.getUnderline());
+            
+            /*
+             * 注意：不能设置ThemeColor，否则颜色会变成白色。Del 2020-11-11
+            v_ToFont.setThemeColor(        v_FromFont.getThemeColor());
+            */
+            
+            if ( v_FromFont.getXSSFColor() != null )
+            {
+                v_ToFont.setColor(new XSSFColor());
+                v_ToFont.getXSSFColor().setARGBHex(v_FromFont.getXSSFColor().getARGBHex());
+//                v_ToFont.getXSSFColor().setRGB(    v_FromFont.getXSSFColor().getARGB());
+//                v_ToFont.getXSSFColor().setAuto(   v_FromFont.getXSSFColor().isAuto());
+//                v_ToFont.getXSSFColor().setIndexed(v_FromFont.getXSSFColor().getIndexed());
+//                v_ToFont.getXSSFColor().setTheme(  v_FromFont.getXSSFColor().getTheme());
+//                v_ToFont.getXSSFColor().setTint(   v_FromFont.getXSSFColor().getTint());
+            }
+            else
+            {
+                v_ToFont.setColor(         v_FromFont.getColor());
+            }
         }
     }
     
@@ -1622,6 +1634,53 @@ public class ExcelHelp
      */
     public final static XSSFFont findFont(XSSFWorkbook i_Workbook ,XSSFFont i_Font)
     {
+        List<XSSFFont> v_FontList = i_Workbook.getStylesSource().getFonts();
+        
+        if ( !Help.isNull(v_FontList) )
+        {
+            for (XSSFFont v_TemplateFont : v_FontList)
+            {
+                if ( v_TemplateFont.getBold() == i_Font.getBold() )
+                {
+                    if ( v_TemplateFont.getColor() == i_Font.getColor() )
+                    {
+                        if ( v_TemplateFont.getXSSFColor() != null && i_Font.getXSSFColor() == null )
+                        {
+                            continue;
+                        }
+                        else if ( v_TemplateFont.getXSSFColor() == null && i_Font.getXSSFColor() != null )
+                        {
+                            continue;
+                        }
+                        
+                        if ( (v_TemplateFont.getXSSFColor() == null && i_Font.getXSSFColor() == null)
+                           || v_TemplateFont.getXSSFColor().getARGBHex().equals(i_Font.getXSSFColor().getARGBHex()) )
+                        {
+                            if ( v_TemplateFont.getFontHeight() == i_Font.getFontHeight() )
+                            {
+                                if ( v_TemplateFont.getFontName().equals(i_Font.getFontName()) )
+                                {
+                                    if ( v_TemplateFont.getItalic() == i_Font.getItalic() )
+                                    {
+                                        if ( v_TemplateFont.getStrikeout() == i_Font.getStrikeout() )
+                                        {
+                                            if ( v_TemplateFont.getTypeOffset() == i_Font.getTypeOffset() )
+                                            {
+                                                if ( v_TemplateFont.getUnderline() == i_Font.getUnderline() )
+                                                {
+                                                    return v_TemplateFont;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+            
         return i_Workbook.getStylesSource().findFont(i_Font.getBold() 
                                                     ,i_Font.getColor() 
                                                     ,i_Font.getFontHeight() 

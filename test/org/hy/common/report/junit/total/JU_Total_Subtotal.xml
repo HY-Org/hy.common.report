@@ -22,6 +22,7 @@
             <subtotalPosition>top</subtotalPosition>
             <totalBeginRow>5</totalBeginRow>
             <totalEndRow>6</totalEndRow>
+            <isBig>false</isBig>
             <dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
         </template>
         
