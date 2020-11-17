@@ -1602,7 +1602,7 @@ public class ExcelHelp
             v_ToFont.setThemeColor(        v_FromFont.getThemeColor());
             */
             
-            if ( v_FromFont.getXSSFColor() != null )
+            if ( v_FromFont.getXSSFColor() != null && v_FromFont.getXSSFColor().getARGBHex() != null )
             {
                 v_ToFont.setColor(new XSSFColor());
                 v_ToFont.getXSSFColor().setARGBHex(v_FromFont.getXSSFColor().getARGBHex());
@@ -1652,9 +1652,14 @@ public class ExcelHelp
                         {
                             continue;
                         }
+                        else if ( v_TemplateFont.getXSSFColor().getARGBHex() == null && i_Font.getXSSFColor().getARGBHex() != null )
+                        {
+                            continue;
+                        }
                         
-                        if ( (v_TemplateFont.getXSSFColor() == null && i_Font.getXSSFColor() == null)
-                           || v_TemplateFont.getXSSFColor().getARGBHex().equals(i_Font.getXSSFColor().getARGBHex()) )
+                        if ( (v_TemplateFont.getXSSFColor()              == null && i_Font.getXSSFColor()              == null)
+                          || (v_TemplateFont.getXSSFColor().getARGBHex() == null && i_Font.getXSSFColor().getARGBHex() == null)
+                          ||  v_TemplateFont.getXSSFColor().getARGBHex().equals(i_Font.getXSSFColor().getARGBHex()) )
                         {
                             if ( v_TemplateFont.getFontHeight() == i_Font.getFontHeight() )
                             {
