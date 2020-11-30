@@ -1644,7 +1644,11 @@ public class ExcelHelp
                 {
                     if ( v_TemplateFont.getColor() == i_Font.getColor() )
                     {
-                        if ( v_TemplateFont.getXSSFColor() != null && i_Font.getXSSFColor() == null )
+                        if ( v_TemplateFont.getXSSFColor() == null && i_Font.getXSSFColor() == null )
+                        {
+                            // Nothing.
+                        }
+                        else if ( v_TemplateFont.getXSSFColor() != null && i_Font.getXSSFColor() == null )
                         {
                             continue;
                         }
