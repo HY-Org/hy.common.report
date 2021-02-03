@@ -853,6 +853,7 @@ public class ExcelHelp
         }
         
         String []     v_RepalceSpace      = {""};
+        v_FromPrintArea = StringHelp.replaceAll(v_FromPrintArea ,new String[] {"'"}                        ,v_RepalceSpace);
         v_FromPrintArea = StringHelp.replaceAll(v_FromPrintArea ,new String[] {v_FromSheetName + "!" ,"$"} ,v_RepalceSpace);
         if ( !Help.isNull(v_ToPrintArea) )
         {
