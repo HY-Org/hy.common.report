@@ -1056,7 +1056,14 @@ public class ExcelHelp
         
         if ( i_IsSafe )
         {
-            i_Sheet.addMergedRegion(v_CellRA);
+            try
+            {
+                i_Sheet.addMergedRegion(v_CellRA);
+            }
+            catch (Exception exce)
+            {
+                // Nothing.
+            }
         }
         else
         {
@@ -1090,8 +1097,14 @@ public class ExcelHelp
                                                         ,i_LastRow 
                                                         ,i_FirstColumn
                                                         ,i_LastColumn);
-        
-        i_Sheet.addMergedRegion(v_CellRA);
+        try
+        {
+            i_Sheet.addMergedRegion(v_CellRA);
+        }
+        catch (Exception exce)
+        {
+            // Nothing.
+        }
     }
     
     

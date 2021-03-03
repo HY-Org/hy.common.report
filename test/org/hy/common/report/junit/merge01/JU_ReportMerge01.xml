@@ -22,6 +22,8 @@
             <!-- 定义报表数据在模板中位置 -->
             <dataBeginRow>10</dataBeginRow>
             
+            <isSafe>true</isSafe>
+            
             <!-- 定义报表数据对应的Java类型 -->
             <dataClass>org.hy.common.report.junit.merge01.Data</dataClass>
             

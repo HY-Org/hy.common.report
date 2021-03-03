@@ -52,6 +52,7 @@ import org.hy.common.xml.SerializableDef;
  *              v6.0  2020-05-11  添加：打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果。
  *                                      发现人：雷伟松
  *              v7.0  2020-11-10  添加：支持分项统计的小计在明细数据之前或之后的功能。建议人：尚仁强
+ *              v8.0  2021-03-03  修改：isSafe的默认值改为true ，即安全。
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -241,7 +242,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 单元格信息。Map.key为: "行号,列号" */
     private Map<String ,RCell>         cells;
     
-    /** 是要安全？还是要性能（默认为：性能） */
+    /** 是要安全？还是要性能（默认为：安全） */
     private boolean                    isSafe;
     
     /** 
@@ -308,7 +309,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.isIntegerShowDecimal = false;
         this.isExcelFilter        = false;
         this.cells                = new HashMap<String ,RCell>();
-        this.isSafe               = false;
+        this.isSafe               = true;
         this.isBig                = true;
         this.isCheck              = true;
         this.pageBreakMode        = "auto";
@@ -1966,7 +1967,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 
 
     /**
-     * 获取：是要安全？还是要性能（默认为：性能）
+     * 获取：是要安全？还是要性能（默认为：安全）
      */
     public boolean getIsSafe()
     {
@@ -1975,7 +1976,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 
 
     /**
-     * 设置：是要安全？还是要性能（默认为：性能）
+     * 设置：是要安全？还是要性能（默认为：安全）
      * 
      * @param isSafe 
      */
