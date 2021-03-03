@@ -242,7 +242,12 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 单元格信息。Map.key为: "行号,列号" */
     private Map<String ,RCell>         cells;
     
-    /** 是要安全？还是要性能（默认为：安全） */
+    /** 
+     * 是要安全？还是要性能（默认为：安全） 
+     * 
+     * 此参加会影响性能，如是否在找到有合并单元格时的异常操作。
+     * 因为查找两个合并单元格是否有重复区域是十分耗费性能。
+     */
     private boolean                    isSafe;
     
     /** 
