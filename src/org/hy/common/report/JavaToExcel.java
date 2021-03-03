@@ -75,6 +75,7 @@ import org.hy.common.report.event.ValueListener;
  *              v6.0  2020-05-11  添加：打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果。发现人：雷伟松
  *              v7.0  2020-05-21  添加：支持Excel公式的偏移计算及赋值
  *              v8.0  2020-11-10  添加：支持分项统计的小计在明细数据之前或之后的功能。建议人：尚仁强
+ *              v9.0  2021-03-03  修复：有小计分项数据时，未对第二行的数据有合并处理。发同人：程元丰
  */
 public class JavaToExcel
 {
@@ -1556,6 +1557,10 @@ public class JavaToExcel
                             
                             if ( v_Row == null )
                             {
+                                // ZhengWei(HY) Add 2021-03-03
+                                copyMergedRegionsData(i_RTemplate ,v_DataSheet ,io_RTotal);  // 按模板合并单元格
+                                copyImagesData(       i_RTemplate ,v_DataSheet ,io_RTotal);  // 按模板复制图片
+                                
                                 v_Row = v_DataSheet.createRow(v_RowNum + v_RowIndex);
                                 io_RTotal.addExcelRowIndex(1);
                             }
@@ -1597,6 +1602,9 @@ public class JavaToExcel
                         
                         if ( v_Row == null )
                         {
+                            copyMergedRegionsData(i_RTemplate ,v_DataSheet ,io_RTotal);  // 按模板合并单元格
+                            copyImagesData(       i_RTemplate ,v_DataSheet ,io_RTotal);  // 按模板复制图片
+                            
                             v_Row = v_DataSheet.createRow(v_RowNum + v_RowIndex);
                             io_RTotal.addExcelRowIndex(1);
                         }

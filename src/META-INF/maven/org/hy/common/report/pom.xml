@@ -4,7 +4,7 @@
 
   <groupId>org</groupId>
   <artifactId>hy.common.report</artifactId>
-  <version>3.2.10</version>
+  <version>3.2.11</version>
   <packaging>jar</packaging>
 
   <name>hy.common.report</name>
@@ -30,68 +30,68 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-	
-	<!-- https://github.com/HY-ZhengWei/hy.common.zxing -->
-	<dependency>
-	    <groupId>org</groupId>
-	    <artifactId>hy.common.zxing</artifactId>
-	    <version>3.3.2</version>
-	</dependency>
-	
-	<!-- https://github.com/HY-ZhengWei/XJava -->
-	<dependency>
-	    <groupId>org</groupId>
-	    <artifactId>hy.common.xjava</artifactId>
-	    <version>4.1.1</version>
-	</dependency>
-	
-	<dependency>
-	    <groupId>org.apache.poi</groupId>
-	    <artifactId>poi</artifactId>
-	    <version>3.17</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>org.apache.poi</groupId>
-		<artifactId>poi-ooxml</artifactId>
-		<version>3.17</version>
+    
+    <!-- https://github.com/HY-ZhengWei/hy.common.zxing -->
+    <dependency>
+        <groupId>org</groupId>
+        <artifactId>hy.common.zxing</artifactId>
+        <version>3.3.2</version>
+    </dependency>
+    
+    <!-- https://github.com/HY-ZhengWei/XJava -->
+    <dependency>
+        <groupId>org</groupId>
+        <artifactId>hy.common.xjava</artifactId>
+        <version>4.1.1</version>
     </dependency>
     
     <dependency>
-	    <groupId>org.apache.poi</groupId>
-	    <artifactId>poi-scratchpad</artifactId>
-	    <version>3.17</version>
-	</dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>3.17</version>
+    </dependency>
     
     <dependency>
-	    <groupId>org.apache.xmlbeans</groupId>
-	    <artifactId>xmlbeans</artifactId>
-	    <version>2.6.0</version>
-	</dependency>
-	
-	<dependency>
-	    <groupId>com.github.virtuald</groupId>
-	    <artifactId>curvesapi</artifactId>
-	    <version>1.04</version>
-	</dependency>
-	
-	<dependency>
-	    <groupId>commons-codec</groupId>
-	    <artifactId>commons-codec</artifactId>
-	    <version>1.11</version>
-	</dependency>
-	
-	<dependency>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-collections4</artifactId>
-	    <version>4.1</version>
-	</dependency>
-	
-	<dependency>
-	    <groupId>commons-logging</groupId>
-	    <artifactId>commons-logging</artifactId>
-	    <version>1.2</version>
-	</dependency>
-	
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>3.17</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-scratchpad</artifactId>
+        <version>3.17</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.xmlbeans</groupId>
+        <artifactId>xmlbeans</artifactId>
+        <version>2.6.0</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>com.github.virtuald</groupId>
+        <artifactId>curvesapi</artifactId>
+        <version>1.04</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.11</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>4.1</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.2</version>
+    </dependency>
+    
   </dependencies>
 </project>

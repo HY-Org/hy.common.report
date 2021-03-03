@@ -63,6 +63,7 @@ import org.hy.common.TablePartition;
 import org.hy.common.report.bean.CacheSheetInfo;
 import org.hy.common.report.bean.ImageAreaInfo;
 import org.hy.common.report.bean.RCell;
+import org.hy.common.report.bean.RTotal;
 import org.hy.common.report.bean.RWorkbook;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProperties;
@@ -1020,6 +1021,29 @@ public class ExcelHelp
      */
     public final static void addMergedRegions(Sheet i_Sheet ,int i_FirstRow ,int i_LastRow ,int i_FirstColumn ,int i_LastColumn ,boolean i_IsSafe)
     {
+        addMergedRegions(i_Sheet ,i_FirstRow ,i_LastRow ,i_FirstColumn ,i_LastColumn ,i_IsSafe ,null);
+    }
+    
+    
+    
+    /**
+     * 合并单元格
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2017-06-21
+     * @version     v1.0
+     *              v2.0  2021-03-03  添加：io_RTotal参加，用于记录并防止重复合并单元格
+     *
+     * @param i_Sheet        工作表
+     * @param i_FirstRow     首行
+     * @param i_LastRow      尾行
+     * @param i_FirstColumn  首列
+     * @param i_LastColumn   尾列
+     * @param i_IsSafe       是要安全？还是要性能
+     * @param io_RTotal      记录并防止重复合并单元格
+     */
+    public final static void addMergedRegions(Sheet i_Sheet ,int i_FirstRow ,int i_LastRow ,int i_FirstColumn ,int i_LastColumn ,boolean i_IsSafe ,RTotal io_RTotal)
+    {
         if ( i_FirstRow == i_LastRow && i_FirstColumn == i_LastColumn )
         {
             return;
@@ -1054,7 +1078,6 @@ public class ExcelHelp
      * @param i_LastRow      尾行
      * @param i_FirstColumn  首列
      * @param i_LastColumn   尾列
-     * @param i_IsSafe       是要安全？还是要性能
      */
     public final static void addMergedRegionsSafe(Sheet i_Sheet ,int i_FirstRow ,int i_LastRow ,int i_FirstColumn ,int i_LastColumn)
     {
@@ -1085,7 +1108,6 @@ public class ExcelHelp
      * @param i_LastRow      尾行
      * @param i_FirstColumn  首列
      * @param i_LastColumn   尾列
-     * @param i_IsSafe       是要安全？还是要性能
      */
     public final static void addMergedRegionsUnsafe(Sheet i_Sheet ,int i_FirstRow ,int i_LastRow ,int i_FirstColumn ,int i_LastColumn)
     {

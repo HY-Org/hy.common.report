@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportMerge01">
+            <name>合并的报表演示</name>
+            
+            <!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
+            <excelFileName>classpath:JU_ReportMerge01.xlsx</excelFileName>
+            
+            <!-- 定义报表标题在模板中位置 -->
+            <titleBeginRow>9</titleBeginRow>
+            
+            <!-- 定义报表数据在模板中位置 -->
+            <dataBeginRow>10</dataBeginRow>
+            
+            <!-- 定义报表数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.merge01.Data</dataClass>
+            
+        </template>
+        
+    </xconfig>
+    
+</config>
