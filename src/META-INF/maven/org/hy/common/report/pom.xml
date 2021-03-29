@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>hy.common.report</name>
-  <url>https://github.com/HY-ZhengWei/hy.common.report</url>
+  <url>https://github.com/HY-ZhengWei/hy.common.report</url>   <!-- https://gitee.com/HY-ZhengWei/hy.common.report -->
   
   <developers>
     <developer>
@@ -32,6 +32,7 @@
     </dependency>
     
     <!-- https://github.com/HY-ZhengWei/hy.common.zxing -->
+    <!-- https://gitee.com/HY-ZhengWei/hy.common.zxing -->
     <dependency>
         <groupId>org</groupId>
         <artifactId>hy.common.zxing</artifactId>
@@ -39,6 +40,7 @@
     </dependency>
     
     <!-- https://github.com/HY-ZhengWei/XJava -->
+    <!-- https://gitee.com/HY-ZhengWei/XJava -->
     <dependency>
         <groupId>org</groupId>
         <artifactId>hy.common.xjava</artifactId>
