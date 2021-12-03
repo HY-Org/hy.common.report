@@ -20,7 +20,7 @@
 	<classpathentry kind="lib" path="lib/poi-ooxml-3.17.jar" sourcepath="C:/Users/ZhengWei/.m2/org/apache/poi/poi-ooxml/3.17/poi-ooxml-3.17-sources.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.17.jar"/>
 	<classpathentry kind="lib" path="lib/poi-scratchpad-3.17.jar" sourcepath="C:/Users/ZhengWei/.m2/org/apache/poi/poi-scratchpad/3.17/poi-scratchpad-3.17-sources.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.xjava"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.xjava"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

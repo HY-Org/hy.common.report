@@ -2,5 +2,5 @@ Manifest-Version: 3.2.11
 Created-By: HY.ZhengWei@qq.com  2017
 Specification-Version: 3.2.11.S51  2021-03-29
 SourceCode: https://github.com/HY-ZhengWei/hy.common.report
-SourceCode: https://gitee.com/HY-ZhengWei/hy.common.report
+SourceCodeChina: https://gitee.com/HY-ZhengWei/hy.common.report
 Build-JDK: 1.8
