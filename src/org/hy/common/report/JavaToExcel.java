@@ -173,7 +173,7 @@ public class JavaToExcel
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
@@ -194,7 +194,7 @@ public class JavaToExcel
      * @param i_RTemplate  模板信息对象
      * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
     {
@@ -216,7 +216,7 @@ public class JavaToExcel
      * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
      * @param i_AddBlankRow   在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend ,int i_AddBlankRow) throws RTemplateException
     {
@@ -235,7 +235,7 @@ public class JavaToExcel
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
@@ -255,7 +255,7 @@ public class JavaToExcel
      * @param i_RTemplate  模板信息对象
      * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
     {
@@ -276,7 +276,7 @@ public class JavaToExcel
      * @param i_IsAppend      是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
      * @param i_AddBlankRow   在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend ,int i_AddBlankRow) throws RTemplateException
     {
@@ -297,7 +297,7 @@ public class JavaToExcel
      * @param i_Datas      数据对象
      * @param i_RTemplate  模板信息对象
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate) throws RTemplateException
     {
@@ -319,7 +319,7 @@ public class JavaToExcel
      * @param i_RTemplate  模板信息对象
      * @param i_IsAppend   是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend) throws RTemplateException
     {
@@ -342,7 +342,7 @@ public class JavaToExcel
      * @param i_IsAppend      是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
      * @param i_AddBlankRow   在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(RWorkbook i_Workbook ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend ,int i_AddBlankRow) throws RTemplateException
     {
@@ -365,7 +365,7 @@ public class JavaToExcel
      * @param i_IsAppend      是否为追加模式。当为追加模式为true时，向已有的工作表中写数据。未创建任何工作表时，会自动创建。
      * @param i_AddBlankRow   在报表标题前生成几行空行，起到分隔作用，一般用于追加模式。
      * @return
-     * @throws RTemplateException 
+     * @throws RTemplateException
      */
     public final static RWorkbook write(RWorkbook i_Workbook ,String i_SheetName ,List<?> i_Datas ,RTemplate i_RTemplate ,boolean i_IsAppend ,int i_AddBlankRow) throws RTemplateException
     {
@@ -534,7 +534,7 @@ public class JavaToExcel
             else
             {
                 // 为了减少IF语句的执行次数，分开写成多种情况下的IF大分支
-                if ( v_RTotal.getTitlePageHeaderCount() >= 1 
+                if ( v_RTotal.getTitlePageHeaderCount() >= 1
                   && v_RTotal.getTitlePageFooterCount() >= 1  )
                 {
                     for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
@@ -594,7 +594,7 @@ public class JavaToExcel
         if ( i_RTemplate.getIsExcelFilter() && !Help.isNull(i_Datas) )
         {
             String v_Range = "A" + (i_RTemplate.getDataBeginRow())
-                           + ":" 
+                           + ":"
                            + StringHelp.toABC26(v_DataSheet.getRow(0).getLastCellNum() - 1)
                            + v_DataSheet.getLastRowNum();
             v_DataSheet.setAutoFilter(CellRangeAddress.valueOf(v_Range));
@@ -623,7 +623,7 @@ public class JavaToExcel
      * @param i_Datas         数据
      * @param i_RTemplate     报表模板对象
      */
-    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitle(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountTitle();
@@ -664,7 +664,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeTitlePageHeader(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitlePageHeader(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = io_RTotal.getTitlePageHeaderCount();
@@ -707,7 +707,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeTitlePageFooter(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTitlePageFooter(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = io_RTotal.getTitlePageFooterCount();
@@ -748,7 +748,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeDataByBlankSpace(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, RTemplate i_RTemplate) 
+    public final static void writeDataByBlankSpace(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
@@ -757,7 +757,7 @@ public class JavaToExcel
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
-        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
@@ -789,7 +789,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeData(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
@@ -798,7 +798,7 @@ public class JavaToExcel
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
-        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
@@ -831,7 +831,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeDataPage(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeDataPage(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
@@ -848,7 +848,7 @@ public class JavaToExcel
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
-        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
@@ -889,7 +889,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeDataPageHeader(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeDataPageHeader(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
@@ -906,7 +906,7 @@ public class JavaToExcel
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
-        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
@@ -939,7 +939,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeDataPageFooter(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeDataPageFooter(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet    = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
@@ -948,7 +948,7 @@ public class JavaToExcel
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
-        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++) 
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
@@ -971,7 +971,7 @@ public class JavaToExcel
             writeTitlePageFooter(i_DataWorkbook ,i_DataSheet ,io_RTotal ,io_RSystemValue ,i_Datas ,i_RTemplate);
             v_ExcelRowIndex += io_RTotal.getTitlePageFooterCount();
         }
-    }    
+    }
     
     
     
@@ -989,7 +989,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeSubtotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet            = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountSubtotal = i_RTemplate.getRowCountSubtotal();
@@ -998,7 +998,7 @@ public class JavaToExcel
         copyMergedRegionsSubtotal(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesSubtotal(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
-        for (int v_RowNo=0; v_RowNo<v_TemplateRowCountSubtotal; v_RowNo++) 
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCountSubtotal; v_RowNo++)
         {
             int v_TemplateRowNo = i_RTemplate.getSubtotalBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
@@ -1031,7 +1031,7 @@ public class JavaToExcel
      * @param i_Datas          数据
      * @param i_RTemplate      报表模板对象
      */
-    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate) 
+    public final static void writeTotal(RWorkbook i_DataWorkbook ,Sheet i_DataSheet ,RTotal io_RTotal ,RSystemValue io_RSystemValue, Object i_Datas ,RTemplate i_RTemplate)
     {
         Sheet v_TemplateSheet         = i_RTemplate.getTemplateSheet();
         int   v_TemplateRowCountTotal = i_RTemplate.getRowCountTotal();
@@ -1040,7 +1040,7 @@ public class JavaToExcel
         copyMergedRegionsTotal(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
         copyImagesTotal(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
-        for (int v_RowNo=0; v_RowNo<v_TemplateRowCountTotal; v_RowNo++) 
+        for (int v_RowNo=0; v_RowNo<v_TemplateRowCountTotal; v_RowNo++)
         {
             int v_TemplateRowNo = i_RTemplate.getTotalBeginRow() + v_RowNo;
             Row v_TemplateRow   = v_TemplateSheet.getRow(v_TemplateRowNo);
@@ -1325,12 +1325,12 @@ public class JavaToExcel
         if ( i_DataCell instanceof HSSFCell )
         {
             HSSFPatriarch v_Patriarch = (HSSFPatriarch) i_DataCell.getSheet().createDrawingPatriarch();
-            v_DataComment = v_Patriarch.createCellComment(new HSSFClientAnchor(v_TemplateAnchor.getDx1() 
+            v_DataComment = v_Patriarch.createCellComment(new HSSFClientAnchor(v_TemplateAnchor.getDx1()
                                                                               ,v_TemplateAnchor.getDy1()
-                                                                              ,v_TemplateAnchor.getDx2() 
-                                                                              ,v_TemplateAnchor.getDy2() 
+                                                                              ,v_TemplateAnchor.getDx2()
+                                                                              ,v_TemplateAnchor.getDy2()
                                                                               ,v_TemplateAnchor.getCol1()
-                                                                              ,i_DataCell.getRowIndex() 
+                                                                              ,i_DataCell.getRowIndex()
                                                                               ,v_TemplateAnchor.getCol2()
                                                                               ,i_DataCell.getRowIndex() + v_TemplateAnchor.getRow2() - v_TemplateAnchor.getRow1()));
         }
@@ -1349,10 +1349,10 @@ public class JavaToExcel
         else if ( i_DataCell instanceof XSSFCell )
         {
             XSSFDrawing v_Patriarch = (XSSFDrawing) i_DataCell.getSheet().createDrawingPatriarch();
-            v_DataComment = v_Patriarch.createCellComment(new XSSFClientAnchor(v_TemplateAnchor.getDx1() 
+            v_DataComment = v_Patriarch.createCellComment(new XSSFClientAnchor(v_TemplateAnchor.getDx1()
                                                                               ,v_TemplateAnchor.getDy1()
-                                                                              ,v_TemplateAnchor.getDx2() 
-                                                                              ,v_TemplateAnchor.getDy2() 
+                                                                              ,v_TemplateAnchor.getDx2()
+                                                                              ,v_TemplateAnchor.getDy2()
                                                                               ,v_TemplateAnchor.getCol1()
                                                                               ,i_DataCell.getRowIndex()
                                                                               ,v_TemplateAnchor.getCol2()
@@ -1386,10 +1386,10 @@ public class JavaToExcel
      * @param i_TemplateSheet  源工作表
      * @param i_DataSheet      目标工作表
      */
-    public final static void copyColumnsStyle(RTemplate i_RTemplate ,Sheet i_TemplateSheet ,RWorkbook i_DataWorkbook ,Sheet i_DataSheet) 
+    public final static void copyColumnsStyle(RTemplate i_RTemplate ,Sheet i_TemplateSheet ,RWorkbook i_DataWorkbook ,Sheet i_DataSheet)
     {
         Row v_Row = i_TemplateSheet.getRow(0);
-        if ( null == v_Row ) 
+        if ( null == v_Row )
         {
             return;
         }
@@ -1400,7 +1400,7 @@ public class JavaToExcel
         {
             HSSFSheet v_DataSheet = (HSSFSheet)i_DataSheet;
             
-            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++)
             {
                 CellStyle v_ColumnStyle = i_TemplateSheet.getColumnStyle(v_ColumnIndex);
                 if ( v_ColumnStyle != null )
@@ -1413,7 +1413,7 @@ public class JavaToExcel
         {
             SXSSFSheet v_DataSheet = (SXSSFSheet)i_DataSheet;
             
-            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++)
             {
                 CellStyle v_ColumnStyle = i_TemplateSheet.getColumnStyle(v_ColumnIndex);
                 if ( v_ColumnStyle != null )
@@ -1426,7 +1426,7 @@ public class JavaToExcel
         {
             XSSFSheet v_DataSheet = (XSSFSheet)i_DataSheet;
             
-            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++)
             {
                 CellStyle v_ColumnStyle = i_TemplateSheet.getColumnStyle(v_ColumnIndex);
                 if ( v_ColumnStyle != null )
@@ -1456,13 +1456,13 @@ public class JavaToExcel
      * 
      * @return                 返回本方法内一共生成多少新行。
      */
-    public final static int copyRowByBlankSpace(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow) 
+    public final static int copyRowByBlankSpace(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow)
     {
         ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
         int v_CellCount = i_TemplateRow.getLastCellNum();
         
-        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
+        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++)
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
             if ( v_TemplateCell == null )
@@ -1471,7 +1471,7 @@ public class JavaToExcel
             }
             
             Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
-            if ( v_DataCell == null ) 
+            if ( v_DataCell == null )
             {
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
@@ -1501,7 +1501,7 @@ public class JavaToExcel
      * 
      * @return                 返回本方法内一共生成多少新行。
      */
-    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
+    public final static int copyRow(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas)
     {
         ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
@@ -1511,7 +1511,7 @@ public class JavaToExcel
         boolean v_IsFor     = false;
         Sheet   v_DataSheet = i_DataRow.getSheet();
         
-        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
+        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++)
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
             if ( v_TemplateCell == null )
@@ -1520,7 +1520,7 @@ public class JavaToExcel
             }
             
             Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
-            if ( v_DataCell == null ) 
+            if ( v_DataCell == null )
             {
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
@@ -1576,7 +1576,7 @@ public class JavaToExcel
                                 Row  v_DataForRow  = v_DataSheet.getRow(v_RowNum + v_RowIndex);
                                 Cell v_DataForCell = v_DataForRow.getCell(v_MergedColIndex);
                                 
-                                if ( v_DataForCell == null ) 
+                                if ( v_DataForCell == null )
                                 {
                                     v_DataForCell = v_DataForRow.createCell(v_MergedColIndex);
                                 }
@@ -1585,10 +1585,10 @@ public class JavaToExcel
                             }
                             
                             ExcelHelp.addMergedRegions(v_DataSheet
-                                                      ,v_RowNum 
-                                                      ,v_RowNum + v_ForSize - 1 
-                                                      ,v_MergedColIndex 
-                                                      ,v_MergedColIndex 
+                                                      ,v_RowNum
+                                                      ,v_RowNum + v_ForSize - 1
+                                                      ,v_MergedColIndex
+                                                      ,v_MergedColIndex
                                                       ,i_RTemplate.getIsSafe());
                         }
                     }
@@ -1620,7 +1620,7 @@ public class JavaToExcel
                             Row  v_DataForRow  = v_DataSheet.getRow(v_RowNum + v_RowIndex);
                             Cell v_DataForCell = v_DataForRow.getCell(v_MergedColIndex);
                             
-                            if ( v_DataForCell == null ) 
+                            if ( v_DataForCell == null )
                             {
                                 v_DataForCell = v_DataForRow.createCell(v_MergedColIndex);
                             }
@@ -1629,10 +1629,10 @@ public class JavaToExcel
                         }
                         
                         ExcelHelp.addMergedRegions(v_DataSheet
-                                                  ,v_RowNum 
-                                                  ,v_RowNum + v_ForSize - 1 
-                                                  ,v_MergedColIndex 
-                                                  ,v_MergedColIndex 
+                                                  ,v_RowNum
+                                                  ,v_RowNum + v_ForSize - 1
+                                                  ,v_MergedColIndex
+                                                  ,v_MergedColIndex
                                                   ,i_RTemplate.getIsSafe());
                     }
                 }
@@ -1643,7 +1643,7 @@ public class JavaToExcel
                     Row  v_DataForRow  = v_DataSheet.getRow(v_RowNum + v_RowIndex);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
-                    if ( v_DataForCell == null ) 
+                    if ( v_DataForCell == null )
                     {
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
@@ -1659,7 +1659,7 @@ public class JavaToExcel
                     Row  v_DataForRow  = v_DataSheet.getRow(v_RowNum + v_RowIndex);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
-                    if ( v_DataForCell == null ) 
+                    if ( v_DataForCell == null )
                     {
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
@@ -1700,7 +1700,7 @@ public class JavaToExcel
      * 
      * @return                 返回本方法内一共生成多少新行。
      */
-    public final static int copyRowPage(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
+    public final static int copyRowPage(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas)
     {
         ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
@@ -1710,7 +1710,7 @@ public class JavaToExcel
         boolean v_IsFor     = false;
         int     v_PageCount = 0;
         
-        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
+        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++)
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
             if ( v_TemplateCell == null )
@@ -1719,7 +1719,7 @@ public class JavaToExcel
             }
             
             Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
-            if ( v_DataCell == null ) 
+            if ( v_DataCell == null )
             {
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
@@ -1786,7 +1786,7 @@ public class JavaToExcel
                             Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                             Cell v_DataForCell = v_DataForRow.getCell(v_MergedColIndex);
                             
-                            if ( v_DataForCell == null ) 
+                            if ( v_DataForCell == null )
                             {
                                 v_DataForCell = v_DataForRow.createCell(v_MergedColIndex);
                             }
@@ -1812,11 +1812,11 @@ public class JavaToExcel
                         {
                             if ( v_RP.getBeginNo() < v_RP.getEndNo() )
                             {
-                                ExcelHelp.addMergedRegions(i_DataRow.getSheet() 
-                                                          ,v_RP.getBeginNo() 
+                                ExcelHelp.addMergedRegions(i_DataRow.getSheet()
+                                                          ,v_RP.getBeginNo()
                                                           ,v_RP.getEndNo()
-                                                          ,v_MergedColIndex 
-                                                          ,v_MergedColIndex 
+                                                          ,v_MergedColIndex
+                                                          ,v_MergedColIndex
                                                           ,i_RTemplate.getIsSafe());
                             }
                         }
@@ -1837,7 +1837,7 @@ public class JavaToExcel
                     Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
-                    if ( v_DataForCell == null ) 
+                    if ( v_DataForCell == null )
                     {
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
@@ -1875,7 +1875,7 @@ public class JavaToExcel
                     Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
-                    if ( v_DataForCell == null ) 
+                    if ( v_DataForCell == null )
                     {
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
@@ -1936,7 +1936,7 @@ public class JavaToExcel
      * 
      * @return                 返回本方法内一共生成多少新行。
      */
-    public final static int copyRowPageHeader(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
+    public final static int copyRowPageHeader(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas)
     {
         ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
@@ -1946,7 +1946,7 @@ public class JavaToExcel
         boolean v_IsFor     = false;
         int     v_PageCount = 0;
         
-        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
+        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++)
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
             if ( v_TemplateCell == null )
@@ -1955,7 +1955,7 @@ public class JavaToExcel
             }
             
             Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
-            if ( v_DataCell == null ) 
+            if ( v_DataCell == null )
             {
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
@@ -2014,7 +2014,7 @@ public class JavaToExcel
                             Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                             Cell v_DataForCell = v_DataForRow.getCell(v_MergedColIndex);
                             
-                            if ( v_DataForCell == null ) 
+                            if ( v_DataForCell == null )
                             {
                                 v_DataForCell = v_DataForRow.createCell(v_MergedColIndex);
                             }
@@ -2029,11 +2029,11 @@ public class JavaToExcel
                         {
                             if ( v_RP.getBeginNo() < v_RP.getEndNo() )
                             {
-                                ExcelHelp.addMergedRegions(i_DataRow.getSheet() 
-                                                          ,v_RP.getBeginNo() 
+                                ExcelHelp.addMergedRegions(i_DataRow.getSheet()
+                                                          ,v_RP.getBeginNo()
                                                           ,v_RP.getEndNo()
-                                                          ,v_MergedColIndex 
-                                                          ,v_MergedColIndex 
+                                                          ,v_MergedColIndex
+                                                          ,v_MergedColIndex
                                                           ,i_RTemplate.getIsSafe());
                             }
                         }
@@ -2054,7 +2054,7 @@ public class JavaToExcel
                     Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
-                    if ( v_DataForCell == null ) 
+                    if ( v_DataForCell == null )
                     {
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
@@ -2085,7 +2085,7 @@ public class JavaToExcel
                     Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
-                    if ( v_DataForCell == null ) 
+                    if ( v_DataForCell == null )
                     {
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
@@ -2135,7 +2135,7 @@ public class JavaToExcel
      * 
      * @return                 返回本方法内一共生成多少新行。
      */
-    public final static int copyRowPageFooter(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas) 
+    public final static int copyRowPageFooter(RTemplate i_RTemplate ,Row i_TemplateRow ,RWorkbook i_DataWorkbook ,RTotal io_RTotal ,RSystemValue io_RSystemValue ,Row i_DataRow ,Object i_Datas)
     {
         ExcelHelp.copyRowHeight(i_TemplateRow ,i_DataRow);
         
@@ -2145,7 +2145,7 @@ public class JavaToExcel
         boolean v_IsFor     = false;
         int     v_PageCount = 0;
         
-        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++) 
+        for (int v_CellIndex=0; v_CellIndex<v_CellCount; v_CellIndex++)
         {
             Cell v_TemplateCell = i_TemplateRow.getCell(v_CellIndex);
             if ( v_TemplateCell == null )
@@ -2154,7 +2154,7 @@ public class JavaToExcel
             }
             
             Cell v_DataCell = i_DataRow.getCell(v_CellIndex);
-            if ( v_DataCell == null ) 
+            if ( v_DataCell == null )
             {
                 v_DataCell = i_DataRow.createCell(v_CellIndex);
             }
@@ -2202,7 +2202,7 @@ public class JavaToExcel
                             Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                             Cell v_DataForCell = v_DataForRow.getCell(v_MergedColIndex);
                             
-                            if ( v_DataForCell == null ) 
+                            if ( v_DataForCell == null )
                             {
                                 v_DataForCell = v_DataForRow.createCell(v_MergedColIndex);
                             }
@@ -2228,11 +2228,11 @@ public class JavaToExcel
                         {
                             if ( v_RP.getBeginNo() < v_RP.getEndNo() )
                             {
-                                ExcelHelp.addMergedRegions(i_DataRow.getSheet() 
-                                                          ,v_RP.getBeginNo() 
+                                ExcelHelp.addMergedRegions(i_DataRow.getSheet()
+                                                          ,v_RP.getBeginNo()
                                                           ,v_RP.getEndNo()
-                                                          ,v_MergedColIndex 
-                                                          ,v_MergedColIndex 
+                                                          ,v_MergedColIndex
+                                                          ,v_MergedColIndex
                                                           ,i_RTemplate.getIsSafe());
                             }
                         }
@@ -2246,7 +2246,7 @@ public class JavaToExcel
                     Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
-                    if ( v_DataForCell == null ) 
+                    if ( v_DataForCell == null )
                     {
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
@@ -2273,7 +2273,7 @@ public class JavaToExcel
                     Row  v_DataForRow  = i_DataRow.getSheet().getRow(v_RowNum + v_RowIndex + v_PageCount);
                     Cell v_DataForCell = v_DataForRow.getCell(v_CellIndex);
                     
-                    if ( v_DataForCell == null ) 
+                    if ( v_DataForCell == null )
                     {
                         v_DataForCell = v_DataForRow.createCell(v_CellIndex);
                     }
@@ -2331,7 +2331,7 @@ public class JavaToExcel
      * @param io_RSystemValue 系统变量信息
      * @param i_Datas          本行对应的数据
      * @param io_RValue        小计循环的迭代器
-     * @return                 
+     * @return
      */
     public final static void copyCellByBlankSpace(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,RSystemValue io_RSystemValue)
     {
@@ -2341,24 +2341,27 @@ public class JavaToExcel
         // 复制评论
         copyComment(i_RTemplate ,i_TemplateCell ,i_DataWorkbook ,i_DataCell);
         
+        // 复制超链接
+        ExcelHelp.copyHyperlinks(i_TemplateCell ,i_DataCell);
+        
         // 复制数据类型
         CellType v_CellType = i_TemplateCell.getCellTypeEnum();
         // i_DataCell.setCellType(v_CellType);  不能在此统一设置，原因是：下面代码对类型是有浮动的
         
-        if ( v_CellType == CellType.NUMERIC ) 
+        if ( v_CellType == CellType.NUMERIC )
         {
             i_DataCell.setCellType(v_CellType);
             
-            if ( HSSFDateUtil.isCellDateFormatted(i_TemplateCell) ) 
+            if ( HSSFDateUtil.isCellDateFormatted(i_TemplateCell) )
             {
                 i_DataCell.setCellValue(i_TemplateCell.getDateCellValue());
-            } 
-            else 
+            }
+            else
             {
                 i_DataCell.setCellValue(i_TemplateCell.getNumericCellValue());
             }
         }
-        else if ( v_CellType == CellType.STRING ) 
+        else if ( v_CellType == CellType.STRING )
         {
             RichTextString v_TemplateRichText = i_TemplateCell.getRichStringCellValue();
             String         v_ValueName        = v_TemplateRichText.toString();
@@ -2368,23 +2371,23 @@ public class JavaToExcel
                 i_DataCell.setCellType(v_CellType);
                 i_DataCell.setCellValue("");
             }
-            else 
+            else
             {
                 i_DataCell.setCellType(v_CellType);
                 copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell);
             }
-        } 
-        else if ( v_CellType == CellType.BOOLEAN ) 
+        }
+        else if ( v_CellType == CellType.BOOLEAN )
         {
             i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellValue(i_TemplateCell.getBooleanCellValue());
-        } 
-        else if ( v_CellType == CellType.FORMULA) 
+        }
+        else if ( v_CellType == CellType.FORMULA)
         {
             i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellFormula(ExcelFormula.calcFormulaOffset(i_TemplateCell ,i_DataCell));
-        } 
-        else 
+        }
+        else
         {
             // Nothing.
             i_DataCell.setCellType(v_CellType);
@@ -2407,7 +2410,7 @@ public class JavaToExcel
      * @param io_RSystemValue 系统变量信息
      * @param i_Datas          本行对应的数据
      * @param io_RValue        小计循环的迭代器
-     * @return                 
+     * @return
      */
     public final static RValue copyCell(RTemplate i_RTemplate ,Cell i_TemplateCell ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,RSystemValue io_RSystemValue ,Object i_Datas ,RValue io_RValue)
     {
@@ -2417,25 +2420,28 @@ public class JavaToExcel
         // 复制评论
         copyComment(i_RTemplate ,i_TemplateCell ,i_DataWorkbook ,i_DataCell);
         
+        // 复制超链接
+        ExcelHelp.copyHyperlinks(i_TemplateCell ,i_DataCell);
+        
         // 复制数据类型
         CellType v_CellType = i_TemplateCell.getCellTypeEnum();
         
         // i_DataCell.setCellType(v_CellType);  不能在此统一设置，原因是：下面代码对类型是有浮动的
         
-        if ( v_CellType == CellType.NUMERIC ) 
+        if ( v_CellType == CellType.NUMERIC )
         {
             i_DataCell.setCellType(v_CellType);
             
-            if ( HSSFDateUtil.isCellDateFormatted(i_TemplateCell) ) 
+            if ( HSSFDateUtil.isCellDateFormatted(i_TemplateCell) )
             {
                 i_DataCell.setCellValue(i_TemplateCell.getDateCellValue());
-            } 
-            else 
+            }
+            else
             {
                 i_DataCell.setCellValue(i_TemplateCell.getNumericCellValue());
             }
         }
-        else if ( v_CellType == CellType.STRING ) 
+        else if ( v_CellType == CellType.STRING )
         {
             RichTextString v_TemplateRichText = i_TemplateCell.getRichStringCellValue();
             String         v_ValueName        = v_TemplateRichText.toString();
@@ -2527,23 +2533,23 @@ public class JavaToExcel
                 
                 return v_RValue;
             }
-            else 
+            else
             {
                 i_DataCell.setCellType(v_CellType);
                 copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell);
             }
-        } 
-        else if ( v_CellType == CellType.BOOLEAN ) 
+        }
+        else if ( v_CellType == CellType.BOOLEAN )
         {
             i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellValue(i_TemplateCell.getBooleanCellValue());
-        } 
-        else if ( v_CellType == CellType.FORMULA) 
+        }
+        else if ( v_CellType == CellType.FORMULA)
         {
             i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellFormula(ExcelFormula.calcFormulaOffset(i_TemplateCell ,i_DataCell));
-        } 
-        else 
+        }
+        else
         {
             // Nothing.
             i_DataCell.setCellType(v_CellType);
@@ -2566,7 +2572,7 @@ public class JavaToExcel
      * @param i_DataWorkbook      数据工作薄
      * @param i_DataCell          数据单元格
      */
-    public final static void copyRichTextStyle(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell) 
+    public final static void copyRichTextStyle(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell)
     {
         int    v_FontCount = i_TemplateRichText.numFormattingRuns();
         String v_Text      = i_TemplateRichText.toString();
@@ -2581,7 +2587,7 @@ public class JavaToExcel
                 HSSFRichTextString v_TemplateRichText = (HSSFRichTextString)i_TemplateRichText;
                 v_DataRichText = new HSSFRichTextString(v_Text);
                 
-                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--)
                 {
                     int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
                     short v_IDX        = v_TemplateRichText.getFontOfFormattingRun(v_FontIndex);
@@ -2600,7 +2606,7 @@ public class JavaToExcel
                 XSSFRichTextString v_TemplateRichText = (XSSFRichTextString)i_TemplateRichText;
                 v_DataRichText = new XSSFRichTextString(v_Text);//i_DataCell.getRow().getSheet().getWorkbook().getCreationHelper().createRichTextString(v_Text);
                 
-                for (int v_FontIndex=0; v_FontIndex<v_FontCount; v_FontIndex++) 
+                for (int v_FontIndex=0; v_FontIndex<v_FontCount; v_FontIndex++)
                 {
                     int      v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
                     XSSFFont v_TemplateFont = v_TemplateRichText.getFontOfFormattingRun(v_FontIndex);
@@ -2643,7 +2649,7 @@ public class JavaToExcel
      * @param i_Name              占位符的名称
      * @param i_Value             占位符的数值
      */
-    public final static void copyRichTextStyle(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,String i_Name ,String i_Value) 
+    public final static void copyRichTextStyle(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell ,String i_Name ,String i_Value)
     {
        int    v_FontCount       = i_TemplateRichText.numFormattingRuns();
         String v_Text            = i_TemplateRichText.toString();
@@ -2661,7 +2667,7 @@ public class JavaToExcel
                 HSSFRichTextString v_TemplateRichText = (HSSFRichTextString)i_TemplateRichText;
                 v_DataRichText = new HSSFRichTextString(i_Value);
                 
-                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+                for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--)
                 {
                     int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
                     short v_IDX        = v_TemplateRichText.getFontOfFormattingRun(v_FontIndex);
@@ -2685,7 +2691,7 @@ public class JavaToExcel
                 XSSFRichTextString v_TemplateRichText = (XSSFRichTextString)i_TemplateRichText;
                 v_DataRichText = new XSSFRichTextString(i_Value);//i_DataCell.getRow().getSheet().getWorkbook().getCreationHelper().createRichTextString(v_Text);
                 
-                for (int v_FontIndex=0; v_FontIndex<v_FontCount; v_FontIndex++) 
+                for (int v_FontIndex=0; v_FontIndex<v_FontCount; v_FontIndex++)
                 {
                     int      v_FirstIndex   = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
                     XSSFFont v_TemplateFont = v_TemplateRichText.getFontOfFormattingRun(v_FontIndex);
@@ -2731,7 +2737,7 @@ public class JavaToExcel
      * @param i_DataWorkbook      数据工作薄
      * @param i_DataCell          数据单元格
      */
-    public final static void copyRichTextStyleComment(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell) 
+    public final static void copyRichTextStyleComment(RTemplate i_RTemplate ,RichTextString i_TemplateRichText ,RWorkbook i_DataWorkbook ,Cell i_DataCell)
     {
         int    v_FontCount = i_TemplateRichText.numFormattingRuns();
         String v_Text      = i_TemplateRichText.toString();
@@ -2743,7 +2749,7 @@ public class JavaToExcel
         {
             v_DataRichText = new HSSFRichTextString(v_Text);
             
-            for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--) 
+            for (int v_FontIndex=v_FontCount-1; v_FontIndex >= 0; v_FontIndex--)
             {
                 int   v_FirstIndex = i_TemplateRichText.getIndexOfFormattingRun(v_FontIndex);
                 short v_IDX        = ((HSSFRichTextString)i_TemplateRichText).getFontOfFormattingRun( v_FontIndex);

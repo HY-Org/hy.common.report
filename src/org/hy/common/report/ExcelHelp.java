@@ -73,7 +73,7 @@ import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProp
 
 
 /**
- * Excel操作的辅助类 
+ * Excel操作的辅助类
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-03-16
@@ -89,6 +89,7 @@ import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProp
  *              v3.4  2018-05-07  修正：占位符所在单元格有空格时，无法正确匹配占位符的解析信息。发现人：张宇
  *              v4.0  2020-05-14  添加：打印设置参数中的垂直居中、水平居中。发现人：雷伟松
  *              v4.1  2020-05-29  添加：复制行高
+ *              v5.0  2022-01-18  添加：复制单元格超链接。建议人：雷伟松
  */
 public class ExcelHelp
 {
@@ -272,14 +273,14 @@ public class ExcelHelp
                 }
                 else if ( v_Cell.getCellTypeEnum() == CellType.NUMERIC )
                 {
-                    if ( HSSFDateUtil.isCellDateFormatted(v_Cell) ) 
+                    if ( HSSFDateUtil.isCellDateFormatted(v_Cell) )
                     {
                         if ( v_Cell.getDateCellValue() != null )
                         {
                             v_Ret.putRow((new Date(v_Cell.getDateCellValue())).getFull() ,new RCell(v_RowNo ,v_ColumnNo));
                         }
-                    } 
-                    else 
+                    }
+                    else
                     {
                         v_Ret.putRow(String.valueOf(v_Cell.getNumericCellValue()) ,new RCell(v_RowNo ,v_ColumnNo));
                     }
@@ -389,7 +390,7 @@ public class ExcelHelp
         FileOutputStream v_Output = null;
         
         try
-        {            
+        {
             File v_File = new File(v_SaveFile);
             v_File = v_File.getParentFile();
             
@@ -448,12 +449,12 @@ public class ExcelHelp
      * @param i_SheetName  工作表名称(当为空时，自动生成)
      * @return
      */
-    public final static Sheet createSheet(Workbook i_Workbook ,String i_SheetName) 
+    public final static Sheet createSheet(Workbook i_Workbook ,String i_SheetName)
     {
         int    v_SheetCount = i_Workbook.getNumberOfSheets();
         String v_SheetName  = i_SheetName;
         
-        if ( Help.isNull(v_SheetName) ) 
+        if ( Help.isNull(v_SheetName) )
         {
             v_SheetName = "sheet" + (v_SheetCount + 1);
         }
@@ -499,7 +500,7 @@ public class ExcelHelp
             v_ToSummary2.setAuthor(  v_FromSummary2.getAuthor());   // 作者
             v_ToSummary2.setComments(v_FromSummary2.getComments()); // 备注
         }
-        else if ( i_ToWB instanceof SXSSFWorkbook 
+        else if ( i_ToWB instanceof SXSSFWorkbook
                || i_ToWB instanceof XSSFWorkbook )
         {
             XSSFWorkbook v_FromWB = null;
@@ -566,10 +567,10 @@ public class ExcelHelp
      * @param i_FromSheet  源工作表
      * @param i_ToSheet    目标工作表
      */
-    public final static void copyColumnsWidth(Sheet i_FromSheet ,Sheet i_ToSheet) 
+    public final static void copyColumnsWidth(Sheet i_FromSheet ,Sheet i_ToSheet)
     {
         Row v_Row = i_FromSheet.getRow(0);
-        if ( null == v_Row ) 
+        if ( null == v_Row )
         {
             return;
         }
@@ -582,7 +583,7 @@ public class ExcelHelp
         {
             HSSFSheet v_ToSheet = (HSSFSheet)i_ToSheet;
             
-            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++)
             {
                 int v_Width = i_FromSheet.getColumnWidth(v_ColumnIndex);
                 v_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
@@ -592,7 +593,7 @@ public class ExcelHelp
         {
             SXSSFSheet v_ToSheet = (SXSSFSheet)i_ToSheet;
             
-            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++)
             {
                 int v_Width = i_FromSheet.getColumnWidth(v_ColumnIndex);
                 v_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
@@ -602,7 +603,7 @@ public class ExcelHelp
         {
             XSSFSheet v_ToSheet = (XSSFSheet)i_ToSheet;
             
-            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++) 
+            for (int v_ColumnIndex = 0; v_ColumnIndex < v_ColumnCount; v_ColumnIndex++)
             {
                 int v_Width = i_FromSheet.getColumnWidth(v_ColumnIndex);
                 v_ToSheet.setColumnWidth(v_ColumnIndex ,v_Width);
@@ -692,7 +693,7 @@ public class ExcelHelp
      * @param i_FromSheet  源工作表
      * @param i_ToSheet    目标工作表
      */
-    public final static void copyPrintSetup(Sheet i_FromSheet ,Sheet i_ToSheet) 
+    public final static void copyPrintSetup(Sheet i_FromSheet ,Sheet i_ToSheet)
     {
         PrintSetup v_FromPrintSetup = i_FromSheet.getPrintSetup();
         PrintSetup v_ToPrintSetup   = i_ToSheet  .getPrintSetup();
@@ -707,7 +708,7 @@ public class ExcelHelp
         v_ToPrintSetup.setLandscape(    v_FromPrintSetup.getLandscape());      // true，则表示页面方向为横向；否则为纵向
         v_ToPrintSetup.setLeftToRight(  v_FromPrintSetup.getLeftToRight());    // true表示“先行后列”；false表示“先列后行”
         v_ToPrintSetup.setNoColor(      v_FromPrintSetup.getNoColor());        // 值为true时，表示单色打印
-        v_ToPrintSetup.setNoOrientation(v_FromPrintSetup.getNoOrientation()); 
+        v_ToPrintSetup.setNoOrientation(v_FromPrintSetup.getNoOrientation());
         v_ToPrintSetup.setNotes(        v_FromPrintSetup.getNotes());          // 设置打印批注
         v_ToPrintSetup.setPageStart(    v_FromPrintSetup.getPageStart());      // 设置打印起始页码
         v_ToPrintSetup.setPaperSize(    v_FromPrintSetup.getPaperSize());      // 纸张类型 A4纸 HSSFPrintSetup.A4_PAPERSIZE
@@ -730,7 +731,7 @@ public class ExcelHelp
         }
         else if ( i_ToSheet instanceof SXSSFSheet )
         {
-            ((XSSFPrintSetup)v_ToPrintSetup).setOrientation(((XSSFPrintSetup)v_FromPrintSetup).getOrientation());  // 设置方向 
+            ((XSSFPrintSetup)v_ToPrintSetup).setOrientation(((XSSFPrintSetup)v_FromPrintSetup).getOrientation());  // 设置方向
             
             i_ToSheet.setMargin(SXSSFSheet.TopMargin    ,i_FromSheet.getMargin(SXSSFSheet.TopMargin));     // 页边距（上）
             i_ToSheet.setMargin(SXSSFSheet.BottomMargin ,i_FromSheet.getMargin(SXSSFSheet.BottomMargin));  // 页边距（下）
@@ -741,7 +742,7 @@ public class ExcelHelp
         }
         else if ( i_ToSheet instanceof XSSFSheet )
         {
-            ((XSSFPrintSetup)v_ToPrintSetup).setOrientation(((XSSFPrintSetup)v_FromPrintSetup).getOrientation());  // 设置方向 
+            ((XSSFPrintSetup)v_ToPrintSetup).setOrientation(((XSSFPrintSetup)v_FromPrintSetup).getOrientation());  // 设置方向
             
             i_ToSheet.setMargin(XSSFSheet.TopMargin     ,i_FromSheet.getMargin(XSSFSheet.TopMargin));     // 页边距（上）
             i_ToSheet.setMargin(XSSFSheet.BottomMargin  ,i_FromSheet.getMargin(XSSFSheet.BottomMargin));  // 页边距（下）
@@ -774,12 +775,12 @@ public class ExcelHelp
      * @param i_ToSheetLastRowNum  目标工作表原用的数据。下标从0开始，0表示目标工作表还未写入任何数据
      * @param i_NewDataSize        本次数据（或追加数据）的大小，即分页页数
      */
-    public final static void copyPrintSetup(Sheet i_FromSheet ,Sheet i_ToSheet ,int i_ToSheetLastRowNum ,int i_NewDataSize) 
+    public final static void copyPrintSetup(Sheet i_FromSheet ,Sheet i_ToSheet ,int i_ToSheetLastRowNum ,int i_NewDataSize)
     {
         int    v_FromSheetIndex = i_FromSheet.getWorkbook().getSheetIndex(i_FromSheet);
         int    v_ToSheetIndex   = i_ToSheet  .getWorkbook().getSheetIndex(i_ToSheet);
-        String v_FromSheetName  = i_FromSheet.getWorkbook().getSheetName(v_FromSheetIndex); 
-        String v_ToSheetName    = i_ToSheet  .getWorkbook().getSheetName(v_ToSheetIndex); 
+        String v_FromSheetName  = i_FromSheet.getWorkbook().getSheetName(v_FromSheetIndex);
+        String v_ToSheetName    = i_ToSheet  .getWorkbook().getSheetName(v_ToSheetIndex);
         String v_FromPrintArea  = i_FromSheet.getWorkbook().getPrintArea(v_FromSheetIndex);
         String v_ToPrintArea    = i_ToSheet  .getWorkbook().getPrintArea(v_ToSheetIndex);
         
@@ -839,12 +840,12 @@ public class ExcelHelp
      * @param i_ToSheetLastRowNum  目标工作表原用的数据。下标从0开始，0表示目标工作表还未写入任何数据
      * @param i_NewDataSize        本次数据（或追加数据）的大小，即分页页数
      */
-    public final static void setPrintRowBreaks(Sheet i_FromSheet ,Sheet i_ToSheet ,int i_ToSheetLastRowNum ,int i_NewDataSize) 
+    public final static void setPrintRowBreaks(Sheet i_FromSheet ,Sheet i_ToSheet ,int i_ToSheetLastRowNum ,int i_NewDataSize)
     {
         int    v_FromSheetIndex = i_FromSheet.getWorkbook().getSheetIndex(i_FromSheet);
         int    v_ToSheetIndex   = i_ToSheet  .getWorkbook().getSheetIndex(i_ToSheet);
-        String v_FromSheetName  = i_FromSheet.getWorkbook().getSheetName(v_FromSheetIndex); 
-        String v_ToSheetName    = i_ToSheet  .getWorkbook().getSheetName(v_ToSheetIndex); 
+        String v_FromSheetName  = i_FromSheet.getWorkbook().getSheetName(v_FromSheetIndex);
+        String v_ToSheetName    = i_ToSheet  .getWorkbook().getSheetName(v_ToSheetIndex);
         String v_FromPrintArea  = i_FromSheet.getWorkbook().getPrintArea(v_FromSheetIndex);
         String v_ToPrintArea    = i_ToSheet  .getWorkbook().getPrintArea(v_ToSheetIndex);
         
@@ -933,7 +934,7 @@ public class ExcelHelp
      * @param i_OffsetRow     偏移行号
      * @param i_IsSafe        是要安全？还是要性能
      */
-    public final static void copyMergedRegions(Sheet i_FromSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet ,int i_OffsetRow ,boolean i_IsSafe) 
+    public final static void copyMergedRegions(Sheet i_FromSheet ,int i_AreaBeginRow ,int i_AreaEndRow ,Sheet i_ToSheet ,int i_OffsetRow ,boolean i_IsSafe)
     {
         int v_MergedRegionsCount = i_FromSheet.getNumMergedRegions();
         CacheSheetInfo         v_CacheKey   = new CacheSheetInfo(i_FromSheet ,i_AreaBeginRow ,i_AreaEndRow);
@@ -943,11 +944,11 @@ public class ExcelHelp
         {
             v_CacheDatas = new ArrayList<CellRangeAddress>();
             
-            for (int i=0; i<v_MergedRegionsCount; i++) 
+            for (int i=0; i<v_MergedRegionsCount; i++)
             {
                 CellRangeAddress v_CellRangeAddress = i_FromSheet.getMergedRegion(i);
                 
-                if ( i_AreaBeginRow <= v_CellRangeAddress.getFirstRow() 
+                if ( i_AreaBeginRow <= v_CellRangeAddress.getFirstRow()
                   && i_AreaEndRow   >= v_CellRangeAddress.getLastRow() )
                 {
                     // Nothing. 在区域内的
@@ -968,7 +969,7 @@ public class ExcelHelp
         // 为了执行性能而分成两个For
         if ( i_IsSafe )
         {
-            for (CellRangeAddress v_CellRA : v_CacheDatas) 
+            for (CellRangeAddress v_CellRA : v_CacheDatas)
             {
                 int v_FirstRow = v_CellRA.getFirstRow();
                 int v_LastRow  = v_CellRA.getLastRow();
@@ -976,16 +977,16 @@ public class ExcelHelp
                 v_FirstRow += i_OffsetRow;
                 v_LastRow  += i_OffsetRow;
                 
-                addMergedRegionsSafe(i_ToSheet 
-                                    ,v_FirstRow 
-                                    ,v_LastRow 
-                                    ,v_CellRA.getFirstColumn() 
+                addMergedRegionsSafe(i_ToSheet
+                                    ,v_FirstRow
+                                    ,v_LastRow
+                                    ,v_CellRA.getFirstColumn()
                                     ,v_CellRA.getLastColumn());
             }
         }
         else
         {
-            for (CellRangeAddress v_CellRA : v_CacheDatas) 
+            for (CellRangeAddress v_CellRA : v_CacheDatas)
             {
                 int v_FirstRow = v_CellRA.getFirstRow();
                 int v_LastRow  = v_CellRA.getLastRow();
@@ -993,10 +994,10 @@ public class ExcelHelp
                 v_FirstRow += i_OffsetRow;
                 v_LastRow  += i_OffsetRow;
                 
-                addMergedRegionsUnsafe(i_ToSheet 
-                                      ,v_FirstRow 
-                                      ,v_LastRow 
-                                      ,v_CellRA.getFirstColumn() 
+                addMergedRegionsUnsafe(i_ToSheet
+                                      ,v_FirstRow
+                                      ,v_LastRow
+                                      ,v_CellRA.getFirstColumn()
                                       ,v_CellRA.getLastColumn());
             }
         }
@@ -1049,8 +1050,8 @@ public class ExcelHelp
             return;
         }
         
-        CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow 
-                                                        ,i_LastRow 
+        CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow
+                                                        ,i_LastRow
                                                         ,i_FirstColumn
                                                         ,i_LastColumn);
         
@@ -1093,8 +1094,8 @@ public class ExcelHelp
             return;
         }
         
-        CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow 
-                                                        ,i_LastRow 
+        CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow
+                                                        ,i_LastRow
                                                         ,i_FirstColumn
                                                         ,i_LastColumn);
         try
@@ -1129,8 +1130,8 @@ public class ExcelHelp
             return;
         }
         
-        CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow 
-                                                        ,i_LastRow 
+        CellRangeAddress v_CellRA = new CellRangeAddress(i_FirstRow
+                                                        ,i_LastRow
                                                         ,i_FirstColumn
                                                         ,i_LastColumn);
         
@@ -1167,17 +1168,17 @@ public class ExcelHelp
                 HSSFSheet             v_FromSheet = (HSSFSheet) i_FromSheet;
                 List<HSSFPictureData> v_Pictures  = v_FromSheet.getWorkbook().getAllPictures();
                 
-                if ( i_FromSheet.getDrawingPatriarch() != null ) 
+                if ( i_FromSheet.getDrawingPatriarch() != null )
                 {
-                    for (HSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getChildren()) 
+                    for (HSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getChildren())
                     {
-                        if ( v_Shape instanceof HSSFPicture) 
+                        if ( v_Shape instanceof HSSFPicture)
                         {
                             HSSFPicture      v_Picture       = (HSSFPicture) v_Shape;
                             HSSFClientAnchor v_Anchor        = v_Picture.getClientAnchor();
                             HSSFPictureData  v_PictureData   = v_Pictures.get(v_Picture.getPictureIndex() - 1);
                             
-                            if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+                            if ( i_AreaBeginRow <= v_Anchor.getRow1()
                               && i_AreaEndRow   >= v_Anchor.getRow2() )
                             {
                                 // Nothing. 在数据区域内的图片
@@ -1223,17 +1224,17 @@ public class ExcelHelp
                 
                 XSSFSheet v_FromSheet = (XSSFSheet) i_FromSheet;
                 
-                if ( i_FromSheet.getDrawingPatriarch() != null ) 
+                if ( i_FromSheet.getDrawingPatriarch() != null )
                 {
-                    for (XSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getShapes()) 
+                    for (XSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getShapes())
                     {
-                        if ( v_Shape instanceof XSSFPicture ) 
+                        if ( v_Shape instanceof XSSFPicture )
                         {
                             XSSFPicture      v_Picture       = (XSSFPicture) v_Shape;
                             XSSFClientAnchor v_Anchor        = v_Picture.getClientAnchor();
                             XSSFPictureData  v_PictureData   = v_Picture.getPictureData();
                             
-                            if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+                            if ( i_AreaBeginRow <= v_Anchor.getRow1()
                               && i_AreaEndRow   >= v_Anchor.getRow2() )
                             {
                                 // Nothing. 在数据区域内的图片
@@ -1248,8 +1249,8 @@ public class ExcelHelp
                         else
                         {
 //                            XSSFClientAnchor v_Anchor = (XSSFClientAnchor)v_Shape.getAnchor();
-//                            
-//                            if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+//
+//                            if ( i_AreaBeginRow <= v_Anchor.getRow1()
 //                              && i_AreaEndRow   >= v_Anchor.getRow2() )
 //                            {
 //                                // Nothing.
@@ -1262,9 +1263,9 @@ public class ExcelHelp
 //                            if ( v_Shape instanceof XSSFSimpleShape )
 //                            {
 //                                XSSFSimpleShape v_XShape = (XSSFSimpleShape)v_Shape;
-//                                
+//
 //                                System.out.println(v_XShape.getText());
-//                                
+//
 //                              XSSFClientAnchor v_ToAnchor    = new XSSFClientAnchor(v_Anchor.getDx1()
 //                              ,v_Anchor.getDy1()
 //                              ,v_Anchor.getDx2()
@@ -1273,8 +1274,8 @@ public class ExcelHelp
 //                              ,v_Anchor.getRow1() + i_OffsetRow
 //                              ,v_Anchor.getCol2()
 //                              ,v_Anchor.getRow2() + i_OffsetRow);
-//                              
-//                              
+//
+//
 //                              SXSSFDrawing     v_ToPatriarch = ((SXSSFSheet)i_ToSheet).createDrawingPatriarch();
 //                              XSSFChart v_Chart = (XSSFChart)(v_ToPatriarch.createChart(v_ToAnchor));
 //                              v_Chart.setTitle(v_XShape.getText());
@@ -1287,11 +1288,11 @@ public class ExcelHelp
 //                            {
 //                                continue;
 //                            }
-//                            
+//
 //                            XSSFObjectData   v_XObjectData = (XSSFObjectData) v_Shape;
-//                            
+//
 //                            SXSSFDrawing     v_ToPatriarch = ((SXSSFSheet)i_ToSheet).createDrawingPatriarch();
-//                            
+//
 //                            XSSFClientAnchor v_ToAnchor    = new XSSFClientAnchor(v_Anchor.getDx1()
 //                                                                                 ,v_Anchor.getDy1()
 //                                                                                 ,v_Anchor.getDx2()
@@ -1300,32 +1301,32 @@ public class ExcelHelp
 //                                                                                 ,v_Anchor.getRow1() + i_OffsetRow
 //                                                                                 ,v_Anchor.getCol2()
 //                                                                                 ,v_Anchor.getRow2() + i_OffsetRow);
-//                            
+//
 //                            v_ToAnchor.setAnchorType(v_Anchor.getAnchorType());
-//                            
+//
 //                            copyClientAnchor(v_Anchor ,v_ToAnchor ,i_OffsetRow);
-//                            
+//
 //                            try
 //                            {
 //                            int v_OleIdx = i_ToSheet.getWorkbook().addOlePackage(v_XObjectData.getObjectData() ,v_XObjectData.getFileName() ,v_XObjectData.getFileName() ,v_XObjectData.getFileName());
-//                            
+//
 //                            FileHelp v_FileHelp = new FileHelp();
 //                            File     v_File     = new File("C:\\Users\\ZhengWei\\Desktop\\qq.png");
 //                            v_FileHelp.copyFile(v_XObjectData.getObjectPart().getInputStream() ,v_File);
 //                            byte [] v_PictureDatas = v_FileHelp.getContentByte(v_XObjectData.getObjectPart().getInputStream());
 //                            int v_PictureIndex = i_ToSheet.getWorkbook().addPicture(v_PictureDatas ,Workbook.PICTURE_TYPE_DIB);
-//                            
+//
 //                            XSSFObjectData v_ToXObjectData = (XSSFObjectData)v_ToPatriarch.createObjectData(v_ToAnchor
 //                                                          ,v_OleIdx
 //                                                          ,v_PictureIndex);
-//                            
+//
 //                            v_ToXObjectData.getObjectPart().load(v_XObjectData.getObjectPart().getInputStream());
 //                            }
 //                            catch (Exception exce)
 //                            {
 //                                exce.printStackTrace();
 //                            }
-//                                                          
+//
                         }
                     }
                 }
@@ -1363,17 +1364,17 @@ public class ExcelHelp
                 
                 XSSFSheet v_FromSheet = (XSSFSheet) i_FromSheet;
                 
-                if ( i_FromSheet.getDrawingPatriarch() != null ) 
+                if ( i_FromSheet.getDrawingPatriarch() != null )
                 {
-                    for (XSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getShapes()) 
+                    for (XSSFShape v_Shape : v_FromSheet.getDrawingPatriarch().getShapes())
                     {
-                        if ( v_Shape instanceof XSSFPicture) 
+                        if ( v_Shape instanceof XSSFPicture)
                         {
                             XSSFPicture      v_Picture       = (XSSFPicture) v_Shape;
                             XSSFClientAnchor v_Anchor        = v_Picture.getClientAnchor();
                             XSSFPictureData  v_PictureData   = v_Picture.getPictureData();
                             
-                            if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+                            if ( i_AreaBeginRow <= v_Anchor.getRow1()
                               && i_AreaEndRow   >= v_Anchor.getRow2() )
                             {
                                 // Nothing. 在数据区域内的图片
@@ -1392,7 +1393,7 @@ public class ExcelHelp
 //                                XSSFObjectData   v_XShape = (XSSFObjectData)   v_Shape;
 //                                XSSFClientAnchor v_Anchor = (XSSFClientAnchor) v_Shape.getAnchor();
 //                                // v_XShape.getDrawing().createObjectData(anchor ,storageId ,pictureIndex)
-//                                if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+//                                if ( i_AreaBeginRow <= v_Anchor.getRow1()
 //                                  && i_AreaEndRow   >= v_Anchor.getRow2() )
 //                                {
 //                                    // Nothing. 在数据区域内的图片
@@ -1401,8 +1402,8 @@ public class ExcelHelp
 //                                {
 //                                    continue;
 //                                }
-//                                
-//                                
+//
+//
 //                                try
 //                                {
 //                                for (PackagePart pPart : v_FromSheet.getWorkbook().getAllEmbedds()) {
@@ -1443,20 +1444,20 @@ public class ExcelHelp
 //                                }
 //                                catch (Exception exce)
 //                                {
-//                                    
+//
 //                                }
-//                                
-//                                
+//
+//
 //                                XmlCursor v_XmlCursor = null;
 //                                QName v_QName = new QName(PackageRelationshipTypes.CORE_PROPERTIES_ECMA376_NS ,"id");
 //                                String v_ = v_XmlCursor.getAttributeText(v_QName);
-//                                
+//
 //                                for (XSSFPictureData v_Pic : v_FromSheet.getWorkbook().getAllPictures())
 //                                {
 //                                    PackagePartName     v_ImgPN      = v_Pic.getPackagePart().getPartName();
 //                                    PackageRelationship v_ImgSheetPR = v_FromSheet.getPackagePart().getRelationship(v_ImgPN.getName());
-//                                    
-//                                    
+//
+//
 //                                    String ext = v_Pic.toString();
 //                                }
 //                            }
@@ -1464,8 +1465,8 @@ public class ExcelHelp
 //                            {
 //                                XSSFSimpleShape  v_XShape = (XSSFSimpleShape)  v_Shape;
 //                                XSSFClientAnchor v_Anchor = (XSSFClientAnchor) v_Shape.getAnchor();
-//                                
-//                                if ( i_AreaBeginRow <= v_Anchor.getRow1() 
+//
+//                                if ( i_AreaBeginRow <= v_Anchor.getRow1()
 //                                  && i_AreaEndRow >= v_Anchor.getRow2() )
 //                                {
 //                                    // Nothing. 在数据区域内的图片
@@ -1474,29 +1475,29 @@ public class ExcelHelp
 //                                {
 //                                    continue;
 //                                }
-//                                
+//
 //                                FileHelp v_FileHelp = new FileHelp();
 //                                int i=0;
 //                                for (XSSFPictureData v_Pic : v_FromSheet.getWorkbook().getAllPictures())
 //                                {
-//                                    String ext = v_Pic.suggestFileExtension();  
-//                                    
+//                                    String ext = v_Pic.suggestFileExtension();
+//
 //                                    try
 //                                    {
-//                                        FileOutputStream out = new FileOutputStream(  
-//                                                "C:\\Users\\ZhengWei\\Desktop\\" + (i++) + "." + ext);  
-//                                        out.write(v_Pic.getData());  
-//                                        out.close(); 
+//                                        FileOutputStream out = new FileOutputStream(
+//                                                "C:\\Users\\ZhengWei\\Desktop\\" + (i++) + "." + ext);
+//                                        out.write(v_Pic.getData());
+//                                        out.close();
 //                                    }
 //                                    catch (Exception exce)
 //                                    {
 //                                        exce.printStackTrace();
 //                                    }
 //                                }
-//                                
+//
 //                                XSSFClientAnchor v_ToAnchor = new XSSFClientAnchor();
 //                                copyClientAnchor(v_Anchor ,v_ToAnchor ,i_OffsetRow);
-//                                
+//
 //                                if ( ShapeTypes.RECT == v_XShape.getShapeType() )
 //                                {
 //                                    if ( !Help.isNull(v_XShape.getText()) )
@@ -1508,8 +1509,8 @@ public class ExcelHelp
 //                                    else
 //                                    {
 //                                        XSSFDrawing v_ToPatriarch = ((XSSFSheet) i_ToSheet).createDrawingPatriarch();
-//                                        
-//                                        
+//
+//
 //                                    }
 //                                }
 //                            }
@@ -1726,10 +1727,10 @@ public class ExcelHelp
             }
         }
             
-        return i_Workbook.getStylesSource().findFont(i_Font.getBold() 
-                                                    ,i_Font.getColor() 
-                                                    ,i_Font.getFontHeight() 
-                                                    ,i_Font.getFontName() 
+        return i_Workbook.getStylesSource().findFont(i_Font.getBold()
+                                                    ,i_Font.getColor()
+                                                    ,i_Font.getFontHeight()
+                                                    ,i_Font.getFontName()
                                                     ,i_Font.getItalic()
                                                     ,i_Font.getStrikeout()
                                                     ,i_Font.getTypeOffset()
@@ -1889,6 +1890,23 @@ public class ExcelHelp
     
     
     /**
+     * 复制单元格超链接
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2022-01-18
+     * @version     v1.0
+     *
+     * @param i_FromCellStyle  源单元格样式
+     * @param i_ToCellStyle    目标单元格样式
+     */
+    public final static void copyHyperlinks(Cell i_FromCell ,Cell i_ToCell)
+    {
+        i_ToCell.setHyperlink(i_FromCell.getHyperlink());
+    }
+    
+    
+    
+    /**
      * 计算单元格自动的行高
      * 
      * @author      ZhengWei(HY)
@@ -1901,9 +1919,9 @@ public class ExcelHelp
      */
     public static float calcCellAutoHeight(String i_Text ,Cell i_TemplateCell)
     {
-        return ExcelHelp.calcCellAutoHeight(i_Text 
+        return ExcelHelp.calcCellAutoHeight(i_Text
                                            ,i_TemplateCell.getSheet().getWorkbook().getFontAt(i_TemplateCell.getCellStyle().getFontIndex()).getFontHeightInPoints()
-                                           ,i_TemplateCell.getRow().getHeightInPoints() 
+                                           ,i_TemplateCell.getRow().getHeightInPoints()
                                            ,i_TemplateCell.getSheet().getColumnWidthInPixels(i_TemplateCell.getColumnIndex()));
     }
     
@@ -1950,7 +1968,7 @@ public class ExcelHelp
 
     
     
-    public static float calcCharWidth(String charStr) 
+    public static float calcCharWidth(String charStr)
     {
         if ( " ".equals(charStr) )
         {

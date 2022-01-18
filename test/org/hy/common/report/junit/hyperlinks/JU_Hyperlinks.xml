@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 导出数据表配置信息 -->
+    <xconfig>
+    
+        <template id="Report_Hyperlinks_01">
+            <name>Excel内链接的演示</name>
+            
+            <!-- Excel模板文件所在地方 并通过扩展名识别文件格式类型 -->
+            <excelFileName>classpath:JU_Hyperlinks.xlsx</excelFileName>
+            
+            <!-- 工作表 -->
+            <sheetIndex>0</sheetIndex>
+            
+            <!-- 总标题 -->
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>23</titleEndRow>
+
+            <!-- 定义数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.image.ImageReportBean</dataClass>
+            
+        </template>
+        
+        
+        
+        <template id="Report_Hyperlinks_02">
+            <name>Excel内链接的演示</name>
+            
+            <!-- Excel模板文件所在地方 并通过扩展名识别文件格式类型 -->
+            <excelFileName ref="Report_Hyperlinks_01.getExcelFileName" />
+            
+            <!-- 工作表 -->
+            <sheetIndex>1</sheetIndex>
+            
+            <!-- 总标题 -->
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            
+            <!-- 定义报表数据在模板中位置 -->
+            <dataBeginRow>2</dataBeginRow>
+
+            <!-- 定义数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.image.ImageReportBean</dataClass>
+            
+        </template>
+
+    </xconfig>
+    
+</config>
