@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+
+
+
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+
+        <template id="Report_Read01">
+            <name>工艺基础数据导入</name>
+            <sheetIndex>0</sheetIndex>
+            <excelFileName>classpath:JU_Read01.xlsx</excelFileName>
+            <dataBeginRow>2</dataBeginRow>
+            <dataClass>org.hy.common.report.junit.read01.DataInfo</dataClass>
+        </template>
+    </xconfig>
+
+</config>

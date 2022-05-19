@@ -10,7 +10,7 @@ import org.hy.common.xml.SerializableDef;
 
 
 /**
- * 财务信息 
+ * 财务信息
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-05-08
@@ -39,6 +39,9 @@ public class Finance extends SerializableDef
     
     /** yyyy-MM格式的时间 */
     private Date      time3;
+    
+    /* 纳税（千分位） */
+    private Double    tax;
 
     
     
@@ -54,7 +57,7 @@ public class Finance extends SerializableDef
     /**
      * 设置：收益
      * 
-     * @param income 
+     * @param income
      */
     public void setIncome(Double income)
     {
@@ -74,7 +77,7 @@ public class Finance extends SerializableDef
     /**
      * 设置：支出
      * 
-     * @param pay 
+     * @param pay
      */
     public void setPay(Double pay)
     {
@@ -96,7 +99,7 @@ public class Finance extends SerializableDef
     /**
      * 设置：流动比
      * 
-     * @param rate 
+     * @param rate
      */
     public void setRate(String rate)
     {
@@ -118,7 +121,7 @@ public class Finance extends SerializableDef
     /**
      * 设置：时间
      * 
-     * @param time 
+     * @param time
      */
     public void setTime(Date time)
     {
@@ -140,7 +143,7 @@ public class Finance extends SerializableDef
     /**
      * 设置：数据库时间
      * 
-     * @param time2 
+     * @param time2
      */
     public void setTime2(Timestamp time2)
     {
@@ -162,11 +165,33 @@ public class Finance extends SerializableDef
     /**
      * 设置：yyyy-MM格式的时间
      * 
-     * @param time3 
+     * @param time3
      */
     public void setTime3(Date time3)
     {
         this.time3 = time3;
+    }
+
+    
+
+    /**
+     * 获取：纳税（千分位）
+     */
+    public Double getTax()
+    {
+        return tax;
+    }
+
+
+    
+    /**
+     * 设置：纳税（千分位）
+     * 
+     * @param tax
+     */
+    public void setTax(Double tax)
+    {
+        this.tax = tax;
     }
     
 }

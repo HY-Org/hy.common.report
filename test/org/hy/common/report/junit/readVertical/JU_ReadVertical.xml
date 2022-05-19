@@ -2,21 +2,21 @@
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReadVertical">
-			<name>Excel转Java纵深扩展数据的Excel文件</name>
-			<excelFileName>classpath:JU_ReadVertical.xlsx</excelFileName>
-			<dataBeginRow>1</dataBeginRow>
-			<dataClass>org.hy.common.report.junit.readHorizontal.Factory</dataClass>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReadVertical">
+            <name>Excel转Java纵深扩展数据的Excel文件</name>
+            <excelFileName>classpath:JU_ReadVertical.xlsx</excelFileName>
+            <dataBeginRow>1</dataBeginRow>
+            <dataClass>org.hy.common.report.junit.readHorizontal.Factory</dataClass>
+        </template>
+        
+    </xconfig>
+    
 </config>
