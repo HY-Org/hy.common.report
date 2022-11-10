@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
@@ -17,6 +16,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
@@ -2345,14 +2345,15 @@ public class JavaToExcel
         ExcelHelp.copyHyperlinks(i_TemplateCell ,i_DataCell);
         
         // 复制数据类型
-        CellType v_CellType = i_TemplateCell.getCellTypeEnum();
+        CellType v_CellType = i_TemplateCell.getCellType();
         // i_DataCell.setCellType(v_CellType);  不能在此统一设置，原因是：下面代码对类型是有浮动的
         
         if ( v_CellType == CellType.NUMERIC )
         {
-            i_DataCell.setCellType(v_CellType);
+            // 2022-11-10 Del：POI 5.x的版本不建议使用
+            // i_DataCell.setCellType(v_CellType);
             
-            if ( HSSFDateUtil.isCellDateFormatted(i_TemplateCell) )
+            if ( DateUtil.isCellDateFormatted(i_TemplateCell) )
             {
                 i_DataCell.setCellValue(i_TemplateCell.getDateCellValue());
             }
@@ -2368,23 +2369,27 @@ public class JavaToExcel
             
             if ( i_RTemplate.isExists(v_ValueName) )
             {
-                i_DataCell.setCellType(v_CellType);
+                // 2022-11-10 Del：POI 5.x的版本不建议使用
+                // i_DataCell.setCellType(v_CellType);
                 i_DataCell.setCellValue("");
             }
             else
             {
-                i_DataCell.setCellType(v_CellType);
+                // 2022-11-10 Del：POI 5.x的版本不建议使用
+                // i_DataCell.setCellType(v_CellType);
                 copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell);
             }
         }
         else if ( v_CellType == CellType.BOOLEAN )
         {
-            i_DataCell.setCellType(v_CellType);
+            // 2022-11-10 Del：POI 5.x的版本不建议使用
+            // i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellValue(i_TemplateCell.getBooleanCellValue());
         }
         else if ( v_CellType == CellType.FORMULA)
         {
-            i_DataCell.setCellType(v_CellType);
+            // 2022-11-10 Del：POI 5.x的版本不建议使用
+            // i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellFormula(ExcelFormula.calcFormulaOffset(i_TemplateCell ,i_DataCell));
         }
         else
@@ -2424,15 +2429,16 @@ public class JavaToExcel
         ExcelHelp.copyHyperlinks(i_TemplateCell ,i_DataCell);
         
         // 复制数据类型
-        CellType v_CellType = i_TemplateCell.getCellTypeEnum();
+        CellType v_CellType = i_TemplateCell.getCellType();
         
         // i_DataCell.setCellType(v_CellType);  不能在此统一设置，原因是：下面代码对类型是有浮动的
         
         if ( v_CellType == CellType.NUMERIC )
         {
-            i_DataCell.setCellType(v_CellType);
+            // 2022-11-10 Del：POI 5.x的版本不建议使用
+            // i_DataCell.setCellType(v_CellType);
             
-            if ( HSSFDateUtil.isCellDateFormatted(i_TemplateCell) )
+            if ( DateUtil.isCellDateFormatted(i_TemplateCell) )
             {
                 i_DataCell.setCellValue(i_TemplateCell.getDateCellValue());
             }

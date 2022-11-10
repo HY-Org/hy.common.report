@@ -12,12 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.poi.POIXMLProperties.CoreProperties;
 import org.apache.poi.hpsf.DocumentSummaryInformation;
 import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFPicture;
@@ -27,9 +25,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFShape;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ooxml.POIXMLProperties.CoreProperties;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HeaderFooter;
 import org.apache.poi.ss.usermodel.PrintSetup;
@@ -254,7 +254,7 @@ public class ExcelHelp
                     continue;
                 }
                 
-                if ( v_Cell.getCellTypeEnum() == CellType.STRING )
+                if ( v_Cell.getCellType() == CellType.STRING )
                 {
                     String v_Value = v_Cell.getStringCellValue();
                     
@@ -271,9 +271,9 @@ public class ExcelHelp
                                                         //            其二，当为占位符查询时，也是不去空格的查询，这里去空格后，为查询不到匹配的占位符解析信息的。
                     }
                 }
-                else if ( v_Cell.getCellTypeEnum() == CellType.NUMERIC )
+                else if ( v_Cell.getCellType() == CellType.NUMERIC )
                 {
-                    if ( HSSFDateUtil.isCellDateFormatted(v_Cell) )
+                    if ( DateUtil.isCellDateFormatted(v_Cell) )
                     {
                         if ( v_Cell.getDateCellValue() != null )
                         {
@@ -1760,14 +1760,14 @@ public class ExcelHelp
             HSSFCellStyle v_ToCellStyle   = (HSSFCellStyle)i_ToCellStyle;
             HSSFCellStyle v_FromCellStyle = (HSSFCellStyle)i_FromCellStyle;
             
-            v_ToCellStyle.setAlignment(          v_FromCellStyle.getAlignmentEnum());
+            v_ToCellStyle.setAlignment(          v_FromCellStyle.getAlignment());
             v_ToCellStyle.setDataFormat(         v_FromCellStyle.getDataFormat());
             
             // 边框和边框颜色
-            v_ToCellStyle.setBorderBottom(       v_FromCellStyle.getBorderBottomEnum());
-            v_ToCellStyle.setBorderLeft(         v_FromCellStyle.getBorderLeftEnum());
-            v_ToCellStyle.setBorderRight(        v_FromCellStyle.getBorderRightEnum());
-            v_ToCellStyle.setBorderTop(          v_FromCellStyle.getBorderTopEnum());
+            v_ToCellStyle.setBorderBottom(       v_FromCellStyle.getBorderBottom());
+            v_ToCellStyle.setBorderLeft(         v_FromCellStyle.getBorderLeft());
+            v_ToCellStyle.setBorderRight(        v_FromCellStyle.getBorderRight());
+            v_ToCellStyle.setBorderTop(          v_FromCellStyle.getBorderTop());
             v_ToCellStyle.setLeftBorderColor(    v_FromCellStyle.getLeftBorderColor());
             v_ToCellStyle.setRightBorderColor(   v_FromCellStyle.getRightBorderColor());
             v_ToCellStyle.setTopBorderColor(     v_FromCellStyle.getTopBorderColor());
@@ -1776,7 +1776,7 @@ public class ExcelHelp
             // 背景和前景
             v_ToCellStyle.setFillBackgroundColor(v_FromCellStyle.getFillBackgroundColor());
             v_ToCellStyle.setFillForegroundColor(v_FromCellStyle.getFillForegroundColor());
-            v_ToCellStyle.setFillPattern(        v_FromCellStyle.getFillPatternEnum());
+            v_ToCellStyle.setFillPattern(        v_FromCellStyle.getFillPattern());
             v_ToCellStyle.setHidden(             v_FromCellStyle.getHidden());
             
             // 首行缩进
@@ -1786,7 +1786,7 @@ public class ExcelHelp
             // 旋转
             v_ToCellStyle.setShrinkToFit(        v_FromCellStyle.getShrinkToFit());
             v_ToCellStyle.setRotation(           v_FromCellStyle.getRotation());
-            v_ToCellStyle.setVerticalAlignment(  v_FromCellStyle.getVerticalAlignmentEnum());
+            v_ToCellStyle.setVerticalAlignment(  v_FromCellStyle.getVerticalAlignment());
             v_ToCellStyle.setWrapText(           v_FromCellStyle.getWrapText());
             
             v_ToCellStyle.setQuotePrefixed(      v_FromCellStyle.getQuotePrefixed());
@@ -1798,14 +1798,14 @@ public class ExcelHelp
             XSSFCellStyle v_ToCellStyle   = (XSSFCellStyle)i_ToCellStyle;
             XSSFCellStyle v_FromCellStyle = (XSSFCellStyle)i_FromCellStyle;
             
-            v_ToCellStyle.setAlignment(          v_FromCellStyle.getAlignmentEnum());
+            v_ToCellStyle.setAlignment(          v_FromCellStyle.getAlignment());
             v_ToCellStyle.setDataFormat(         v_FromCellStyle.getDataFormat());
             
             // 边框
-            v_ToCellStyle.setBorderBottom(       v_FromCellStyle.getBorderBottomEnum());
-            v_ToCellStyle.setBorderLeft(         v_FromCellStyle.getBorderLeftEnum());
-            v_ToCellStyle.setBorderRight(        v_FromCellStyle.getBorderRightEnum());
-            v_ToCellStyle.setBorderTop(          v_FromCellStyle.getBorderTopEnum());
+            v_ToCellStyle.setBorderBottom(       v_FromCellStyle.getBorderBottom());
+            v_ToCellStyle.setBorderLeft(         v_FromCellStyle.getBorderLeft());
+            v_ToCellStyle.setBorderRight(        v_FromCellStyle.getBorderRight());
+            v_ToCellStyle.setBorderTop(          v_FromCellStyle.getBorderTop());
             
             // 边框颜色
             if ( v_FromCellStyle.getLeftBorderXSSFColor() != null )
@@ -1870,7 +1870,7 @@ public class ExcelHelp
             {
                 v_ToCellStyle.setFillForegroundColor(v_FromCellStyle.getFillForegroundColor());
             }
-            v_ToCellStyle.setFillPattern(        v_FromCellStyle.getFillPatternEnum());
+            v_ToCellStyle.setFillPattern(        v_FromCellStyle.getFillPattern());
             v_ToCellStyle.setHidden(             v_FromCellStyle.getHidden());
             
             // 首行缩进
@@ -1880,7 +1880,7 @@ public class ExcelHelp
             // 旋转
             v_ToCellStyle.setShrinkToFit(        v_FromCellStyle.getShrinkToFit());
             v_ToCellStyle.setRotation(           v_FromCellStyle.getRotation());
-            v_ToCellStyle.setVerticalAlignment(  v_FromCellStyle.getVerticalAlignmentEnum());
+            v_ToCellStyle.setVerticalAlignment(  v_FromCellStyle.getVerticalAlignment());
             v_ToCellStyle.setWrapText(           v_FromCellStyle.getWrapText());
             
             v_ToCellStyle.setQuotePrefixed(      v_FromCellStyle.getQuotePrefixed());

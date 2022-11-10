@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.hy.common.Date;
@@ -178,7 +178,7 @@ public class ExcelToJava
         int          v_RowCountData  = i_RTemplate.getRowCountData();
         boolean      v_IsHaveData    = false;
         Object       v_TitleObj      = null;
-        List<Object> v_Ret           = new ArrayList<Object>();  
+        List<Object> v_Ret           = new ArrayList<Object>();
         int          v_MaxColSize    = 0;
         
         // 读取标题信息
@@ -256,9 +256,9 @@ public class ExcelToJava
                 }
             }
             
-            if ( v_IsHaveData || i_IsAddNull ) 
-            { 
-                v_Ret.add(v_RowObj); 
+            if ( v_IsHaveData || i_IsAddNull )
+            {
+                v_Ret.add(v_RowObj);
             }
             v_IsHaveData = false;
         }
@@ -286,7 +286,7 @@ public class ExcelToJava
         int          v_CellCount    = i_Sheet.getRow(i_RTemplate.getDataBeginRow()).getLastCellNum();
         int          v_ColCountData = i_RTemplate.getColCountData();
         boolean      v_IsHaveData   = false;
-        List<Object> v_Ret          = new ArrayList<Object>();   
+        List<Object> v_Ret          = new ArrayList<Object>();
         
         // 横向扩展
         for (int v_ColumnNo=i_RTemplate.getDataBeginCol(); v_ColumnNo<v_CellCount; v_ColumnNo+=v_ColCountData)
@@ -321,9 +321,9 @@ public class ExcelToJava
                 }
             }
             
-            if ( v_IsHaveData || i_IsAddNull ) 
-            { 
-                v_Ret.add(v_RowObj); 
+            if ( v_IsHaveData || i_IsAddNull )
+            {
+                v_Ret.add(v_RowObj);
             }
             v_IsHaveData = false;
         }
@@ -346,20 +346,20 @@ public class ExcelToJava
     public final static Object readCellValue(Cell i_Cell)
     {
         Object v_Value = null;
-        if ( i_Cell.getCellTypeEnum() == CellType.STRING )
+        if ( i_Cell.getCellType() == CellType.STRING )
         {
             v_Value = i_Cell.getStringCellValue();
         }
-        else if ( i_Cell.getCellTypeEnum() == CellType.NUMERIC )
+        else if ( i_Cell.getCellType() == CellType.NUMERIC )
         {
-            if ( HSSFDateUtil.isCellDateFormatted(i_Cell) ) 
+            if ( DateUtil.isCellDateFormatted(i_Cell) )
             {
                 if ( i_Cell.getDateCellValue() != null )
                 {
                     v_Value = new Date(i_Cell.getDateCellValue());
                 }
-            } 
-            else 
+            }
+            else
             {
                 v_Value = String.valueOf(i_Cell.getNumericCellValue());
                 
@@ -371,7 +371,8 @@ public class ExcelToJava
                 {
                     if ( null != v_Value )
                     {
-                        i_Cell.setCellType(CellType.STRING);
+                        // 2022-11-10 Del：POI 5.x的版本不建议使用
+                        // i_Cell.setCellType(CellType.STRING);
                         Object v_ValueTemp = i_Cell.getStringCellValue();
                         
                         // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)
@@ -381,7 +382,7 @@ public class ExcelToJava
                         }
                         else
                         {
-                            // 将 0.28999999999999992 转为 0.28 
+                            // 将 0.28999999999999992 转为 0.28
                             v_ValueTemp = "" + Help.round(v_Value.toString() ,10);
                             
                             if ( v_ValueTemp.toString().length() < v_Value.toString().length() )
@@ -397,11 +398,11 @@ public class ExcelToJava
                 }
             }
         }
-        else if ( i_Cell.getCellTypeEnum() == CellType.BOOLEAN )
+        else if ( i_Cell.getCellType() == CellType.BOOLEAN )
         {
             v_Value = Boolean.valueOf(i_Cell.getBooleanCellValue());
         }
-        else if ( i_Cell.getCellTypeEnum() == CellType.FORMULA )
+        else if ( i_Cell.getCellType() == CellType.FORMULA )
         {
             try
             {
@@ -411,14 +412,14 @@ public class ExcelToJava
             {
                 try
                 {
-                    if ( HSSFDateUtil.isCellDateFormatted(i_Cell) ) 
+                    if ( DateUtil.isCellDateFormatted(i_Cell) )
                     {
                         if ( i_Cell.getDateCellValue() != null )
                         {
                             v_Value = new Date(i_Cell.getDateCellValue());
                         }
-                    } 
-                    else 
+                    }
+                    else
                     {
                         v_Value = String.valueOf(i_Cell.getNumericCellValue());
                         
@@ -430,6 +431,7 @@ public class ExcelToJava
                         {
                             if ( null != v_Value )
                             {
+                                i_Cell.setCellValue("");
                                 i_Cell.setCellType(CellType.STRING);
                                 Object v_ValueTemp = i_Cell.getStringCellValue();
                                 

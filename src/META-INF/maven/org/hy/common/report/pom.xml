@@ -4,7 +4,7 @@
 
   <groupId>org</groupId>
   <artifactId>hy.common.report</artifactId>
-  <version>3.2.12</version>
+  <version>3.3.0</version>
   <packaging>jar</packaging>
 
   <name>hy.common.report</name>
@@ -50,43 +50,43 @@
     <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>
-        <version>3.17</version>
+        <version>5.2.2</version>
     </dependency>
     
     <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi-ooxml</artifactId>
-        <version>3.17</version>
+        <version>5.2.2</version>
     </dependency>
     
     <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi-scratchpad</artifactId>
-        <version>3.17</version>
+        <version>5.2.2</version>
     </dependency>
     
     <dependency>
         <groupId>org.apache.xmlbeans</groupId>
         <artifactId>xmlbeans</artifactId>
-        <version>2.6.0</version>
+        <version>5.0.3</version>
     </dependency>
     
     <dependency>
         <groupId>com.github.virtuald</groupId>
         <artifactId>curvesapi</artifactId>
-        <version>1.04</version>
+        <version>1.07</version>
     </dependency>
     
     <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>1.11</version>
+        <version>1.15</version>
     </dependency>
     
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
-        <version>4.1</version>
+        <version>4.4</version>
     </dependency>
     
     <dependency>

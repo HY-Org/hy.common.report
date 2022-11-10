@@ -19,7 +19,7 @@ import org.hy.common.report.ExcelHelp;
 
 
 /**
- * 工作薄 
+ * 工作薄
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-03-18
@@ -36,7 +36,7 @@ public class RWorkbook
     /** 工作薄 */
     private Workbook workbook;
     
-    /** 
+    /**
      * 工作薄所用到的模板中的字体信息。
      * 
      * 此字体为已在工作薄中创建过的字体，是本工作薄的字体对象，不是模板的。
@@ -45,7 +45,7 @@ public class RWorkbook
      */
     private Map<String ,Font> fonts;
     
-    /** 
+    /**
      * 工作薄所用到的模板中的单元格样式信息。
      * 
      * 此单元格样式为已在工作薄中创建过的单元格样式，是本工作薄的单元格样式对象，不是模板的。
@@ -203,19 +203,19 @@ public class RWorkbook
         {
             HSSFCellStyle v_CellStyle = (HSSFCellStyle)i_CellStyle;
             
-            v_Buffer.append(v_CellStyle.getAlignmentEnum());
+            v_Buffer.append(v_CellStyle.getAlignment());
             v_Buffer.append("_DF");
             v_Buffer.append(v_CellStyle.getDataFormat());
             
             // 边框和边框颜色
             v_Buffer.append("_BB");
-            v_Buffer.append(v_CellStyle.getBorderBottomEnum());
+            v_Buffer.append(v_CellStyle.getBorderBottom());
             v_Buffer.append("_BL");
-            v_Buffer.append(v_CellStyle.getBorderLeftEnum());
+            v_Buffer.append(v_CellStyle.getBorderLeft());
             v_Buffer.append("_BR");
-            v_Buffer.append(v_CellStyle.getBorderRightEnum());
+            v_Buffer.append(v_CellStyle.getBorderRight());
             v_Buffer.append("_BT");
-            v_Buffer.append(v_CellStyle.getBorderTopEnum());
+            v_Buffer.append(v_CellStyle.getBorderTop());
             v_Buffer.append("_CBL");
             v_Buffer.append(v_CellStyle.getLeftBorderColor());
             v_Buffer.append("_CBR");
@@ -231,7 +231,7 @@ public class RWorkbook
             v_Buffer.append("_CFF");
             v_Buffer.append(v_CellStyle.getFillForegroundColor());
             v_Buffer.append("_CFP");
-            v_Buffer.append(v_CellStyle.getFillPatternEnum());
+            v_Buffer.append(v_CellStyle.getFillPattern());
             v_Buffer.append("_H");
             v_Buffer.append(v_CellStyle.getHidden());
             
@@ -247,7 +247,7 @@ public class RWorkbook
             v_Buffer.append("_R");
             v_Buffer.append(v_CellStyle.getRotation());
             v_Buffer.append("_VA");
-            v_Buffer.append(v_CellStyle.getVerticalAlignmentEnum());
+            v_Buffer.append(v_CellStyle.getVerticalAlignment());
             v_Buffer.append("_WT");
             v_Buffer.append(v_CellStyle.getWrapText());
             
@@ -262,19 +262,19 @@ public class RWorkbook
         {
             XSSFCellStyle v_CellStyle = (XSSFCellStyle)i_CellStyle;
             
-            v_Buffer.append(v_CellStyle.getAlignmentEnum());
+            v_Buffer.append(v_CellStyle.getAlignment());
             v_Buffer.append("_DF");
             v_Buffer.append(v_CellStyle.getDataFormat());
             
             // 边框和边框颜色
             v_Buffer.append("_BB");
-            v_Buffer.append(v_CellStyle.getBorderBottomEnum());
+            v_Buffer.append(v_CellStyle.getBorderBottom());
             v_Buffer.append("_BL");
-            v_Buffer.append(v_CellStyle.getBorderLeftEnum());
+            v_Buffer.append(v_CellStyle.getBorderLeft());
             v_Buffer.append("_BR");
-            v_Buffer.append(v_CellStyle.getBorderRightEnum());
+            v_Buffer.append(v_CellStyle.getBorderRight());
             v_Buffer.append("_BT");
-            v_Buffer.append(v_CellStyle.getBorderTopEnum());
+            v_Buffer.append(v_CellStyle.getBorderTop());
             
             v_Buffer.append("_CBL");
             if ( v_CellStyle.getLeftBorderXSSFColor() != null )
@@ -346,7 +346,7 @@ public class RWorkbook
             }
             
             v_Buffer.append("_CFP");
-            v_Buffer.append(v_CellStyle.getFillPatternEnum());
+            v_Buffer.append(v_CellStyle.getFillPattern());
             v_Buffer.append("_H");
             v_Buffer.append(v_CellStyle.getHidden());
             
@@ -362,7 +362,7 @@ public class RWorkbook
             v_Buffer.append("_R");
             v_Buffer.append(v_CellStyle.getRotation());
             v_Buffer.append("_VA");
-            v_Buffer.append(v_CellStyle.getVerticalAlignmentEnum());
+            v_Buffer.append(v_CellStyle.getVerticalAlignment());
             v_Buffer.append("_WT");
             v_Buffer.append(v_CellStyle.getWrapText());
             
@@ -524,7 +524,7 @@ public class RWorkbook
     /**
      * 设置：工作薄
      * 
-     * @param workbook 
+     * @param workbook
      */
     public void setWorkbook(Workbook workbook)
     {
@@ -554,7 +554,7 @@ public class RWorkbook
      * 
      * Map.key 为字体ID
      * 
-     * @param fonts 
+     * @param fonts
      */
     public void setFonts(Map<String ,Font> fonts)
     {
@@ -584,7 +584,7 @@ public class RWorkbook
      * 
      * Map.key 为样式ID
      * 
-     * @param cellStyles 
+     * @param cellStyles
      */
     public void setCellStyles(Map<String ,CellStyle> cellStyles)
     {

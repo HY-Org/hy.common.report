@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 import javax.imageio.ImageIO;
 
-import org.apache.poi.POIXMLDocumentPart.RelationPart;
+import org.apache.poi.ooxml.POIXMLDocumentPart.RelationPart;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
@@ -42,8 +42,8 @@ public class QrCode
     {
         try
         {
-            addPageHead2("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\word\\原.docx" 
-                        ,"C:\\Users\\ZhengWei\\Desktop\\页眉测试.docx" 
+            addPageHead2("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\word\\原.docx"
+                        ,"C:\\Users\\ZhengWei\\Desktop\\页眉测试.docx"
                         ,"D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\word\\1.png");
         }
         catch (Exception e)
@@ -74,8 +74,8 @@ public class QrCode
         FileInputStream in=new FileInputStream(file);
         BufferedImage image=ImageIO.read(file);
         
-        XWPFPicture picture = run.addPicture(in 
-                ,XWPFDocument.PICTURE_TYPE_PNG 
+        XWPFPicture picture = run.addPicture(in
+                ,XWPFDocument.PICTURE_TYPE_PNG
                 ,imagePath
                 ,Units.pixelToEMU(image.getWidth())
                 ,Units.pixelToEMU(image.getHeight()));
@@ -118,8 +118,8 @@ public class QrCode
         FileInputStream in=new FileInputStream(file);
         BufferedImage image=ImageIO.read(file);
         
-        XWPFPicture picture = run.addPicture(in 
-                ,XWPFDocument.PICTURE_TYPE_PNG 
+        XWPFPicture picture = run.addPicture(in
+                ,XWPFDocument.PICTURE_TYPE_PNG
                 ,imagePath
                 ,Units.pixelToEMU(image.getWidth())
                 , Units.pixelToEMU(image.getHeight()));
