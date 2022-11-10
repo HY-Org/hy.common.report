@@ -1,33 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.base"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.file"/>
-	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
-	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.zxing"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.tpool"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/hy.common.xjava"/>
-	<classpathentry kind="lib" path="lib/5.2.2/poi-5.2.2.jar" sourcepath="lib/5.2.2/poi-src-5.2.2-20220312.zip"/>
-	<classpathentry kind="lib" path="lib/5.2.2/poi-examples-5.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/poi-excelant-5.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/poi-javadoc-5.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/poi-ooxml-5.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/poi-ooxml-full-5.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/poi-ooxml-lite-5.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/poi-scratchpad-5.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/lib/commons-codec-1.15.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/lib/commons-collections4-4.4.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/lib/commons-io-2.11.0.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/lib/commons-math3-3.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/lib/log4j-api-2.17.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/lib/SparseBitSet-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/ooxml-lib/commons-compress-1.21.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/ooxml-lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/ooxml-lib/curvesapi-1.07.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/ooxml-lib/slf4j-api-1.7.36.jar"/>
-	<classpathentry kind="lib" path="lib/5.2.2/ooxml-lib/xmlbeans-5.0.3.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+
+
+
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+
+        <template id="ReportTotalSubtotal">
+            <name>小计、分组数据的报表演示</name>
+            <excelFileName>classpath:产品压力试验绩效统计汇总表11.xlsx</excelFileName>
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>3</titleEndRow>
+            <dataBeginRow>4</dataBeginRow>
+            <dataEndRow>4</dataEndRow>
+            <subtotalBeginRow>5</subtotalBeginRow>   <!-- 报表小计的开始行号（包括此行）。下标从零开始 -->
+            <subtotalEndRow>5</subtotalEndRow>       <!-- 报表小计的结束行号（包括此行）。下标从零开始 -->
+            <rowAccessWindowSize>10000</rowAccessWindowSize>
+            <dataClass>org.hy.common.report.junit.total02.ProductPressureTestStatisticsGroup</dataClass>
+        </template>
+
+    </xconfig>
+
+</config>
