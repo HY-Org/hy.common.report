@@ -728,7 +728,7 @@ __二维码的生成的演示举例__
 
 __二维码的生成的XML配置举例__
 
-只需添加[ZXingListener](src/org/hy/common/report/event/ZXingListener.java)监听器的到配置文件中即可，如下
+只需添加[ZXingListener](src/main/java/org/hy/common/report/event/ZXingListener.java)监听器的到配置文件中即可，如下
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -792,7 +792,7 @@ __条形码的生成的演示举例__
 
 __条形码的生成的XML配置举例__
 
-只需添加[ZXingListener](src/org/hy/common/report/event/ZXingListener.java)监听器的到配置文件中即可，如下
+只需添加[ZXingListener](src/main/java/org/hy/common/report/event/ZXingListener.java)监听器的到配置文件中即可，如下
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
