@@ -80,7 +80,7 @@ __Excel模板文件中定义变量名称__，格式为 ":xx.yy.zz" ，通过反�
 常规列表加合计的模板举例
 ------
  
-[查看测试代码](test/java/org/hy/common/report/junit/normal)
+[查看测试代码](src/test/java/org/hy/common/report/junit/normal)
   
 ![image](images/Normal.png)
 
@@ -136,7 +136,7 @@ __常规列表加合计的XML配置__
 一行数据一页的模板举例
 ------
 
-[查看测试代码](test/java/org/hy/common/report/junit/versionCompare)
+[查看测试代码](src/test/java/org/hy/common/report/junit/versionCompare)
 
 ![image](images/Excel.png)
 
@@ -215,7 +215,7 @@ ExcelHelp.save(ReportHelp.toExcel("Excel工作表名称" ,数据集合 ,v_RTempl
 动态行和小计的模板举例
 ------
 
-[查看测试代码](test/java/org/hy/common/report/junit/total)
+[查看测试代码](src/test/java/org/hy/common/report/junit/total)
 
 ![image](images/Subtotal.png)
 
@@ -272,7 +272,7 @@ __小计位置在明细数据之前__
 分页页眉和分页页脚的模板举例
 ------
 
-[查看测试代码](test/java/org/hy/common/report/junit/pageTitle)
+[查看测试代码](src/test/java/org/hy/common/report/junit/pageTitle)
 
 ![image](images/PageTitle.png)
 
@@ -341,7 +341,7 @@ __分页页眉和分页页脚的XML配置举例__
 追加模式的复合报表举例
 ------
 
-[查看测试代码](test/java/org/hy/common/report/junit/append)
+[查看测试代码](src/test/java/org/hy/common/report/junit/append)
 
 思路：将多个模板报表组合成一个更大的复合报表
 
@@ -374,7 +374,7 @@ __追加模式的复合报表的Java举例__
 ------
 Excel数据文件转为Java对象
 
-[查看测试代码](test/java/org/hy/common/report/junit/readVertical)
+[查看测试代码](src/test/java/org/hy/common/report/junit/readVertical)
  
 ![image](images/ReadVertical.png)
 
@@ -425,7 +425,7 @@ Help.print(v_Datas);
 ------
 Excel数据文件转为Java对象
 
-[查看测试代码](test/java/org/hy/common/report/junit/readHorizontal)
+[查看测试代码](src/test/java/org/hy/common/report/junit/readHorizontal)
  
 ![image](images/ReadHorizontal.png)
 
@@ -500,7 +500,7 @@ __scaleX__：可在最大高宽、最小高宽的基础上（当然，也可独�
 
 __scaleY__：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放
 
-[查看测试代码](test/java/org/hy/common/report/junit/versionCompare)
+[查看测试代码](src/test/java/org/hy/common/report/junit/versionCompare)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -713,7 +713,7 @@ v_NewCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);    // 设置填
 
 i_DataCell.setCellStyle(v_NewCellStyle);                            // 应用样式
 ```
-[查看"动态变色的监听器"的完整代码](test/java/org/hy/common/report/junit/normal/ColorListener.java)
+[查看"动态变色的监听器"的完整代码](src/test/java/org/hy/common/report/junit/normal/ColorListener.java)
 
 
 
@@ -777,7 +777,7 @@ __二维码的生成的XML配置举例__
 </config>
 ```
 
-[查看"二维码的生成"的完整代码](test/java/org/hy/common/report/junit/zxing)
+[查看"二维码的生成"的完整代码](src/test/java/org/hy/common/report/junit/zxing)
 
 
 
@@ -841,7 +841,7 @@ __条形码的生成的XML配置举例__
 </config>
 ```
 
-[查看"条形码的生成"的完整代码](test/java/org/hy/common/report/junit/zxing)
+[查看"条形码的生成"的完整代码](src/test/java/org/hy/common/report/junit/zxing)
 
 
 
@@ -893,7 +893,7 @@ __富文本支持的XML配置举例__
 </config>
 ```
 
-[查看"富文本"的完整代码](test/java/org/hy/common/report/junit/font)
+[查看"富文本"的完整代码](src/test/java/org/hy/common/report/junit/font)
 
 
 
@@ -929,7 +929,7 @@ Excel公式的填充赋值与普通文本一样，只要在Excel模板上设定�
     2. 动态公式：由Java代码动态生成的公式，是按占位符填充的。填充值的首字母应为等号（=）。
 
 
-[查看"Excel公式计算"的完整代码](test/java/org/hy/common/report/junit/formula)
+[查看"Excel公式计算"的完整代码](src/test/java/org/hy/common/report/junit/formula)
 
 
 
