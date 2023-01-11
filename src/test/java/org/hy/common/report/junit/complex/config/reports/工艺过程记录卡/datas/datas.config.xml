@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="datas"           class="java.util.ArrayList" />
+    <import name="datasItem"       class="java.util.ArrayList" />
+    <import name="item"            class="org.hy.common.app.Param" />
+    
+    
+    
+    <!-- 报表测试数据生成配置 -->
+    <xconfig>
+    
+        <!-- 按Class指定的类型实例对象，并设置对象id -->
+        <datasMaker id="DatasMaker_工艺过程记录卡" class="org.hy.common.report.junit.complex.config.reports.工艺过程记录卡.datas.DatasMaker">
+        
+            <!-- 无入参参数、有返回值的方法调用 -->
+            <call name="makeDatas_02" returnID="Datas_工艺过程记录卡" />
+        
+        </datasMaker>
+        
+        
+        
+        <!-- 将上面的多个方法执行的返回结果，统一保存在一个集合中 -->
+        <datas id="ReportDatas_工艺过程记录卡" this="Datas_工艺过程记录卡">
+        </datas>
+        
+    </xconfig>
+    
+</config>

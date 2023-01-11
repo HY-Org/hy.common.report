@@ -2,32 +2,32 @@
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportAppendComplex01">
-			<name>追加模式的复合报表--模板01</name>
-			
-			<!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
-			<excelFileName>classpath:templates/AppendComplex_T01.xlsx</excelFileName>
-			
-			<!-- 定义报表标题在模板中位置 -->
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>0</titleEndRow>
-			
-			<!-- 定义报表数据在模板中位置 -->
-			<dataBeginRow>1</dataBeginRow>
-			<dataEndRow>2</dataEndRow>
-			
-			<!-- 定义报表数据对应的Java类型 -->
-			<dataClass>org.hy.common.report.junit.append.bean.AppendComplex01</dataClass>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportAppendComplex01">
+            <name>追加模式的复合报表--模板01</name>
+            
+            <!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
+            <excelFileName>classpath:templates/AppendComplex_T01.xlsx</excelFileName>
+            
+            <!-- 定义报表标题在模板中位置 -->
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>0</titleEndRow>
+            
+            <!-- 定义报表数据在模板中位置 -->
+            <dataBeginRow>1</dataBeginRow>
+            <dataEndRow>2</dataEndRow>
+            
+            <!-- 定义报表数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.append.bean.AppendComplex01</dataClass>
+        </template>
+        
+    </xconfig>
+    
 </config>

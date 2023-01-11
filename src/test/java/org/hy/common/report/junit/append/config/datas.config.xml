@@ -2,43 +2,43 @@
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="datas"           class="java.util.ArrayList" />
-	<import name="datasItem"       class="java.util.ArrayList" />
-	<import name="item"            class="org.hy.common.app.Param" />
-	
-	
-	
-	<!-- 报表测试数据生成配置 -->
-	<xconfig>
-	
-		<item id="QCodeImagePath">
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="datas"           class="java.util.ArrayList" />
+    <import name="datasItem"       class="java.util.ArrayList" />
+    <import name="item"            class="org.hy.common.app.Param" />
+    
+    
+    
+    <!-- 报表测试数据生成配置 -->
+    <xconfig>
+    
+        <item id="QCodeImagePath">
             <name>QCodeImagePath</name>
-			<value>D:\WorkSpace_SearchDesktop\hy.common.report\test\org\hy\common\report\junit\append\config\images\append</value>
-			<comment>二维码路径</comment>
+            <value>D:\WorkSpace_SearchDesktop\hy.common.report\test\org\hy\common\report\junit\append\config\images\append</value>
+            <comment>二维码路径</comment>
         </item>
-	        
-	
-		<!-- 按Class指定的类型实例对象，并设置对象id -->
-		<datasMaker id="DatasMaker" class="org.hy.common.report.junit.append.DatasMaker">
-		
-			<!-- 无入参参数、有返回值的方法调用 -->
-			<call name="makeAppendComplex01" returnID="Datas01" />
-			<call name="makeAppendComplex02" returnID="Datas02" />
-			<call name="makeAppendComplex03" returnID="Datas03" />
-		
-		</datasMaker>
-		
-		
-		
-		<!-- 按引包import指定的类型实例对象 -->
-		<!-- 将上面的数个方法执行的返回结果，统一保存在一个集合中 -->
-		<datas id="ReportDatas">
-			<datasItem ref="Datas01" />
-			<datasItem ref="Datas02" />
-			<datasItem ref="Datas03" />
-		</datas>
-		
-	</xconfig>
-	
+            
+    
+        <!-- 按Class指定的类型实例对象，并设置对象id -->
+        <datasMaker id="DatasMaker" class="org.hy.common.report.junit.append.DatasMaker">
+        
+            <!-- 无入参参数、有返回值的方法调用 -->
+            <call name="makeAppendComplex01" returnID="Datas01" />
+            <call name="makeAppendComplex02" returnID="Datas02" />
+            <call name="makeAppendComplex03" returnID="Datas03" />
+        
+        </datasMaker>
+        
+        
+        
+        <!-- 按引包import指定的类型实例对象 -->
+        <!-- 将上面的数个方法执行的返回结果，统一保存在一个集合中 -->
+        <datas id="ReportDatas">
+            <datasItem ref="Datas01" />
+            <datasItem ref="Datas02" />
+            <datasItem ref="Datas03" />
+        </datas>
+        
+    </xconfig>
+    
 </config>

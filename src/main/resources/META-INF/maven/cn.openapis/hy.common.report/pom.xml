@@ -6,7 +6,7 @@
 
     <groupId>org</groupId>
     <artifactId>hy.common.report</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.1</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.report</name>
@@ -54,28 +54,28 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.base</artifactId>
-            <version>1.0.162</version>
+            <version>1.0.164</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.file</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.xjava</artifactId>
-            <version>4.1.7</version>
+            <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.zxing</artifactId>
-            <version>3.4.1.a</version>
+            <version>3.4.2</version>
             <scope>provided</scope>
         </dependency>
         
@@ -136,7 +136,7 @@
     </dependencies>
 
     <scm>
-        <tag>main</tag>
+        <tag>master</tag>
         <url>git@github.com:HY-ZhengWei/hy.common.report.git</url>
         <connection>git@github.com:HY-ZhengWei/hy.common.report.git</connection>
         <developerConnection>git@github.com:HY-ZhengWei/hy.common.report.git</developerConnection>
@@ -146,7 +146,13 @@
         <resources>
             <resource>
                 <directory>src/main/java</directory>
-                <filtering>false</filtering>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.html</include>
+                    <include>**/*.txt</include>
+                    <include>**/*.ini</include>
+                </includes>
             </resource>
 
             <resource>
