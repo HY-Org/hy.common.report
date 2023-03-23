@@ -2454,7 +2454,7 @@ public class JavaToExcel
             
             if ( i_RTemplate.isExists(v_ValueName) )
             {
-                RValue        v_RValue   = i_RTemplate.getValue(v_ValueName ,i_Datas ,io_RSystemValue ,io_RValue);
+                RValue        v_RValue   = i_RTemplate.getValue(v_ValueName ,i_Datas ,io_RSystemValue ,io_RValue ,i_TemplateCell.getColumnIndex());
                 ValueListener v_Listener = i_RTemplate.getListener(v_ValueName);
                 
                 if ( v_Listener != null )

@@ -9,37 +9,38 @@
 * [概要说明](#概要说明)
 * Java对象转Excel报表
     * [常规列表加合计的模板举例](#常规列表加合计的模板举例)
-	* [一行数据一页的模板举例](#一行数据一页的模板举例)
-	* [动态行和小计的模板举例](#动态行和小计的模板举例)
-	* [分页页眉和分页页脚的模板举例](#分页页眉和分页页脚的模板举例)
-	* [追加模式的复合报表举例](#追加模式的复合报表举例)
+    * [一行数据一页的模板举例](#一行数据一页的模板举例)
+    * [动态行和小计的模板举例](#动态行和小计的模板举例)
+    * [分页页眉和分页页脚的模板举例](#分页页眉和分页页脚的模板举例)
+    * [追加模式的复合报表举例](#追加模式的复合报表举例)
+    * [九九乘法表（动态列举例）](#九九乘法表（动态列举例）)
 * Excel报表转Java对象
-	* [常规的纵深扩展的模板举例](#常规的纵深扩展的模板举例)
-	* [横向扩展的模板举例](#横向扩展的模板举例)
+    * [常规的纵深扩展的模板举例](#常规的纵深扩展的模板举例)
+    * [横向扩展的模板举例](#横向扩展的模板举例)
 * 使用小技巧
-	* [动态图片的缩放及偏移](#动态图片的缩放及偏移)
-	* [小数格式的处理](#小数格式的处理)
-	* [添加高级筛选](#添加高级筛选)
-	* [冻结标题](#冻结标题)
-	* [自动行高](#自动行高)
-	* [动态背景色](#动态背景色)
-	* [二维码的生成（占位符监听器）](#二维码的生成)
-	* [条形码的生成（占位符监听器）](#条形码的生成)
-	* [富文本](#富文本的生成)
-	* [Excel公式](#Excel公式计算)
+    * [动态图片的缩放及偏移](#动态图片的缩放及偏移)
+    * [小数格式的处理](#小数格式的处理)
+    * [添加高级筛选](#添加高级筛选)
+    * [冻结标题](#冻结标题)
+    * [自动行高](#自动行高)
+    * [动态背景色](#动态背景色)
+    * [二维码的生成（占位符监听器）](#二维码的生成)
+    * [条形码的生成（占位符监听器）](#条形码的生成)
+    * [富文本](#富文本的生成)
+    * [Excel公式](#Excel公式计算)
 * 注意要点
-	* [字体颜色](#高版本Excel的字体颜色)
-	* [字体名称](#高版本Excel的字体名称)
+    * [字体颜色](#高版本Excel的字体颜色)
+    * [字体名称](#高版本Excel的字体名称)
 * [特别鸣谢](#特别鸣谢)
 
 
 
 主导思想
 ------
-	
-	1. 由Excel模板文件 + XML配置文件即可定义一张报表。无须编写代码，实现快速、高效、简单的开发报表。
+    
+    1. 由Excel模板文件 + XML配置文件即可定义一张报表。无须编写代码，实现快速、高效、简单的开发报表。
 
-	2. 并且可以反向，将Excel文件数据转为Java对象。
+    2. 并且可以反向，将Excel文件数据转为Java对象。
 
 
 
@@ -53,25 +54,31 @@
 
 __Excel模板文件中定义变量名称__，格式为 ":xx.yy.zz" ，通过反射生成报表数据。格式中的冒号 ":" 可通过模板XML配置定义更换。
 
-	1. :xx.yy[].zz   方括号表示前面的方法名称的返回类型是集合对象。目前支持List、Set、Map三种集合。并须对集合遍历动态生成数据。
-	
-	2. :xx.yy.$size  美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
-	
-	3. {}  变量名称前后有普通文字的可使用{}花括号限定一下。
-	                    
-		如，前缀文本{:变量名称}后缀文本   或   前缀文本{:固定系统变量}后缀文本。
+    1. :xx.yy[].zz   方括号表示前面的方法名称的返回类型是集合对象。目前支持List、Set、Map三种集合。并须对集合遍历动态生成数据。
+    
+    2. :xx.yy.$size  美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
+    
+    3. {}  变量名称前后有普通文字的可使用{}花括号限定一下。
+                        
+        如，前缀文本{:变量名称}后缀文本   或   前缀文本{:固定系统变量}后缀文本。
+      
+    4. ()  方法参数。如 :xx(:ColNo__)，此时映射一行数据Java对象的getXX(int i_ColNo)方法。
 
 系统也定义一些固定系统变量名称，如下：
 
-	1. :RowNo__             数据行号的变量名称。下标从1开始
+    1. :RowNo__             数据行号的变量名称。下标从1开始
   
-	2. :RowIndex__          数据索引号的变量名称。下标从0开始
+    2. :RowIndex__          数据索引号的变量名称。下标从0开始
     
-	3. :RowCount__          数据总量的变量名称
-	
-	4. :RowSubtotalCount__  数据小计总量的变量名称
-	
-	5. :PageNo__            分页页号的变量名称
+    3. :RowCount__          数据总量的变量名称
+    
+    4. :ColNo__             数据列号的变量名称。下标从1开始
+  
+    5. :ColIndex__          数据列索引号的变量名称。下标从0开始
+    
+    6. :RowSubtotalCount__  数据小计总量的变量名称
+    
+    7. :PageNo__            分页页号的变量名称
 
 
 
@@ -94,38 +101,38 @@ __常规列表加合计的XML配置__
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportNormal">
-			<name>常规列表加合计的报表演示</name>
-			
-			<!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
-			<excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
-			
-			<!-- 定义报表标题在模板中位置 -->
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
-			
-			<!-- 定义报表数据在模板中位置 -->
-			<dataBeginRow>2</dataBeginRow>
-			<dataEndRow>2</dataEndRow>
-			
-			<!-- 定义报表合计在模板中位置 -->
-			<totalBeginRow>3</totalBeginRow>
-			<totalEndRow>4</totalEndRow>
-			
-			<!-- 定义报表数据对应的Java类型 -->
-			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportNormal">
+            <name>常规列表加合计的报表演示</name>
+            
+            <!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
+            <excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
+            
+            <!-- 定义报表标题在模板中位置 -->
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            
+            <!-- 定义报表数据在模板中位置 -->
+            <dataBeginRow>2</dataBeginRow>
+            <dataEndRow>2</dataEndRow>
+            
+            <!-- 定义报表合计在模板中位置 -->
+            <totalBeginRow>3</totalBeginRow>
+            <totalEndRow>4</totalEndRow>
+            
+            <!-- 定义报表数据对应的Java类型 -->
+            <dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```  
 
@@ -140,9 +147,9 @@ __常规列表加合计的XML配置__
 
 ![image](images/Excel.png)
 
-	1. 列宽问题：请将模板中的每一列的列宽均设置成整数(或合适的小数)，这将影响生成报表的列宽。(POI在换算单位时，除值后取整，可能造成列宽有差异)。
-	
-	2. 单元格颜色问题：在使用2003版本的模板时，单元格颜色最好设置为标准颜色，否则会出现颜色的失真。   
+    1. 列宽问题：请将模板中的每一列的列宽均设置成整数(或合适的小数)，这将影响生成报表的列宽。(POI在换算单位时，除值后取整，可能造成列宽有差异)。
+    
+    2. 单元格颜色问题：在使用2003版本的模板时，单元格颜色最好设置为标准颜色，否则会出现颜色的失真。   
   
 __一行数据一页的的生成结果__
   
@@ -156,46 +163,46 @@ __一行数据一页的XML配置__
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportTemplate">
-			<name>模板名称</name>
-			<excelFileName>classpath:JU_ExcelHelp.xls</excelFileName>   <!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
-			<titleBeginRow>0</titleBeginRow>                            <!-- 定义报表标题在模板中位置 -->
-			<titleEndRow>0</titleEndRow>
-			<dataBeginRow>1</dataBeginRow>                              <!-- 定义报表数据在模板中位置 -->           
-			<dataEndRow>59</dataEndRow>
-			<totalBeginRow>60</totalBeginRow>                           <!-- 定义报表合计在模板中位置 -->
-			<totalEndRow>61</totalEndRow>
-			<dataClass>org.hy.common.report.junit.ExcelBean</dataClass> <!-- 定义报表数据对应的Java类型 -->
-			<valueSign>:</valueSign>                                    <!-- Excel模板中值的标记。默认为一个冒号。通过它识别要反射获取的值。支持 xx.yy.zz 格式 -->
-			
-			<call name="addListener">                                   <!-- 定义自定义变量名称的二次加工事件 -->
-				<listener class="org.hy.common.report.event.ImageListener">
-					<valueName>image</valueName>     <!-- 定义变量名称。注意：此处不用写占位符前缀冒号 -->
-					<beginRow>29</beginRow>          <!-- 定义动态图片在模板中的位置 -->
-					<endRow>43</endRow>
-					<beginColumn>0</beginColumn>
-					<endColumn>8</endColumn>
-					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
-					<maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
-					<minWidth>50</minWidth>          <!-- 图片最小宽度 -->
-					<minHeight>20</minHeight>        <!-- 图片最小高度 -->
-					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
-					<marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
-					<marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
-				</listener>
-			</call>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportTemplate">
+            <name>模板名称</name>
+            <excelFileName>classpath:JU_ExcelHelp.xls</excelFileName>   <!-- Excel模板文件所在地方。并通过扩展名识别文件格式类型 -->
+            <titleBeginRow>0</titleBeginRow>                            <!-- 定义报表标题在模板中位置 -->
+            <titleEndRow>0</titleEndRow>
+            <dataBeginRow>1</dataBeginRow>                              <!-- 定义报表数据在模板中位置 -->           
+            <dataEndRow>59</dataEndRow>
+            <totalBeginRow>60</totalBeginRow>                           <!-- 定义报表合计在模板中位置 -->
+            <totalEndRow>61</totalEndRow>
+            <dataClass>org.hy.common.report.junit.ExcelBean</dataClass> <!-- 定义报表数据对应的Java类型 -->
+            <valueSign>:</valueSign>                                    <!-- Excel模板中值的标记。默认为一个冒号。通过它识别要反射获取的值。支持 xx.yy.zz 格式 -->
+            
+            <call name="addListener">                                   <!-- 定义自定义变量名称的二次加工事件 -->
+                <listener class="org.hy.common.report.event.ImageListener">
+                    <valueName>image</valueName>     <!-- 定义变量名称。注意：此处不用写占位符前缀冒号 -->
+                    <beginRow>29</beginRow>          <!-- 定义动态图片在模板中的位置 -->
+                    <endRow>43</endRow>
+                    <beginColumn>0</beginColumn>
+                    <endColumn>8</endColumn>
+                    <maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
+                    <maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
+                    <minWidth>50</minWidth>          <!-- 图片最小宽度 -->
+                    <minHeight>20</minHeight>        <!-- 图片最小高度 -->
+                    <isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+                    <marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
+                    <marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
+                </listener>
+            </call>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```  
   
@@ -219,9 +226,9 @@ ExcelHelp.save(ReportHelp.toExcel("Excel工作表名称" ,数据集合 ,v_RTempl
 
 ![image](images/Subtotal.png)
 
-	1. []：方括号表示前面的方法名称的返回类型是集合对象。目前支持List、Set、Map三种集合。并须对集合遍历动态生成数据。
-	
-	2. $：美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
+    1. []：方括号表示前面的方法名称的返回类型是集合对象。目前支持List、Set、Map三种集合。并须对集合遍历动态生成数据。
+    
+    2. $：美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
 
 __动态行和小计报表的生成结果__
 
@@ -235,29 +242,29 @@ __动态行和小计报表的XML配置举例__
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportTotalSubtotal">
-			<name>小计、分组数据的报表演示</name>
-			<excelFileName>classpath:JU_Total_Subtotal.xlsx</excelFileName>
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
-			<dataBeginRow>2</dataBeginRow>
-			<dataEndRow>2</dataEndRow>
-			<subtotalBeginRow>3</subtotalBeginRow>   <!-- 报表小计的开始行号（包括此行）。下标从零开始 -->
-			<subtotalEndRow>4</subtotalEndRow>       <!-- 报表小计的结束行号（包括此行）。下标从零开始 -->
-			<subtotalPosition>top</subtotalPosition> <!-- 报表小计的位置（在明细数据之前或之后） -->
-			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportTotalSubtotal">
+            <name>小计、分组数据的报表演示</name>
+            <excelFileName>classpath:JU_Total_Subtotal.xlsx</excelFileName>
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            <dataBeginRow>2</dataBeginRow>
+            <dataEndRow>2</dataEndRow>
+            <subtotalBeginRow>3</subtotalBeginRow>   <!-- 报表小计的开始行号（包括此行）。下标从零开始 -->
+            <subtotalEndRow>4</subtotalEndRow>       <!-- 报表小计的结束行号（包括此行）。下标从零开始 -->
+            <subtotalPosition>top</subtotalPosition> <!-- 报表小计的位置（在明细数据之前或之后） -->
+            <dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```
 
@@ -276,9 +283,9 @@ __小计位置在明细数据之前__
 
 ![image](images/PageTitle.png)
 
-	1. []：方括号表示前面的方法名称的返回类型是集合对象。目前支持List、Set、Map三种集合。并须对集合遍历动态生成数据。
-	
-	2. $：美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
+    1. []：方括号表示前面的方法名称的返回类型是集合对象。目前支持List、Set、Map三种集合。并须对集合遍历动态生成数据。
+    
+    2. $：美元符表示其后的方法名称是一个完整的方法名称，无须加get或set前缀。
 
 __分页页眉和分页页脚的生成结果__
 
@@ -292,45 +299,45 @@ __分页页眉和分页页脚的XML配置举例__
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportPageTitle">
-			<name>分页标题的报表演示</name>
-			<excelFileName>classpath:JU_PageTitle.xlsx</excelFileName>
-			
-			<!-- 总标题 -->
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
-			
-			<perPageRowSize>20</perPageRowSize>
-			
-			<!-- 分页页眉标题 -->
-			<titlePageHeaderBeginRow>2</titlePageHeaderBeginRow>
-			<titlePageHeaderEndRow>3</titlePageHeaderEndRow>
-			
-			<!-- 数据内容 -->
-			<dataBeginRow>4</dataBeginRow>
-			<dataEndRow>4</dataEndRow>
-			
-			<!-- 分页页脚标题 -->
-			<titlePageFooterBeginRow>5</titlePageFooterBeginRow>
-			<titlePageFooterEndRow>6</titlePageFooterEndRow>
-			
-			<!-- 合计 -->
-			<totalBeginRow>7</totalBeginRow>
-			<totalEndRow>8</totalEndRow>
-			
-			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportPageTitle">
+            <name>分页标题的报表演示</name>
+            <excelFileName>classpath:JU_PageTitle.xlsx</excelFileName>
+            
+            <!-- 总标题 -->
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            
+            <perPageRowSize>20</perPageRowSize>
+            
+            <!-- 分页页眉标题 -->
+            <titlePageHeaderBeginRow>2</titlePageHeaderBeginRow>
+            <titlePageHeaderEndRow>3</titlePageHeaderEndRow>
+            
+            <!-- 数据内容 -->
+            <dataBeginRow>4</dataBeginRow>
+            <dataEndRow>4</dataEndRow>
+            
+            <!-- 分页页脚标题 -->
+            <titlePageFooterBeginRow>5</titlePageFooterBeginRow>
+            <titlePageFooterEndRow>6</titlePageFooterEndRow>
+            
+            <!-- 合计 -->
+            <totalBeginRow>7</totalBeginRow>
+            <totalEndRow>8</totalEndRow>
+            
+            <dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```
 
@@ -368,6 +375,21 @@ __追加模式的复合报表的Java举例__
 
 
 
+九九乘法表（动态列举例）
+------
+
+[查看测试代码](src/test/java/org/hy/common/report/junit/writeHorizontal)
+
+思路：动态列时，列的数量不一样，但可预估一下最大列数，用占位符配置Excel模板的最大列，当真实数据没有达到最大列时，本组件自动填充空字符
+
+__九九乘法表（动态列举例）的报表模板__
+
+![image](src/test/java/org/hy/common/report/junit/writeHorizontal/JU_WriteHorizontal_模板.png)
+
+__九九乘法表（动态列举例）的生成结果__
+
+![image](src/test/java/org/hy/common/report/junit/writeHorizontal/JU_WriteHorizontal_结果.png)
+
 
 
 常规的纵深扩展的模板举例
@@ -388,23 +410,23 @@ __常规的纵深扩展的XML配置举例__
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReadVertical">
-			<name>Excel转Java纵深扩展数据的Excel文件</name>
-			<excelFileName>classpath:JU_ReadVertical.xlsx</excelFileName>
-			<dataBeginRow>1</dataBeginRow>
-			<dataClass>org.hy.common.report.junit.readHorizontal.Finance</dataClass>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReadVertical">
+            <name>Excel转Java纵深扩展数据的Excel文件</name>
+            <excelFileName>classpath:JU_ReadVertical.xlsx</excelFileName>
+            <dataBeginRow>1</dataBeginRow>
+            <dataClass>org.hy.common.report.junit.readHorizontal.Finance</dataClass>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```
 
@@ -439,26 +461,26 @@ __横向扩展的XML配置举例__
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReadHorizontal">
-			<name>Excel转Java横向扩展数据的Excel文件</name>
-			<excelFileName>classpath:JU_ReadHorizontal.xlsx</excelFileName>
-			<direction>1</direction>        <!-- 方向：横向扩展 -->
-			<dataBeginRow>0</dataBeginRow>
-			<dataEndRow>4</dataEndRow>
-			<dataBeginCol>1</dataBeginCol>
-			<dataClass>org.hy.common.report.junit.readHorizontal.Finance</dataClass>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReadHorizontal">
+            <name>Excel转Java横向扩展数据的Excel文件</name>
+            <excelFileName>classpath:JU_ReadHorizontal.xlsx</excelFileName>
+            <direction>1</direction>        <!-- 方向：横向扩展 -->
+            <dataBeginRow>0</dataBeginRow>
+            <dataEndRow>4</dataEndRow>
+            <dataBeginCol>1</dataBeginCol>
+            <dataClass>org.hy.common.report.junit.readHorizontal.Finance</dataClass>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```
 
@@ -507,41 +529,41 @@ __scaleY__：可在最大高宽、最小高宽的基础上（当然，也可独�
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportTemplate">
-			
-			... 
-			...
-			
-			<call name="addListener">                  <!-- 定义自定义变量名称的二次加工事件 -->
-				<listener class="org.hy.common.report.event.ImageListener">
-					<valueName>image</valueName>     <!-- 定义变量名称。注意：此处不用写占位符前缀冒号 -->
-					<beginRow>29</beginRow>          <!-- 定义动态图片在模板中的位置 -->
-					<endRow>43</endRow>
-					<beginColumn>0</beginColumn>
-					<endColumn>8</endColumn>
-					<maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
-					<maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
-					<minWidth>50</minWidth>          <!-- 图片最小宽度 -->
-					<minHeight>20</minHeight>        <!-- 图片最小高度 -->
-					<isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
-					<marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
-					<marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
-					<scaleX>0.99</scaleX>            <!-- 可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），横向缩放比例。不设置，不缩放 -->
-					<scaleY>0.99</scaleY>            <!-- 可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放 -->
-				</listener>
-			</call>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportTemplate">
+            
+            ... 
+            ...
+            
+            <call name="addListener">                  <!-- 定义自定义变量名称的二次加工事件 -->
+                <listener class="org.hy.common.report.event.ImageListener">
+                    <valueName>image</valueName>     <!-- 定义变量名称。注意：此处不用写占位符前缀冒号 -->
+                    <beginRow>29</beginRow>          <!-- 定义动态图片在模板中的位置 -->
+                    <endRow>43</endRow>
+                    <beginColumn>0</beginColumn>
+                    <endColumn>8</endColumn>
+                    <maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
+                    <maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
+                    <minWidth>50</minWidth>          <!-- 图片最小宽度 -->
+                    <minHeight>20</minHeight>        <!-- 图片最小高度 -->
+                    <isScale>true</isScale>          <!-- 当图片被缩小时，是否保持高宽等比缩放 -->
+                    <marginTop>1000000</marginTop>   <!-- 与单元格顶部的边距 -->
+                    <marginLeft>500000</marginLeft>  <!-- 与单元格左侧的边距 -->
+                    <scaleX>0.99</scaleX>            <!-- 可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），横向缩放比例。不设置，不缩放 -->
+                    <scaleY>0.99</scaleY>            <!-- 可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放 -->
+                </listener>
+            </call>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```  
 
@@ -572,26 +594,26 @@ __scaleY__：可在最大高宽、最小高宽的基础上（当然，也可独�
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="报表对象ID">
-			<excelFileName>模板文件的路径</excelFileName>
-			<titleBeginRow>定义报表标题在模板中位置</titleBeginRow>
-			<dataBeginRow>定义报表数据在模板中位置</dataBeginRow>
-			<dataClass>定义报表数据对应的Java类型</dataClass>
-			
-			<!-- 添加高级筛选功能 -->
-			<isExcelFilter>true</isExcelFilter>
-		</template>
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="报表对象ID">
+            <excelFileName>模板文件的路径</excelFileName>
+            <titleBeginRow>定义报表标题在模板中位置</titleBeginRow>
+            <dataBeginRow>定义报表数据在模板中位置</dataBeginRow>
+            <dataClass>定义报表数据对应的Java类型</dataClass>
+            
+            <!-- 添加高级筛选功能 -->
+            <isExcelFilter>true</isExcelFilter>
+        </template>
         
-	</xconfig>
-	
+    </xconfig>
+    
 </config>
 ```
 
@@ -617,37 +639,37 @@ __scaleY__：可在最大高宽、最小高宽的基础上（当然，也可独�
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportNormal">
-			<name>常规列表加合计的报表演示</name>
-			
-			<excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
-			
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
-			
-			<dataBeginRow>2</dataBeginRow>
-			<dataEndRow>2</dataEndRow>
-			
-			<totalBeginRow>3</totalBeginRow>
-			<totalEndRow>4</totalEndRow>
-			
-			<!-- 自动行高 -->
-			<addAutoHeight>orgName</addAutoHeight>
-			<addAutoHeight>多个字段添加多次即可</addAutoHeight>
-			
-			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportNormal">
+            <name>常规列表加合计的报表演示</name>
+            
+            <excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
+            
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            
+            <dataBeginRow>2</dataBeginRow>
+            <dataEndRow>2</dataEndRow>
+            
+            <totalBeginRow>3</totalBeginRow>
+            <totalEndRow>4</totalEndRow>
+            
+            <!-- 自动行高 -->
+            <addAutoHeight>orgName</addAutoHeight>
+            <addAutoHeight>多个字段添加多次即可</addAutoHeight>
+            
+            <dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```
 
@@ -663,42 +685,42 @@ __scaleY__：可在最大高宽、最小高宽的基础上（当然，也可独�
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportNormal">
-			<name>常规列表加合计的报表演示</name>
-			
-			<excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
-			
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
-			
-			<dataBeginRow>2</dataBeginRow>
-			<dataEndRow>2</dataEndRow>
-			
-			<totalBeginRow>3</totalBeginRow>
-			<totalEndRow>4</totalEndRow>
-			
-			<addAutoHeight>orgName</addAutoHeight>
-			
-			<dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
-			
-			<!-- 动态变色的监听器 -->
-			<call name="addListener">
-				<listener class="org.hy.common.report.junit.normal.ColorListener">
-					<valueName>orgName</valueName>
-				</listener>
-			</call>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportNormal">
+            <name>常规列表加合计的报表演示</name>
+            
+            <excelFileName>classpath:JU_ReportNormal.xlsx</excelFileName>
+            
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            
+            <dataBeginRow>2</dataBeginRow>
+            <dataEndRow>2</dataEndRow>
+            
+            <totalBeginRow>3</totalBeginRow>
+            <totalEndRow>4</totalEndRow>
+            
+            <addAutoHeight>orgName</addAutoHeight>
+            
+            <dataClass>org.hy.common.report.junit.total.OrgInfo</dataClass>
+            
+            <!-- 动态变色的监听器 -->
+            <call name="addListener">
+                <listener class="org.hy.common.report.junit.normal.ColorListener">
+                    <valueName>orgName</valueName>
+                </listener>
+            </call>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```
 
@@ -734,46 +756,46 @@ __二维码的生成的XML配置举例__
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportZXing">
-			<name>二维码、条形码的报表演示</name>
-			<excelFileName>classpath:JU_ZXing.xlsx</excelFileName>
-			
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
-			
-			<dataBeginRow>2</dataBeginRow>
-			<dataEndRow>2</dataEndRow>
-			
-			<dataClass>org.hy.common.report.junit.zxing.ZXingData</dataClass>
-			
-			<!-- 二维码的监听器 -->
-			<call name="addListener">
-				<listener class="org.hy.common.report.event.ZXingListener">
-					<barcodeFormat ref="com.google.zxing.BarcodeFormat.QR_CODE"/>  <!-- 编码类型：二维码 -->
-					<width>170</width>                                             <!-- 二维码的宽度 -->
-					<height>170</height>                                           <!-- 二维码的高度 -->
-					<marginTop> 100000</marginTop>                                 <!-- 二维码的相对于顶部的边距 -->
-					<marginLeft>200000</marginLeft>                                <!-- 二维码的相对于左侧的边距-->
-					
-					<valueName>zxing2D</valueName>                                 <!-- 监听的变量名称 -->
-					<beginRow>2</beginRow>
-					<endRow>2</endRow>
-					<beginColumn>1</beginColumn>
-					<endColumn>1</endColumn>
-				</listener>
-			</call>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportZXing">
+            <name>二维码、条形码的报表演示</name>
+            <excelFileName>classpath:JU_ZXing.xlsx</excelFileName>
+            
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            
+            <dataBeginRow>2</dataBeginRow>
+            <dataEndRow>2</dataEndRow>
+            
+            <dataClass>org.hy.common.report.junit.zxing.ZXingData</dataClass>
+            
+            <!-- 二维码的监听器 -->
+            <call name="addListener">
+                <listener class="org.hy.common.report.event.ZXingListener">
+                    <barcodeFormat ref="com.google.zxing.BarcodeFormat.QR_CODE"/>  <!-- 编码类型：二维码 -->
+                    <width>170</width>                                             <!-- 二维码的宽度 -->
+                    <height>170</height>                                           <!-- 二维码的高度 -->
+                    <marginTop> 100000</marginTop>                                 <!-- 二维码的相对于顶部的边距 -->
+                    <marginLeft>200000</marginLeft>                                <!-- 二维码的相对于左侧的边距-->
+                    
+                    <valueName>zxing2D</valueName>                                 <!-- 监听的变量名称 -->
+                    <beginRow>2</beginRow>
+                    <endRow>2</endRow>
+                    <beginColumn>1</beginColumn>
+                    <endColumn>1</endColumn>
+                </listener>
+            </call>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```
 
@@ -798,46 +820,46 @@ __条形码的生成的XML配置举例__
 
 <config>
 
-	<import name="xconfig"         class="java.util.ArrayList" />
-	<import name="template"        class="org.hy.common.report.bean.RTemplate" />
-	
-	
-	
-	<!-- 报表模板配置信息 -->
-	<xconfig>
-	
-		<template id="ReportZXing">
-			<name>二维码、条形码的报表演示</name>
-			<excelFileName>classpath:JU_ZXing.xlsx</excelFileName>
-			
-			<titleBeginRow>0</titleBeginRow>
-			<titleEndRow>1</titleEndRow>
-			
-			<dataBeginRow>2</dataBeginRow>
-			<dataEndRow>2</dataEndRow>
-			
-			<dataClass>org.hy.common.report.junit.zxing.ZXingData</dataClass>
-			
-			<!-- 条形码的监听器 -->
-			<call name="addListener">
-				<listener class="org.hy.common.report.event.ZXingListener">
-					<barcodeFormat ref="com.google.zxing.BarcodeFormat.CODE_128"/>  <!-- 编码类型：条形码 -->
-					<width>300</width>                                              <!-- 条形码的宽度 -->
-					<height>120</height>                                            <!-- 条形码的高度 -->
-					<marginTop> 350000</marginTop>                                  <!-- 条形码的相对于顶部的边距 -->
-					<marginLeft>500000</marginLeft>                                 <!-- 条形码的相对于左侧的边距-->
-					
-					<valueName>zxing1D</valueName>                                  <!-- 监听的变量名称 -->
-					<beginRow>2</beginRow>
-					<endRow>2</endRow>
-					<beginColumn>2</beginColumn>
-					<endColumn>2</endColumn>
-				</listener>
-			</call>
-		</template>
-		
-	</xconfig>
-	
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportZXing">
+            <name>二维码、条形码的报表演示</name>
+            <excelFileName>classpath:JU_ZXing.xlsx</excelFileName>
+            
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            
+            <dataBeginRow>2</dataBeginRow>
+            <dataEndRow>2</dataEndRow>
+            
+            <dataClass>org.hy.common.report.junit.zxing.ZXingData</dataClass>
+            
+            <!-- 条形码的监听器 -->
+            <call name="addListener">
+                <listener class="org.hy.common.report.event.ZXingListener">
+                    <barcodeFormat ref="com.google.zxing.BarcodeFormat.CODE_128"/>  <!-- 编码类型：条形码 -->
+                    <width>300</width>                                              <!-- 条形码的宽度 -->
+                    <height>120</height>                                            <!-- 条形码的高度 -->
+                    <marginTop> 350000</marginTop>                                  <!-- 条形码的相对于顶部的边距 -->
+                    <marginLeft>500000</marginLeft>                                 <!-- 条形码的相对于左侧的边距-->
+                    
+                    <valueName>zxing1D</valueName>                                  <!-- 监听的变量名称 -->
+                    <beginRow>2</beginRow>
+                    <endRow>2</endRow>
+                    <beginColumn>2</beginColumn>
+                    <endColumn>2</endColumn>
+                </listener>
+            </call>
+        </template>
+        
+    </xconfig>
+    
 </config>
 ```
 

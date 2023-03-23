@@ -28,7 +28,7 @@ import org.hy.common.xml.SerializableDef;
 
 
 /**
- * 报表模板信息 
+ * 报表模板信息
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-03-15
@@ -53,6 +53,8 @@ import org.hy.common.xml.SerializableDef;
  *                                      发现人：雷伟松
  *              v7.0  2020-11-10  添加：支持分项统计的小计在明细数据之前或之后的功能。建议人：尚仁强
  *              v8.0  2021-03-03  修改：isSafe的默认值改为true ，即安全。
+ *              v9.0  2023-03-23  添加：ColNo__和ColIndex__两个系统固定参数
+ *                                添加：动态列功能，如生成九九乘法表。建议人：邹昕翰
  */
 public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
@@ -63,7 +65,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 系统固定变量名称：数据行号的变量名称。下标从1开始 */
     public final static String         $ValueName_RowNo              = "RowNo__";
     
-    /** 系统固定变量名称：数据索引号的变量名称。下标从0开始 */
+    /** 系统固定变量名称：数据行索引号的变量名称。下标从0开始 */
     public final static String         $ValueName_RowIndex           = "RowIndex__";
     
     /** 系统固定变量名称：数据总量的变量名称 */
@@ -71,6 +73,12 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     /** 系统固定变量名称：数据小计总量的变量名称 */
     public final static String         $ValueName_RowSubtotalCount   = "RowSubtotalCount__";
+    
+    /** 系统固定变量名称：数据列号的变量名称。下标从1开始 */
+    public final static String         $ValueName_ColNo              = "ColNo__";
+    
+    /** 系统固定变量名称：数据列索引号的变量名称。下标从0开始 */
+    public final static String         $ValueName_ColIndex           = "ColIndex__";
     
     /** 系统固定变量名称：分页页号的变量名称。下标从1开始 */
     public final static String         $ValueName_PageNo             = "PageNo__";
@@ -130,14 +138,14 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 报表模板对应的工作表索引位置（下标从零开始） */
     private Integer                    sheetIndex;
     
-    /** 
+    /**
      * Excel数据的方向。
      * 0：纵深扩展--表示从左到右的方向，一行或多行为一个对象数据。此为默认值
      * 1：横向扩展--表示从上到下的方向，一列或多列为一个对象数据
      */
     private Integer                    direction;
     
-    /** 
+    /**
      * 报表标题占用一整页。默认为：false。即第一页的数据量按标题行数是动态的，第二页及其后是固定的数据量。
      * 只用于：分页页眉、分页页脚的情况下
      */
@@ -152,8 +160,8 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 报表标题的结束行号（包括此行）。下标从零开始 */
     private Integer                    titleEndRow;
     
-    /** 
-     * 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0 
+    /**
+     * 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0
      * 
      * 主要用于：首个分页页眉与第二行分页页眉样式不一样的情况。
      *          在此情况下，可将首个分页页眉与总标题合并后，当总标题写入。
@@ -208,11 +216,11 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 合计内容的结束行号（包括此行）。下标从零开始 */
     private Integer                    totalEndRow;
     
-    /** 
+    /**
      * 打印分页模式
      *   1. auto     ：自动模式（默认的）。对于复杂报表，可能出现同一Excel在不同电脑上打印时，分页结果是有差异的。
      *   2. rowBreak ：按模板打印区域及输出数据量大小（即分页页数），添加多个分隔符分页。
-     *   
+     * 
      * 要求：须配合Excel模板上设置的打印区域一共使用
      */
     private String                     pageBreakMode;
@@ -225,7 +233,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /** 值的标记。默认为一个冒号：":" */
     private String                     valueSign;
     
-    /** 
+    /**
      * 是否将整数显示为小数的形式。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)。
      * 
      *  Excel模板配合设置单元格的格式为：显示3位小数时
@@ -237,20 +245,20 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     private boolean                    isIntegerShowDecimal;
     
     /** 是否添加Excel高级筛选功能。默认为：false */
-    private boolean                    isExcelFilter; 
+    private boolean                    isExcelFilter;
     
     /** 单元格信息。Map.key为: "行号,列号" */
     private Map<String ,RCell>         cells;
     
-    /** 
-     * 是要安全？还是要性能（默认为：安全） 
+    /**
+     * 是要安全？还是要性能（默认为：安全）
      * 
      * 此参加会影响性能，如是否在找到有合并单元格时的异常操作。
      * 因为查找两个合并单元格是否有重复区域是十分耗费性能。
      */
     private boolean                    isSafe;
     
-    /** 
+    /**
      * 当为大数据量导出时，建议使用 SXSSFWorkbook
      * POI对excel的导出操作，一般只使用HSSFWorkbook以及SXSSFWorkbook，
      * HSSFWorkbook用来处理较少的数据量，
@@ -260,7 +268,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     private boolean                    isBig;
 
-    /** 
+    /**
      * 当使用 SXSSFWorkbook 时（this.isBig=true），创建对象new SXSSFWorkbook(rowAccessWindowSize)入参。
      * 保持在内存中的行数，直到刷新为止
      */
@@ -275,9 +283,9 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     
     
-    /** 
+    /**
      * 变量自定义处理事件
-     * Map.key  为变量名称 
+     * Map.key  为变量名称
      */
     private Map<String ,ValueListener> valueListeners;
     
@@ -287,7 +295,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     
     /** 报表模板信息对应的工作表对象(一般只初始加载一次) */
-    private Sheet                      templateSheet; 
+    private Sheet                      templateSheet;
     
     /** 解释的值的反射方法集合(一般只初始加载一次) */
     private Map<String ,RCellGroup>    valueMethods;
@@ -346,6 +354,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      *
      * @return
      */
+    @Override
     public Object newObject()
     {
         try
@@ -567,7 +576,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                 {
                     Matcher v_Matcher = v_Pattern.matcher(v_Value);
                     while( v_Matcher.find() )
-                    {  
+                    {
                         v_Values.add(v_Value.substring(v_Matcher.start() ,v_Matcher.end()));
                     }
                     
@@ -822,15 +831,21 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * @param i_Datas         数据
      * @param i_RSystemValue  系统变量信息
      * @param io_RValue       小计循环迭代器
-     * @return             
+     * @param i_ColIndex      Excel列索引号，下标从0开始
+     * @return
      */
-    public RValue getValue(String i_ValueName ,Object i_Datas ,RSystemValue i_RSystemValue ,RValue io_RValue)
+    public RValue getValue(String i_ValueName ,Object i_Datas ,RSystemValue i_RSystemValue ,RValue io_RValue ,int i_ColIndex)
     {
-        RCellGroup  v_RCellG = this.valueMethods.get(i_ValueName);
-        RValue      v_RValue = io_RValue != null ? io_RValue : new RValue();
+        RCellGroup v_RCellG = this.valueMethods.get(i_ValueName);
+        RValue     v_RValue = io_RValue != null ? io_RValue : new RValue();
         
         if ( !Help.isNull(v_RCellG) )
         {
+            Map<String ,Object> v_RefMParams = new HashMap<String ,Object>();
+            v_RefMParams.put(":" + $ValueName_ColNo    ,i_ColIndex + 1);
+            v_RefMParams.put(":" + $ValueName_ColIndex ,i_ColIndex);
+            
+            
             if ( this.autoHeights.containsKey(i_ValueName) )
             {
                 v_RValue.setAutoHeight(true);
@@ -858,8 +873,8 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     {
                         RCell  v_RCell       = v_RCellG.get(v_Index);
                         RValue v_RValueChild = v_RValue.getValueGroup().get(v_Index);
-                        String v_ValueName   = StringHelp.replaceAll(v_RCell.getValueName() 
-                                                                    ,new String[]{$Value_LimitBefore ,$Value_LimitEnd ,this.valueSign} 
+                        String v_ValueName   = StringHelp.replaceAll(v_RCell.getValueName()
+                                                                    ,new String[]{$Value_LimitBefore ,$Value_LimitEnd ,this.valueSign}
                                                                     ,new String[]{""});
                         
                         // 添加对 "{:系统固定变量}" 格式的填充替换的支持  2018-06-12
@@ -879,6 +894,14 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                         {
                             v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_RSystemValue.getRowSubtotalCount()));
                         }
+                        else if ( $ValueName_ColNo.equalsIgnoreCase(v_ValueName) )
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_ColIndex + 1));
+                        }
+                        else if ( $ValueName_ColIndex.equalsIgnoreCase(v_ValueName) )
+                        {
+                            v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_ColIndex));
+                        }
                         else if ( $ValueName_PageNo.equalsIgnoreCase(v_ValueName) )
                         {
                             v_Replaces.put(v_RCell.getValueName() ,String.valueOf(i_RSystemValue.getPageNo()));
@@ -891,20 +914,20 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                         {
                             if ( v_RValueChild.getIterator() == null )
                             {
-                                v_RValueChild.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
-                                v_RValueChild.setIteratorSize((Integer)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
+                                v_RValueChild.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas ,v_RefMParams));
+                                v_RValueChild.setIteratorSize((Integer)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas ,v_RefMParams));
                             }
                             
                             if ( v_RValueChild.getIterator().hasNext() )
                             {
                                 Object v_ForElement = v_RValueChild.getIterator().next();
-                                v_Replaces.put(v_RCell.getValueName() ,v_RCell.getValueMethod().invokeForInstance(v_ForElement));
+                                v_Replaces.put(v_RCell.getValueName() ,v_RCell.getValueMethod().invokeForInstance(v_ForElement ,v_RefMParams));
                                 v_RValueChild.setIteratorIndex(v_RValueChild.getIteratorIndex() + 1);
                             }
                         }
                         else
                         {
-                            v_Replaces.put(v_RCell.getValueName() ,v_RCell.getValueMethod().invokeForInstance(i_Datas));
+                            v_Replaces.put(v_RCell.getValueName() ,v_RCell.getValueMethod().invokeForInstance(i_Datas ,v_RefMParams));
                         }
                     }
                     
@@ -919,8 +942,8 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     {
                         if ( v_RValue.getIterator() == null )
                         {
-                            v_RValue.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas));
-                            v_RValue.setIteratorSize((Integer)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas));
+                            v_RValue.setIterator((Iterator<?>)v_RCell.getIteratorMethod()    .invokeForInstance(i_Datas ,v_RefMParams));
+                            v_RValue.setIteratorSize((Integer)v_RCell.getIteratorSizeMethod().invokeForInstance(i_Datas ,v_RefMParams));
                         }
                         
                         if ( v_RValue.getIterator().hasNext() )
@@ -932,14 +955,14 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                             }
                             else
                             {
-                                v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(v_ForElement));
+                                v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(v_ForElement ,v_RefMParams));
                             }
                             v_RValue.setIteratorIndex(v_RValue.getIteratorIndex() + 1);
                         }
                     }
                     else
                     {
-                        v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(i_Datas));
+                        v_RValue.setValue(v_RCell.getValueMethod().invokeForInstance(i_Datas ,v_RefMParams));
                     }
                     
                     if ( v_RCell.getNextRCell() != null && v_RValue.getValue() != null )
@@ -953,21 +976,21 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                         {
                             if ( v_RValue.getNextRValue().getIterator() == null )
                             {
-                                v_RValue.getNextRValue().setIterator((Iterator<?>)v_RCell.getNextRCell().getIteratorMethod()    .invokeForInstance(v_RValue.getValue()));
-                                v_RValue.getNextRValue().setIteratorSize((Integer)v_RCell.getNextRCell().getIteratorSizeMethod().invokeForInstance(v_RValue.getValue()));
+                                v_RValue.getNextRValue().setIterator((Iterator<?>)v_RCell.getNextRCell().getIteratorMethod()    .invokeForInstance(v_RValue.getValue() ,v_RefMParams));
+                                v_RValue.getNextRValue().setIteratorSize((Integer)v_RCell.getNextRCell().getIteratorSizeMethod().invokeForInstance(v_RValue.getValue() ,v_RefMParams));
                             }
                             
                             if ( v_RValue.getNextRValue().getIterator().hasNext() )
                             {
                                 Object v_ForElement = v_RValue.getNextRValue().getIterator().next();
-                                v_RValue.getNextRValue().setValue(v_RCell.getNextRCell().getValueMethod().invokeForInstance(v_ForElement));
+                                v_RValue.getNextRValue().setValue(v_RCell.getNextRCell().getValueMethod().invokeForInstance(v_ForElement ,v_RefMParams));
                                 v_RValue.setValue(v_RValue.getNextRValue().getValue());
                                 v_RValue.getNextRValue().setIteratorIndex(v_RValue.getNextRValue().getIteratorIndex() + 1);
                             }
                         }
                         else
                         {
-                            v_RValue.getNextRValue().setValue(v_RCell.getNextRCell().getValueMethod().invokeForInstance(v_RValue.getValue()));
+                            v_RValue.getNextRValue().setValue(v_RCell.getNextRCell().getValueMethod().invokeForInstance(v_RValue.getValue() ,v_RefMParams));
                         }
                     }
                 }
@@ -975,6 +998,11 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             catch (Exception exce)
             {
                 exce.printStackTrace();
+            }
+            finally
+            {
+                v_RefMParams.clear();
+                v_RefMParams = null;
             }
         }
         else
@@ -996,6 +1024,14 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             else if ( $ValueName_RowSubtotalCount.equalsIgnoreCase(v_ValueName) )
             {
                 v_RValue.setValue(String.valueOf(i_RSystemValue.getRowSubtotalCount()));
+            }
+            else if ( $ValueName_ColNo.equalsIgnoreCase(v_ValueName) )
+            {
+                v_RValue.setValue(String.valueOf(i_ColIndex + 1));
+            }
+            else if ( $ValueName_ColIndex.equalsIgnoreCase(v_ValueName) )
+            {
+                v_RValue.setValue(String.valueOf(i_ColIndex));
             }
             else if ( $ValueName_PageNo.equalsIgnoreCase(v_ValueName) )
             {
@@ -1192,7 +1228,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      */
     public int getRowCount(Integer i_BeginRow ,Integer i_EndRow)
     {
-        if ( null == i_BeginRow 
+        if ( null == i_BeginRow
           || null == i_EndRow )
         {
             return 0;
@@ -1349,7 +1385,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：模板名称
      * 
-     * @param name 
+     * @param name
      */
     public void setName(String name)
     {
@@ -1374,7 +1410,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：Excel文件版本(1.xls  2.xlsx)
      * 
-     * @param excelVersion 
+     * @param excelVersion
      */
     public synchronized void setExcelVersion(String excelVersion)
     {
@@ -1394,7 +1430,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：模板文件的名称(全路径+文件名称)
      * 
-     * @param excelFileName 
+     * @param excelFileName
      */
     public void setExcelFileName(String excelFileName)
     {
@@ -1414,7 +1450,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表模板对应的工作表索引位置（下标从零开始）
      * 
-     * @param sheetIndex 
+     * @param sheetIndex
      */
     public void setSheetIndex(Integer sheetIndex)
     {
@@ -1438,7 +1474,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 0：表示从左到右的方向，一行或多行为一个对象数据。此为默认值
      * 1：表示从上到下的方向，一列或多列为一个对象数据
      * 
-     * @param direction 
+     * @param direction
      */
     public void setDirection(Integer direction)
     {
@@ -1458,7 +1494,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表标题占用一整页。默认为：false。即第一页的数据量按标题行数是动态的，第二页及其后是固定的数据量
      * 
-     * @param titleUseOnePage 
+     * @param titleUseOnePage
      */
     public void setTitleUseOnePage(boolean titleUseOnePage)
     {
@@ -1496,7 +1532,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表标题的开始行号（包括此行）。下标从零开始
      * 
-     * @param i_TitleBeginRow 
+     * @param i_TitleBeginRow
      */
     public void setTitleBeginRow(Integer i_TitleBeginRow)
     {
@@ -1517,7 +1553,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表标题的结束行号（包括此行）。下标从零开始
      * 
-     * @param titleEndRow 
+     * @param titleEndRow
      */
     public void setTitleEndRow(Integer titleEndRow)
     {
@@ -1526,7 +1562,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 
     
     /**
-     * 获取：* 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0 
+     * 获取：* 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0
      * 
      * 主要用于：首个分页页眉与第二行分页页眉样式不一样的情况。
      *          在此情况下，可将首个分页页眉与总标题合并后，当总标题写入。
@@ -1538,12 +1574,12 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     
     
     /**
-     * 设置：* 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0 
+     * 设置：* 在什么位置(Excel的行号)上首次写入分页页眉。下标从零开始。默认为0
      * 
      * 主要用于：首个分页页眉与第二行分页页眉样式不一样的情况。
      *          在此情况下，可将首个分页页眉与总标题合并后，当总标题写入。
      * 
-     * @param titlePageHeaderFirstWriteByRow 
+     * @param titlePageHeaderFirstWriteByRow
      */
     public void setTitlePageHeaderFirstWriteByRow(int titlePageHeaderFirstWriteByRow)
     {
@@ -1581,7 +1617,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表分页页眉的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
      * 
-     * @param titlePageHeaderBeginRow 
+     * @param titlePageHeaderBeginRow
      */
     public void setTitlePageHeaderBeginRow(Integer titlePageHeaderBeginRow)
     {
@@ -1602,7 +1638,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表分页页眉的结束行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
      * 
-     * @param titlePageHeaderEndRow 
+     * @param titlePageHeaderEndRow
      */
     public void setTitlePageHeaderEndRow(Integer titlePageHeaderEndRow)
     {
@@ -1622,7 +1658,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表分页页脚的开始行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
      * 
-     * @param titlePageFooterBeginRow 
+     * @param titlePageFooterBeginRow
      */
     public void setTitlePageFooterBeginRow(Integer titlePageFooterBeginRow)
     {
@@ -1643,7 +1679,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表分页页脚的结束行号（包括此行）。下标从零开始。配合perPageRowSize属性一同使用
      * 
-     * @param titlePageFooterEndRow 
+     * @param titlePageFooterEndRow
      */
     public void setTitlePageFooterEndRow(Integer titlePageFooterEndRow)
     {
@@ -1663,7 +1699,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表分页的每页显示的行记录数
      * 
-     * @param perPageRowSize 
+     * @param perPageRowSize
      */
     public void setPerPageRowSize(Integer perPageRowSize)
     {
@@ -1690,7 +1726,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表数据的开始行号（包括此行）。下标从零开始
      * 
-     * @param i_DataBeginRow 
+     * @param i_DataBeginRow
      */
     public void setDataBeginRow(Integer i_DataBeginRow)
     {
@@ -1711,7 +1747,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表数据的结束行号（包括此行）。下标从零开始
      * 
-     * @param dataEndRow 
+     * @param dataEndRow
      */
     public void setDataEndRow(Integer dataEndRow)
     {
@@ -1731,7 +1767,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表数据的开始列号（包括此列）。下标从零开始。用于Excel转为Java对象，并且this.direction=1的情况
      * 
-     * @param dataBeginCol 
+     * @param dataBeginCol
      */
     public void setDataBeginCol(Integer dataBeginCol)
     {
@@ -1752,7 +1788,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表数据的结束列号（包括此列）。下标从零开始。用于Excel转为Java对象，并且this.direction=1的情况
      * 
-     * @param dataEndCol 
+     * @param dataEndCol
      */
     public void setDataEndCol(Integer dataEndCol)
     {
@@ -1772,12 +1808,12 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表小计的开始行号（包括此行）。下标从零开始
      * 
-     * @param subtotalBeginRow 
+     * @param subtotalBeginRow
      */
     public void setSubtotalBeginRow(Integer i_SubtotalBeginRow)
     {
         this.subtotalBeginRow = i_SubtotalBeginRow;
-        this.subtotalEndRow   = i_SubtotalBeginRow; 
+        this.subtotalEndRow   = i_SubtotalBeginRow;
     }
 
     
@@ -1793,7 +1829,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表小计的结束行号（包括此行）。下标从零开始
      * 
-     * @param subtotalEndRow 
+     * @param subtotalEndRow
      */
     public void setSubtotalEndRow(Integer subtotalEndRow)
     {
@@ -1813,7 +1849,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表小计的输出位置（top：在明细数据之前输出小计；bottom）。默认是：bottom
      * 
-     * @param subtotalPosition 
+     * @param subtotalPosition
      */
     public void setSubtotalPosition(String i_SubtotalPosition)
     {
@@ -1838,7 +1874,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：合计内容的开始行号（包括此行）。下标从零开始
      * 
-     * @param i_TotalBeginRow 
+     * @param i_TotalBeginRow
      */
     public void setTotalBeginRow(Integer i_TotalBeginRow)
     {
@@ -1859,7 +1895,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：合计内容的结束行号（包括此行）。下标从零开始
      * 
-     * @param totalEndRow 
+     * @param totalEndRow
      */
     public void setTotalEndRow(Integer totalEndRow)
     {
@@ -1879,7 +1915,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表数据的Java类型
      * 
-     * @param dataClass 
+     * @param dataClass
      */
     public void setDataClass(String dataClass)
     {
@@ -1899,7 +1935,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：值的标记。默认为一个冒号：":"
      * 
-     * @param valueSign 
+     * @param valueSign
      */
     public synchronized void setValueSign(String valueSign)
     {
@@ -1909,6 +1945,8 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         this.valueNames.put(this.valueSign + $ValueName_RowIndex         ,$ValueName_RowIndex);
         this.valueNames.put(this.valueSign + $ValueName_RowCount         ,$ValueName_RowCount);
         this.valueNames.put(this.valueSign + $ValueName_RowSubtotalCount ,$ValueName_RowSubtotalCount);
+        this.valueNames.put(this.valueSign + $ValueName_ColIndex         ,$ValueName_ColIndex);
+        this.valueNames.put(this.valueSign + $ValueName_ColNo            ,$ValueName_ColNo);
         this.valueNames.put(this.valueSign + $ValueName_PageNo           ,$ValueName_PageNo);
         this.valueNames.put(this.valueSign + $ValueName_PageSize         ,$ValueName_PageSize);
     }
@@ -1940,7 +1978,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 
      * 默认为：false
      * 
-     * @param isIntegerShowDecimal 
+     * @param isIntegerShowDecimal
      */
     public void setIsIntegerShowDecimal(boolean isIntegerShowDecimal)
     {
@@ -1962,7 +2000,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：是否添加Excel高级筛选功能。默认为：false
      * 
-     * @param isExcelFilter 
+     * @param isExcelFilter
      */
     public void setIsExcelFilter(boolean isExcelFilter)
     {
@@ -1983,7 +2021,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：是要安全？还是要性能（默认为：安全）
      * 
-     * @param isSafe 
+     * @param isSafe
      */
     public void setIsSafe(boolean isSafe)
     {
@@ -2013,7 +2051,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 
      * 默认为：false
      * 
-     * @param isBig 
+     * @param isBig
      */
     public void setIsBig(boolean isBig)
     {
@@ -2035,7 +2073,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * 设置：当使用 SXSSFWorkbook 时，创建对象new SXSSFWorkbook(rowAccessWindowSize)入参。
      * 保持在内存中的行数，直到刷新为止
      * 
-     * @param rowAccessWindowSize 
+     * @param rowAccessWindowSize
      */
     public void setRowAccessWindowSize(Integer rowAccessWindowSize)
     {
@@ -2059,7 +2097,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      *   1. auto     ：自动模式（默认的）。对于复杂报表，可能出现同一Excel在不同电脑上打印时，分页结果是有差异的。
      *   2. rowBreak ：按模板打印区域及输出数据量大小（即分页页数），添加多个分隔符分页。
      * 
-     * @param pageBreakMode 
+     * @param pageBreakMode
      */
     public void setPageBreakMode(String pageBreakMode)
     {

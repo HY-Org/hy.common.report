@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReportWriteHorizontal">
+            <name>横向动态列的报表演示</name>
+            <excelFileName>classpath:JU_WriteHorizontal.xlsx</excelFileName>
+            <titleBeginRow>0</titleBeginRow>
+            <titleEndRow>1</titleEndRow>
+            <dataBeginRow>2</dataBeginRow>
+            <dataClass>org.hy.common.report.junit.writeHorizontal.WHObject</dataClass>
+        </template>
+        
+    </xconfig>
+    
+</config>

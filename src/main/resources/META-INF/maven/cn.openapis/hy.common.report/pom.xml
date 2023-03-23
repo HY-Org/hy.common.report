@@ -6,7 +6,7 @@
 
     <groupId>org</groupId>
     <artifactId>hy.common.report</artifactId>
-    <version>3.3.1</version>
+    <version>3.3.2</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.report</name>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.base</artifactId>
-            <version>1.0.164</version>
+            <version>1.0.167</version>
             <scope>provided</scope>
         </dependency>
 
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.xjava</artifactId>
-            <version>4.2.0</version>
+            <version>4.2.2</version>
             <scope>test</scope>
         </dependency>
         
