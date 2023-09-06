@@ -28,7 +28,7 @@ import org.junit.runners.MethodSorters;
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING) 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JU_ImageIsPink
 {
     
@@ -51,11 +51,11 @@ public class JU_ImageIsPink
     public void test_ImageIsPink() throws RTemplateException
     {
         RTemplate         v_RTemplate = (RTemplate)XJava.getObject("Report_ImageIsPink");
-        List<Image03Data> v_Datas     = this.getDatas(3);
+        List<Image03Data> v_Datas     = this.getDatas(4);
         
         RWorkbook v_RWorkbook = ReportHelp.toExcel(v_Datas ,v_RTemplate);
         
-        ExcelHelp.save(v_RWorkbook.getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\ImageIsPink_" + Date.getNowTime().getFull_ID() + ".xlsx");
+        ExcelHelp.save(v_RWorkbook.getWorkbook() ,"C:\\Users\\hyzhe\\Desktop\\ImageIsPink_" + Date.getNowTime().getFull_ID() + ".xlsx");
     }
     
     
@@ -75,9 +75,10 @@ public class JU_ImageIsPink
         List<String>      v_Images = new ArrayList<String>();
         List<Image03Data> v_Datas  = new ArrayList<Image03Data>();
         
-        v_Images.add("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image03\\1问题源.jpg");
-        v_Images.add("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image03\\2白色背景.png");
-        v_Images.add("D:\\WorkSpace_SearchDesktop\\hy.common.report\\test\\org\\hy\\common\\report\\junit\\image03\\3透明图.png");
+        v_Images.add("D:\\WorkSpace\\hy.common.report\\src\\test\\java\\org\\hy\\common\\report\\junit\\image03\\1问题源.jpg");
+        v_Images.add("D:\\WorkSpace\\hy.common.report\\src\\test\\java\\org\\hy\\common\\report\\junit\\image03\\2白色背景.png");
+        v_Images.add("D:\\WorkSpace\\hy.common.report\\src\\test\\java\\org\\hy\\common\\report\\junit\\image03\\3透明图.png");
+        v_Images.add("D:\\WorkSpace\\hy.common.report\\src\\test\\java\\org\\hy\\common\\report\\junit\\image04\\JU_ImageScale.png");
         
         for (int i=1; i<=i_Size; i++)
         {

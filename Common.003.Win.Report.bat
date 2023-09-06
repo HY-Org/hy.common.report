@@ -16,7 +16,7 @@ copy hy.common.report.jar ..\..
 del /q hy.common.report.jar
 cd ..\..
 
-
+pause
 
 
 

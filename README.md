@@ -186,10 +186,10 @@ __一行数据一页的XML配置__
             <call name="addListener">                                   <!-- 定义自定义变量名称的二次加工事件 -->
                 <listener class="org.hy.common.report.event.ImageListener">
                     <valueName>image</valueName>     <!-- 定义变量名称。注意：此处不用写占位符前缀冒号 -->
-                    <beginRow>29</beginRow>          <!-- 定义动态图片在模板中的位置 -->
-                    <endRow>43</endRow>
+                    <beginRow>4</beginRow>           <!-- 定义动态图片在模板中的位置 -->
+                    <endRow>18</endRow>
                     <beginColumn>0</beginColumn>
-                    <endColumn>8</endColumn>
+                    <endColumn>3</endColumn>
                     <maxWidth>300</maxWidth>         <!-- 图片最大宽度 -->
                     <maxHeight>260</maxHeight>       <!-- 图片最大高度 -->
                     <minWidth>50</minWidth>          <!-- 图片最小宽度 -->
@@ -521,6 +521,10 @@ __marginLeft__：设定动态图片与单元格左侧的边距。此属性的数
 __scaleX__：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），横向缩放比例。不设置，不缩放
 
 __scaleY__：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放
+
+__borderSize__：图片添加边框，边框线的大小。默认为：0，即没有边框线
+
+__borderColor__：图片添加边框，边框线的颜色。默认为：透明色
 
 [查看测试代码](src/test/java/org/hy/common/report/junit/versionCompare)
 

@@ -48,7 +48,6 @@ public class QrCode
         }
         catch (Exception e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig" class="java.util.ArrayList"/>
+    <import name="template" class="org.hy.common.report.bean.RTemplate"/>
+
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+
+        <template id="Report_ImageScale">
+            <name>热处理检验报告</name>
+            <sheetIndex>0</sheetIndex>
+            <excelFileName>classpath:JU_ImageScale.xlsx</excelFileName>
+            <dataBeginRow>0</dataBeginRow>
+            <dataEndRow>18</dataEndRow>
+            <dataClass>org.hy.common.report.junit.image04.Image04Data</dataClass>
+            
+            <call name="addListener">                                       <!-- 定义自定义变量名称的二次加工事件 -->
+                <listener class="org.hy.common.report.event.ImageListener">
+                    <valueName>imageUrl</valueName>
+                    <beginRow>0</beginRow>          <!-- 定义动态图片在模板中的位置 -->
+                    <endRow>1</endRow>
+                    <beginColumn>0</beginColumn>
+                    <endColumn>12</endColumn>
+                    <borderSize>10</borderSize>
+                    <scaleX>1</scaleX>
+                    <scaleY>1</scaleY>
+                </listener>
+            </call>
+            
+        </template>
+    </xconfig>
+
+</config>

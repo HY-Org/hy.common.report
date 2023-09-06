@@ -6,7 +6,7 @@
 
     <groupId>cn.openapis</groupId>
     <artifactId>hy.common.report</artifactId>
-    <version>3.3.2</version>
+    <version>3.3.3</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.report</name>
@@ -54,35 +54,35 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.base</artifactId>
-            <version>1.0.167</version>
+            <version>1.0.171</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.file</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.5</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.tpool</artifactId>
-            <version>1.3.2</version>
+            <version>1.3.4</version>
             <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.net</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
             <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.xjava</artifactId>
-            <version>4.2.2</version>
+            <version>4.3.4</version>
             <scope>test</scope>
         </dependency>
         
@@ -176,10 +176,25 @@
                 <directory>src/main/java</directory>
                 <filtering>true</filtering>
                 <includes>
+                    <include>**/LICENSE</include>
                     <include>**/*.xml</include>
                     <include>**/*.html</include>
                     <include>**/*.txt</include>
                     <include>**/*.ini</include>
+                    <include>**/*.json</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.md</include>
+                    <include>**/*.MF</include>
+                    <include>**/*.js</include>
+                    <include>**/*.css</include>
+                    <include>**/*.map</include>
+                    <include>**/*.png</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.eot</include>
+                    <include>**/*.svg</include>
+                    <include>**/*.ttf</include>
+                    <include>**/*.woff</include>
+                    <include>**/*.woff2</include>
                 </includes>
             </resource>
 

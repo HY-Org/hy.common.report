@@ -36,7 +36,7 @@ import org.hy.common.report.bean.RWorkbook;
 
 
 /**
- * 图片处理的监听器 
+ * 图片处理的监听器
  *
  * @author      ZhengWei(HY)
  * @createDate  2017-03-18
@@ -49,6 +49,7 @@ import org.hy.common.report.bean.RWorkbook;
  *              v4.0  2019-05-30  添加：图片的横向、纵向缩放比例
  *              v4.1  2020-04-10  添加：在多个不同模板，以追加模式写入时，对模板中图片作偏移量的修正。
  *              v5.0  2020-07-01  修复：对于jpg 图片可能会造成蒙一层粉红色的背景的问题。发现人、方案人：雷伟松
+ *              v6.0  2023-09-06  添加：绘制图片边框。当边框为透明色时，将解决图片自动缩放时，覆盖Excel边框的问题
  */
 public class ImageListener implements ValueListener
 {
@@ -95,6 +96,12 @@ public class ImageListener implements ValueListener
     /** 与单元格左侧的边距。先将图片大小设置好后导出报表看看，再微调此值 */
     protected Integer marginLeft;
     
+    /** 图片添加边框，边框线的大小。默认为：0，即没有边框线 */
+    protected Integer borderSize;
+    
+    /** 图片添加边框，边框线的颜色。默认为：透明色 */
+    protected Integer borderColor;
+    
     
     
     /**
@@ -110,9 +117,9 @@ public class ImageListener implements ValueListener
      * @param i_ImageType   图片的类型，即扩展名称
      * @return
      */
-    public static BufferedImage toBufferedImage(Image i_Image ,String i_ImageType) 
+    public static BufferedImage toBufferedImage(Image i_Image ,String i_ImageType)
     {
-        if (i_Image instanceof BufferedImage) 
+        if (i_Image instanceof BufferedImage)
         {
             return (BufferedImage) i_Image;
         }
@@ -127,20 +134,20 @@ public class ImageListener implements ValueListener
             v_Transparency = Transparency.OPAQUE;
         }
         
-        try 
+        try
         {
             GraphicsDevice        v_GraphicsDevice = v_GraphicsEnv.getDefaultScreenDevice();
             GraphicsConfiguration v_GraphicsConfig = v_GraphicsDevice.getDefaultConfiguration();
             
             v_BufferedImage = v_GraphicsConfig.createCompatibleImage(v_Image.getWidth(null), v_Image.getHeight(null), v_Transparency);
-        } 
-        catch (HeadlessException exce) 
+        }
+        catch (HeadlessException exce)
         {
             // 这里不报异常。而是交给后面的if语句判定
             // exce.printStackTrace();
         }
         
-        if ( v_BufferedImage == null ) 
+        if ( v_BufferedImage == null )
         {
             v_Transparency = BufferedImage.TYPE_INT_RGB;
             if ( "png".equalsIgnoreCase(i_ImageType) )
@@ -163,11 +170,13 @@ public class ImageListener implements ValueListener
     
     public ImageListener()
     {
-        this.maxWidth  = 0;
-        this.maxHeight = 0;
-        this.minWidth  = 0;
-        this.minHeight = 0;
-        this.isScale   = true;
+        this.maxWidth    = 0;
+        this.maxHeight   = 0;
+        this.minWidth    = 0;
+        this.minHeight   = 0;
+        this.isScale     = true;
+        this.borderSize  = 0;
+        this.borderColor = 0x00FFFFFF;
     }
     
     
@@ -181,6 +190,7 @@ public class ImageListener implements ValueListener
      *
      * @return
      */
+    @Override
     public String getValueName()
     {
         return this.valueName;
@@ -208,7 +218,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：图片显示的位置信息：开始行号
      * 
-     * @param beginRow 
+     * @param beginRow
      */
     public void setBeginRow(Integer beginRow)
     {
@@ -230,7 +240,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：图片显示的位置信息：结束行号
      * 
-     * @param endRow 
+     * @param endRow
      */
     public void setEndRow(Integer endRow)
     {
@@ -252,7 +262,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：图片显示的位置信息：开始行号
      * 
-     * @param beginColumn 
+     * @param beginColumn
      */
     public void setBeginColumn(Short beginColumn)
     {
@@ -274,7 +284,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：图片显示的位置信息：结束行号
      * 
-     * @param endColumn 
+     * @param endColumn
      */
     public void setEndColumn(Short endColumn)
     {
@@ -296,7 +306,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：与单元格顶部的边距。先将图片大小(width、height)设置好后导出报表看看，再微调此值
      * 
-     * @param marginTop 
+     * @param marginTop
      */
     public void setMarginTop(Integer marginTop)
     {
@@ -318,7 +328,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：与单元格左侧的边距。先将图片大小(width、height)设置好后导出报表看看，再微调此值
      * 
-     * @param marginLeft 
+     * @param marginLeft
      */
     public void setMarginLeft(Integer marginLeft)
     {
@@ -370,7 +380,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：图片最大宽度。默认为0值，表示不限制
      * 
-     * @param maxWidth 
+     * @param maxWidth
      */
     public void setMaxWidth(int maxWidth)
     {
@@ -382,7 +392,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：图片最大高度。默认为0值，表示不限制
      * 
-     * @param maxHeight 
+     * @param maxHeight
      */
     public void setMaxHeight(int maxHeight)
     {
@@ -394,7 +404,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：图片最小宽度。默认为0值，表示不限制
      * 
-     * @param minWidth 
+     * @param minWidth
      */
     public void setMinWidth(int minWidth)
     {
@@ -406,7 +416,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：图片最小宽度。默认为0值，表示不限制
      * 
-     * @param minHeight 
+     * @param minHeight
      */
     public void setMinHeight(int minHeight)
     {
@@ -428,7 +438,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：当图片被缩小时，是否保持高宽等比缩放（当maxWidth 或 maxHeight大于0时有效）。默认为：真
      * 
-     * @param isScale 
+     * @param isScale
      */
     public void setScale(boolean isScale)
     {
@@ -460,7 +470,7 @@ public class ImageListener implements ValueListener
     /**
      * 设置：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），横向缩放比例。不设置，不缩放
      * 
-     * @param scaleX 
+     * @param scaleX
      */
     public void setScaleX(Double scaleX)
     {
@@ -472,11 +482,55 @@ public class ImageListener implements ValueListener
     /**
      * 设置：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放
      * 
-     * @param scaleY 
+     * @param scaleY
      */
     public void setScaleY(Double scaleY)
     {
         this.scaleY = scaleY;
+    }
+
+
+    
+    /**
+     * 获取：图片添加边框，边框线的大小
+     */
+    public Integer getBorderSize()
+    {
+        return borderSize;
+    }
+
+
+    
+    /**
+     * 设置：图片添加边框，边框线的大小
+     * 
+     * @param i_BorderSize 图片添加边框，边框线的大小
+     */
+    public void setBorderSize(Integer i_BorderSize)
+    {
+        this.borderSize = i_BorderSize;
+    }
+
+
+    
+    /**
+     * 获取：图片添加边框，边框线的颜色
+     */
+    public Integer getBorderColor()
+    {
+        return borderColor;
+    }
+
+
+    
+    /**
+     * 设置：图片添加边框，边框线的颜色
+     * 
+     * @param i_BorderColor 图片添加边框，边框线的颜色
+     */
+    public void setBorderColor(Integer i_BorderColor)
+    {
+        this.borderColor = i_BorderColor;
     }
 
 
@@ -515,8 +569,9 @@ public class ImageListener implements ValueListener
      * @param i_RSystemValue  系统变量信息
      * @param i_Datas         本行对应的数据
      * @param i_Value         反射出来的变量名称对应的值（图片文件的全路径）
-     * @return 
+     * @return
      */
+    @Override
     public String getValue(RTemplate i_RTemplate ,Cell i_TemplateCell ,Cell i_DataCell ,RWorkbook i_DataWorkbook ,RSystemValue i_RSystemValue ,Object i_Datas ,Object i_Value)
     {
         if ( i_Value == null )
@@ -541,16 +596,24 @@ public class ImageListener implements ValueListener
                 Image v_Image = Toolkit.getDefaultToolkit().getImage(new URL(v_ImageName));
                 v_BufferImage = ImageListener.toBufferedImage(v_Image ,v_ImageType);
                 
-                // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY) 
-                // v_BufferImage = ImageIO.read(new URL(v_ImageName));  
+                // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY)
+                // v_BufferImage = ImageIO.read(new URL(v_ImageName));
             }
             else
             {
                 Image v_Image = Toolkit.getDefaultToolkit().getImage(v_ImageName);
                 v_BufferImage = ImageListener.toBufferedImage(v_Image ,v_ImageType);
                 
-                // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY) 
+                // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY)
                 // v_BufferImage = ImageIO.read(new File(v_ImageName));
+            }
+            
+            if ( this.borderSize != null && this.borderSize > 0 && this.borderColor != null )
+            {
+                v_BufferImage = FileHelp.expandImage(v_BufferImage
+                                                    ,v_BufferImage.getWidth()  + this.borderSize * 2
+                                                    ,v_BufferImage.getHeight() + this.borderSize * 2
+                                                    ,this.borderColor);
             }
             
             // 缩放图片
@@ -603,7 +666,7 @@ public class ImageListener implements ValueListener
         
         if ( "png".equals(v_ImageType) )
         {
-            v_PictureType = Workbook.PICTURE_TYPE_PNG; 
+            v_PictureType = Workbook.PICTURE_TYPE_PNG;
         }
         else if ( "jpg".equals(v_ImageType) )
         {
