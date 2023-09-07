@@ -30,6 +30,7 @@ import org.hy.common.file.FileHelp;
 import org.hy.common.report.bean.RSystemValue;
 import org.hy.common.report.bean.RTemplate;
 import org.hy.common.report.bean.RWorkbook;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -53,6 +54,10 @@ import org.hy.common.report.bean.RWorkbook;
  */
 public class ImageListener implements ValueListener
 {
+    
+    private static final Logger $Logger = new Logger(ImageListener.class);
+    
+    
     
     /** 监听器的变量名称 */
     protected String  valueName;
@@ -96,8 +101,11 @@ public class ImageListener implements ValueListener
     /** 与单元格左侧的边距。先将图片大小设置好后导出报表看看，再微调此值 */
     protected Integer marginLeft;
     
-    /** 图片添加边框，边框线的大小。默认为：0，即没有边框线 */
-    protected Integer borderSize;
+    /** 图片添加左右边框，边框线的大小。默认为：0，即没有左右边框线 */
+    protected Integer borderLRSize;
+    
+    /** 图片添加顶底边框，边框线的大小。默认为：0，即没有顶底边框线 */
+    protected Integer borderTBSize;
     
     /** 图片添加边框，边框线的颜色。默认为：透明色 */
     protected Integer borderColor;
@@ -170,13 +178,14 @@ public class ImageListener implements ValueListener
     
     public ImageListener()
     {
-        this.maxWidth    = 0;
-        this.maxHeight   = 0;
-        this.minWidth    = 0;
-        this.minHeight   = 0;
-        this.isScale     = true;
-        this.borderSize  = 0;
-        this.borderColor = 0x00FFFFFF;
+        this.maxWidth     = 0;
+        this.maxHeight    = 0;
+        this.minWidth     = 0;
+        this.minHeight    = 0;
+        this.isScale      = true;
+        this.borderLRSize = 0;
+        this.borderTBSize = 0;
+        this.borderColor  = 0x00FFFFFF;
     }
     
     
@@ -492,27 +501,62 @@ public class ImageListener implements ValueListener
 
     
     /**
-     * 获取：图片添加边框，边框线的大小
-     */
-    public Integer getBorderSize()
-    {
-        return borderSize;
-    }
-
-
-    
-    /**
      * 设置：图片添加边框，边框线的大小
      * 
      * @param i_BorderSize 图片添加边框，边框线的大小
      */
     public void setBorderSize(Integer i_BorderSize)
     {
-        this.borderSize = i_BorderSize;
+        this.borderLRSize = i_BorderSize;
+        this.borderTBSize = i_BorderSize;
+    }
+
+    
+    
+    /**
+     * 获取：图片添加左右边框，边框线的大小。默认为：0，即没有边框线
+     */
+    public Integer getBorderLRSize()
+    {
+        return borderLRSize;
     }
 
 
     
+    /**
+     * 设置：图片添加左右边框，边框线的大小。默认为：0，即没有边框线
+     * 
+     * @param i_BorderLRSize 图片添加左右边框，边框线的大小。默认为：0，即没有边框线
+     */
+    public void setBorderLRSize(Integer i_BorderLRSize)
+    {
+        this.borderLRSize = i_BorderLRSize;
+    }
+
+
+    
+    /**
+     * 获取：图片添加顶底边框，边框线的大小。默认为：0，即没有边框线
+     */
+    public Integer getBorderTBSize()
+    {
+        return borderTBSize;
+    }
+
+
+    
+    /**
+     * 设置：图片添加顶底边框，边框线的大小。默认为：0，即没有边框线
+     * 
+     * @param i_BorderTBSize 图片添加顶底边框，边框线的大小。默认为：0，即没有边框线
+     */
+    public void setBorderTBSize(Integer i_BorderTBSize)
+    {
+        this.borderTBSize = i_BorderTBSize;
+    }
+
+
+
     /**
      * 获取：图片添加边框，边框线的颜色
      */
@@ -608,11 +652,32 @@ public class ImageListener implements ValueListener
                 // v_BufferImage = ImageIO.read(new File(v_ImageName));
             }
             
-            if ( this.borderSize != null && this.borderSize > 0 && this.borderColor != null )
+            int v_LR = 0;
+            int v_TB = 0;
+            
+            if ( this.borderLRSize != null && this.borderLRSize > 0
+              && this.borderTBSize != null && this.borderTBSize > 0 )
+            {
+                v_LR = 1;
+                v_TB = 1;
+            }
+            else if ( this.borderLRSize != null && this.borderLRSize > 0 )
+            {
+                v_LR = 1;
+                v_TB = 0;
+            }
+            else if ( this.borderTBSize != null && this.borderTBSize > 0 )
+            {
+                v_LR = 0;
+                v_TB = 1;
+            }
+            
+            // 加边框
+            if ( (v_LR > 0 || v_TB > 0) && this.borderColor != null )
             {
                 v_BufferImage = FileHelp.expandImage(v_BufferImage
-                                                    ,v_BufferImage.getWidth()  + this.borderSize * 2
-                                                    ,v_BufferImage.getHeight() + this.borderSize * 2
+                                                    ,v_BufferImage.getWidth()  + this.borderLRSize * 2 * v_LR
+                                                    ,v_BufferImage.getHeight() + this.borderTBSize * 2 * v_TB
                                                     ,this.borderColor);
             }
             
@@ -624,7 +689,7 @@ public class ImageListener implements ValueListener
         }
         catch (Exception exce)
         {
-            exce.printStackTrace();
+            $Logger.error(exce);
             return "";
         }
         

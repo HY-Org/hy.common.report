@@ -522,9 +522,13 @@ __scaleX__：可在最大高宽、最小高宽的基础上（当然，也可独�
 
 __scaleY__：可在最大高宽、最小高宽的基础上（当然，也可独立使用，不基于最大高宽、最小高宽），纵向缩放比例。不设置，不缩放
 
+__borderColor__：图片添加边框，边框线的颜色。默认为：透明色
+
 __borderSize__：图片添加边框，边框线的大小。默认为：0，即没有边框线
 
-__borderColor__：图片添加边框，边框线的颜色。默认为：透明色
+__borderLRSize__：图片添加左右边框，边框线的大小。默认为：0，即没有左右边框线
+
+__borderTBSize__：图片添加顶底边框，边框线的大小。默认为：0，即没有顶底边框线
 
 [查看测试代码](src/test/java/org/hy/common/report/junit/versionCompare)
 
@@ -786,14 +790,12 @@ __二维码的生成的XML配置举例__
                     <barcodeFormat ref="com.google.zxing.BarcodeFormat.QR_CODE"/>  <!-- 编码类型：二维码 -->
                     <width>170</width>                                             <!-- 二维码的宽度 -->
                     <height>170</height>                                           <!-- 二维码的高度 -->
-                    <marginTop> 100000</marginTop>                                 <!-- 二维码的相对于顶部的边距 -->
-                    <marginLeft>200000</marginLeft>                                <!-- 二维码的相对于左侧的边距-->
-                    
                     <valueName>zxing2D</valueName>                                 <!-- 监听的变量名称 -->
                     <beginRow>2</beginRow>
-                    <endRow>2</endRow>
+                    <endRow>3</endRow>
                     <beginColumn>1</beginColumn>
-                    <endColumn>1</endColumn>
+                    <endColumn>2</endColumn>
+                    <borderSize>5</borderSize>
                 </listener>
             </call>
         </template>
@@ -850,14 +852,13 @@ __条形码的生成的XML配置举例__
                     <barcodeFormat ref="com.google.zxing.BarcodeFormat.CODE_128"/>  <!-- 编码类型：条形码 -->
                     <width>300</width>                                              <!-- 条形码的宽度 -->
                     <height>120</height>                                            <!-- 条形码的高度 -->
-                    <marginTop> 350000</marginTop>                                  <!-- 条形码的相对于顶部的边距 -->
-                    <marginLeft>500000</marginLeft>                                 <!-- 条形码的相对于左侧的边距-->
-                    
                     <valueName>zxing1D</valueName>                                  <!-- 监听的变量名称 -->
                     <beginRow>2</beginRow>
-                    <endRow>2</endRow>
+                    <endRow>3</endRow>
                     <beginColumn>2</beginColumn>
-                    <endColumn>2</endColumn>
+                    <endColumn>3</endColumn>
+                    <borderLRSize>10</borderLRSize>
+                    <borderTBSize>30</borderTBSize>
                 </listener>
             </call>
         </template>

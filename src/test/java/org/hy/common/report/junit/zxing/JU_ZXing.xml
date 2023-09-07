@@ -30,9 +30,10 @@
                     <height>170</height>                                           <!-- 二维码的高度 -->
                     <valueName>zxing2D</valueName>                                 <!-- 监听的变量名称 -->
                     <beginRow>2</beginRow>
-                    <endRow>2</endRow>
+                    <endRow>3</endRow>
                     <beginColumn>1</beginColumn>
-                    <endColumn>1</endColumn>
+                    <endColumn>2</endColumn>
+                    <borderSize>5</borderSize>
                 </listener>
             </call>
             
@@ -44,9 +45,11 @@
                     <height>120</height>
                     <valueName>zxing1D</valueName>
                     <beginRow>2</beginRow>
-                    <endRow>2</endRow>
+                    <endRow>3</endRow>
                     <beginColumn>2</beginColumn>
-                    <endColumn>2</endColumn>
+                    <endColumn>3</endColumn>
+                    <borderLRSize>10</borderLRSize>
+                    <borderTBSize>30</borderTBSize>
                 </listener>
             </call>
         </template>

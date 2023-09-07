@@ -28,7 +28,7 @@ import org.junit.runners.MethodSorters;
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING) 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JU_ZXing implements JUBase<ZXingData>
 {
     
@@ -47,6 +47,7 @@ public class JU_ZXing implements JUBase<ZXingData>
     
     
     
+    @Override
     public List<ZXingData> getDatas(int i_DataSize)
     {
         List<ZXingData> v_Ret = new ArrayList<ZXingData>();
@@ -71,7 +72,7 @@ public class JU_ZXing implements JUBase<ZXingData>
     {
         RTemplate v_RTemplate = (RTemplate)XJava.getObject("ReportZXing");
         
-        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\ZhengWei\\Desktop\\二维码、条形码的报表演示.xlsx");
+        ExcelHelp.save(ReportHelp.toExcel(getDatas(10) ,v_RTemplate).getWorkbook() ,"C:\\Users\\hyzhe\\Desktop\\二维码、条形码的报表演示.xlsx");
     }
     
 }
