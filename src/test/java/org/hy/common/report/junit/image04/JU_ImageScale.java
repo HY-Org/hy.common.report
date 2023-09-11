@@ -51,7 +51,7 @@ public class JU_ImageScale
     public void test_ImageScale() throws RTemplateException
     {
         RTemplate         v_RTemplate = (RTemplate)XJava.getObject("Report_ImageScale");
-        List<Image04Data> v_Datas     = this.getDatas(1);
+        List<Image04Data> v_Datas     = this.getDatas(2);
         
         RWorkbook v_RWorkbook = ReportHelp.toExcel(v_Datas ,v_RTemplate);
         
@@ -78,7 +78,15 @@ public class JU_ImageScale
         {
             Image04Data v_Data = new Image04Data();
             
-            v_Data.setHeatTreatmentImage("D:\\WorkSpace\\hy.common.report\\src\\test\\java\\org\\hy\\common\\report\\junit\\image04\\JU_ImageScale.png");
+            if ( i == 1 )
+            {
+                v_Data.setHeatTreatmentImage("D:\\WorkSpace\\hy.common.report\\src\\test\\java\\org\\hy\\common\\report\\junit\\image04\\JU_ImageScale.png");
+            }
+            else
+            {
+                v_Data.setHeatTreatmentImage("http://10.1.90.23/calc/windows/images/xsqlGroup.png");
+            }
+            
             v_Data.setImageUrl(v_Data.getHeatTreatmentImage());
             v_Datas.add(v_Data);
         }

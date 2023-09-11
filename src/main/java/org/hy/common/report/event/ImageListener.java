@@ -6,11 +6,9 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -635,11 +633,13 @@ public class ImageListener implements ValueListener
         try
         {
             // 读取图片
+            v_BufferImage = FileHelp.getContentImage(v_ImageName);
+            /*
             if ( v_ImageName.startsWith("file:") )
             {
                 Image v_Image = Toolkit.getDefaultToolkit().getImage(new URL(v_ImageName));
                 v_BufferImage = ImageListener.toBufferedImage(v_Image ,v_ImageType);
-                
+
                 // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY)
                 // v_BufferImage = ImageIO.read(new URL(v_ImageName));
             }
@@ -647,10 +647,11 @@ public class ImageListener implements ValueListener
             {
                 Image v_Image = Toolkit.getDefaultToolkit().getImage(v_ImageName);
                 v_BufferImage = ImageListener.toBufferedImage(v_Image ,v_ImageType);
-                
+
                 // 下方的代码对于jpg 图片可能会造成蒙一层粉红色的背景的问题，通过上面的方法解决 Add 2020-07-01 ZhengWei(HY)
                 // v_BufferImage = ImageIO.read(new File(v_ImageName));
             }
+            */
             
             int v_LR = 0;
             int v_TB = 0;
