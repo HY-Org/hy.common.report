@@ -80,7 +80,11 @@ public class JU_ImageScale
             
             if ( i == 1 )
             {
-                v_Data.setHeatTreatmentImage("D:\\WorkSpace\\hy.common.report\\src\\test\\java\\org\\hy\\common\\report\\junit\\image04\\JU_ImageScale.png");
+                v_Data.setHeatTreatmentImage("D:\\WorkSpace\\hy.common.report\\images\\9.jpg");
+            }
+            else if ( i == 2 )
+            {
+                v_Data.setHeatTreatmentImage("D:\\WorkSpace\\hy.common.report\\src\\test\\java\\org\\hy\\common\\report\\junit\\image03\\1问题源.jpg");
             }
             else
             {

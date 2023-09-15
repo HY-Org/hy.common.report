@@ -137,7 +137,7 @@ public class ImageListener implements ValueListener
         
         if ( "jpg".equalsIgnoreCase(i_ImageType) )
         {
-            v_Transparency = Transparency.OPAQUE;
+            v_Transparency = Transparency.BITMASK;
         }
         
         try
@@ -686,7 +686,11 @@ public class ImageListener implements ValueListener
             v_BufferImage = resizeImage(v_BufferImage);
             
             v_ByteArrayOut = new ByteArrayOutputStream();
-            ImageIO.write(v_BufferImage ,v_ImageType ,v_ByteArrayOut);
+            
+            // 2023-09-14 Edit
+            // 原先 JDK 1.8 时没有问题。换成 JDK 11后，出现 jpg图片无法显示的问题
+            // 写死为 png ，因为使用 v_ImageType 时，会出现 jpg图片无法显示的问题
+            ImageIO.write(v_BufferImage ,"png" ,v_ByteArrayOut);
         }
         catch (Exception exce)
         {
