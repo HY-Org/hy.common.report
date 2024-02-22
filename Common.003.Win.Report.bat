@@ -16,8 +16,6 @@ copy hy.common.report.jar ..\..
 del /q hy.common.report.jar
 cd ..\..
 
-pause
-
 
 
 cd .\src\main\java
@@ -27,3 +25,5 @@ copy hy.common.report-sources.jar ..\..\..
 del /Q hy.common.report-sources.jar
 rd /s/q META-INF
 cd ..\..\..
+
+pause
