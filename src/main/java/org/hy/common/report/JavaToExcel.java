@@ -2395,7 +2395,8 @@ public class JavaToExcel
         else
         {
             // Nothing.
-            i_DataCell.setCellType(v_CellType);
+            // 2022-11-10 Del：POI 5.x的版本不建议使用 i_DataCell.setCellType(v_CellType);
+            i_DataCell.setBlank();
         }
     }
     
@@ -2477,41 +2478,41 @@ public class JavaToExcel
                             // 整数显示为小数的形式的选择开功能。需Excel模板配合设置单元格的格式为：小数格式(0.000 或 0.###)
                             if ( i_RTemplate.getIsIntegerShowDecimal() )
                             {
-                                i_DataCell.setCellType(CellType.NUMERIC);
+                                // POI 5.0的版本丢用 i_DataCell.setCellType(CellType.NUMERIC);
                                 i_DataCell.setCellValue(Double.parseDouble(v_RValue.getValue().toString()));
                             }
                             else if ( v_RValue.getValue().toString().indexOf(".") >= 0 )
                             {
-                                i_DataCell.setCellType(CellType.NUMERIC);
+                                // POI 5.0的版本丢用 i_DataCell.setCellType(CellType.NUMERIC);
                                 i_DataCell.setCellValue(Double.parseDouble(v_RValue.getValue().toString()));
                             }
                             else
                             {
-                                i_DataCell.setCellType(CellType.NUMERIC);
+                                // POI 5.0的版本丢用 i_DataCell.setCellType(CellType.NUMERIC);
                                 i_DataCell.setCellValue(Double.parseDouble(v_RValue.getValue().toString()));
                             }
                         }
                         // 如果填充值首字母为等号“=”，按Excel公式填充
                         else if ( v_RValue.getValue().toString().trim().startsWith("=") )
                         {
-                            i_DataCell.setCellType(CellType.FORMULA);
+                            // POI 5.0的版本丢用 i_DataCell.setCellType(CellType.FORMULA);
                             i_DataCell.setCellFormula(v_RValue.getValue().toString().trim().substring(1));
                         }
                         else
                         {
-                            i_DataCell.setCellType(v_CellType);
+                            // POI 5.0的版本丢用 i_DataCell.setCellType(v_CellType);
                             i_DataCell.setCellValue(v_RValue.getValue().toString());
                         }
                     }
                     // 如果填充值首字母为等号“=”，按Excel公式填充
                     else if ( v_RValue.getValue().toString().trim().startsWith("=") )
                     {
-                        i_DataCell.setCellType(CellType.FORMULA);
+                        // POI 5.0的版本丢用 i_DataCell.setCellType(CellType.FORMULA);
                         i_DataCell.setCellFormula(v_RValue.getValue().toString().trim().substring(1));
                     }
                     else
                     {
-                        i_DataCell.setCellType(v_CellType);
+                        // POI 5.0的版本丢用 i_DataCell.setCellType(v_CellType);
                         i_DataCell.setCellValue(v_RValue.getValue().toString());
                     }
                     
@@ -2533,7 +2534,7 @@ public class JavaToExcel
                 }
                 else
                 {
-                    i_DataCell.setCellType(v_CellType);
+                    // POI 5.0的版本丢用 i_DataCell.setCellType(v_CellType);
                     i_DataCell.setCellValue("");
                 }
                 
@@ -2541,24 +2542,25 @@ public class JavaToExcel
             }
             else
             {
-                i_DataCell.setCellType(v_CellType);
+                // POI 5.0的版本丢用 i_DataCell.setCellType(v_CellType);
                 copyRichTextStyle(i_RTemplate ,v_TemplateRichText ,i_DataWorkbook ,i_DataCell);
             }
         }
         else if ( v_CellType == CellType.BOOLEAN )
         {
-            i_DataCell.setCellType(v_CellType);
+            // POI 5.0的版本丢用 i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellValue(i_TemplateCell.getBooleanCellValue());
         }
         else if ( v_CellType == CellType.FORMULA)
         {
-            i_DataCell.setCellType(v_CellType);
+            // POI 5.0的版本丢用 i_DataCell.setCellType(v_CellType);
             i_DataCell.setCellFormula(ExcelFormula.calcFormulaOffset(i_TemplateCell ,i_DataCell));
         }
         else
         {
             // Nothing.
-            i_DataCell.setCellType(v_CellType);
+            // POI 5.0的版本丢用 i_DataCell.setCellType(v_CellType);
+            i_DataCell.setBlank();
         }
         
         return io_RValue == null ? new RValue() : io_RValue;

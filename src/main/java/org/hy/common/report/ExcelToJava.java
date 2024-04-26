@@ -432,7 +432,7 @@ public class ExcelToJava
                             if ( null != v_Value )
                             {
                                 i_Cell.setCellValue("");
-                                i_Cell.setCellType(CellType.STRING);
+                                // POI 5.0的版本丢用 i_Cell.setCellType(CellType.STRING);
                                 Object v_ValueTemp = i_Cell.getStringCellValue();
                                 
                                 // 有可能将0.0001识别为1.000E-3。为预防此情况，添加如下判定 2017-05-23 Add ZhengWei(HY)

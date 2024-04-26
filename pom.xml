@@ -6,7 +6,7 @@
 
     <groupId>cn.openapis</groupId>
     <artifactId>hy.common.report</artifactId>
-    <version>3.3.7</version>
+    <version>3.3.8</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.report</name>
