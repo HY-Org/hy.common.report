@@ -938,7 +938,7 @@ public class ExcelHelp
     {
         int v_MergedRegionsCount = i_FromSheet.getNumMergedRegions();
         CacheSheetInfo         v_CacheKey   = new CacheSheetInfo(i_FromSheet ,i_AreaBeginRow ,i_AreaEndRow);
-        List<CellRangeAddress> v_CacheDatas = $MergedRegionsAreaCaches.get(v_CacheKey);
+        List<CellRangeAddress> v_CacheDatas = null; // $MergedRegionsAreaCaches.get(v_CacheKey);
         
         if ( v_CacheDatas == null )
         {
@@ -961,7 +961,7 @@ public class ExcelHelp
                 v_CacheDatas.add(v_CellRangeAddress);
             }
             
-            $MergedRegionsAreaCaches.put(v_CacheKey ,v_CacheDatas ,$CacheTimeLen);
+            // $MergedRegionsAreaCaches.put(v_CacheKey ,v_CacheDatas ,$CacheTimeLen);
         }
         
         if ( Help.isNull(v_CacheDatas) ) return;

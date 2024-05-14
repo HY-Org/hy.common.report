@@ -27,6 +27,7 @@
     * [二维码的生成（占位符监听器）](#二维码的生成)
     * [条形码的生成（占位符监听器）](#条形码的生成)
     * [富文本](#富文本的生成)
+    * [Excel导出性能](#Excel导出性能)
     * [Excel公式](#Excel公式计算)
 * 注意要点
     * [字体颜色](#高版本Excel的字体颜色)
@@ -244,8 +245,6 @@ __动态行和小计报表的XML配置举例__
 
     <import name="xconfig"         class="java.util.ArrayList" />
     <import name="template"        class="org.hy.common.report.bean.RTemplate" />
-    
-    
     
     <!-- 报表模板配置信息 -->
     <xconfig>
@@ -927,6 +926,48 @@ __富文本支持的XML配置举例__
 ```
 
 [查看"富文本"的完整代码](src/test/java/org/hy/common/report/junit/font)
+
+
+
+
+
+Excel导出性能
+------
+在复杂（特殊是有合并单元格的情况）格式的报表生成时，通过关闭安全检查，提高导出性能
+
+配置 isSafe = false
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+
+        <template id="Report_20240513">
+            <name>控制阀气动计算书</name>
+            <excelFileName>classpath:DataSheet.xlsx</excelFileName>
+            <dataBeginRow>0</dataBeginRow>
+            <dataEndRow>59</dataEndRow>
+            <dataClass>org.hy.common.report.junit.j20240513.DataSheet</dataClass>
+            <!-- 打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果 -->
+            <pageBreakMode ref="this.$PageBreakMode_Page" />    
+            
+            <!-- 性能加速，会跳过验证、可能造成合并单格重叠、公式计算异常等问题 -->            
+            <isSafe>false</isSafe>
+        </template>
+        
+    </xconfig>
+    
+</config>
+```
+
+[查看"导出性能"的完整代码](src/test/java/org/hy/common/report/junit/j20240513)
+
 
 
 

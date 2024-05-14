@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+
+        <template id="Report_20240513">
+            <name>控制阀气动计算书</name>
+            <excelFileName>classpath:DataSheet.xlsx</excelFileName>
+            <dataBeginRow>0</dataBeginRow>
+            <dataEndRow>59</dataEndRow>
+            <dataClass>org.hy.common.report.junit.j20240513.DataSheet</dataClass>
+            <!-- 打印分页模式。确保同一Excel在不同电脑上打印时，均能保持相同的分页结果 -->
+            <pageBreakMode ref="this.$PageBreakMode_Page" />    
+            
+            <!-- 性能加速跳验证、可能造成合并单格重叠、公式计算异常等问题 -->            
+            <isSafe>false</isSafe>
+        </template>
+        
+    </xconfig>
+    
+</config>
