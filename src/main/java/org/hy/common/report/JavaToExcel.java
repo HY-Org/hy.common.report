@@ -33,7 +33,6 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.report.bean.RPosition;
@@ -564,7 +563,6 @@ public class JavaToExcel
                 {
                     for (; v_RSystemValue.getRowNo()<=v_RSystemValue.getRowCount(); )
                     {
-                        System.out.println(Date.getNowTime().getFull() + "\t" + v_RSystemValue.getRowNo());
                         writeData(v_DataWorkbook ,v_DataSheet ,v_RTotal ,v_RSystemValue ,i_Datas.get(v_RSystemValue.getRowIndex()) ,i_RTemplate);
                         v_RSystemValue.setRowNo(v_RSystemValue.getRowNo() + 1);
                     }
@@ -797,12 +795,9 @@ public class JavaToExcel
         int   v_TemplateRowCount = i_RTemplate.getRowCountData();
         int   v_ExcelRowIndex    = io_RTotal.getExcelRowIndex();
         
-        System.out.println(Date.getNowTime().getFullMilli() + "\t1");
         copyMergedRegionsData(i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板合并单元格
-        System.out.println(Date.getNowTime().getFullMilli() + "\t2");
         copyImagesData(       i_RTemplate ,i_DataSheet ,io_RTotal);  // 按模板复制图片
         
-        System.out.println(Date.getNowTime().getFullMilli() + "\t3");
         for (int v_RowNo=0; v_RowNo<v_TemplateRowCount; v_RowNo++)
         {
             int v_TemplateRowNo = i_RTemplate.getDataBeginRow() + v_RowNo;
@@ -818,7 +813,6 @@ public class JavaToExcel
                 copyRow(i_RTemplate ,v_TemplateRow ,i_DataWorkbook ,io_RTotal ,io_RSystemValue ,v_DataRow ,i_Datas);
             }
         }
-        System.out.println(Date.getNowTime().getFullMilli() + "\t4");
     }
     
     
