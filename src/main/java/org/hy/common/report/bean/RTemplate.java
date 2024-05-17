@@ -22,6 +22,7 @@ import org.hy.common.report.error.RTemplateException;
 import org.hy.common.report.event.SheetListener;
 import org.hy.common.report.event.ValueListener;
 import org.hy.common.xml.SerializableDef;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -60,6 +61,8 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
 {
     
     private static final long serialVersionUID = 6269939315364526275L;
+    
+    private static final Logger $Logger = new Logger(RTemplate.class);
     
 
     /** 系统固定变量名称：数据行号的变量名称。下标从1开始 */
@@ -359,11 +362,11 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     {
         try
         {
-            return Class.forName(this.dataClass).newInstance();
+            return Help.forName(this.dataClass).getDeclaredConstructor().newInstance();
         }
         catch (Exception exce)
         {
-            exce.printStackTrace();
+            $Logger.error(exce);
         }
         
         return null;
@@ -753,7 +756,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
                     }
                 }
                 
-                if ( v_RCellG.size() >= 1 )
+                if ( !v_RCellG.isEmpty() )
                 {
                     this.valueMethods.put(v_Value ,v_RCellG);
                 }
@@ -761,7 +764,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
         }
         catch (Exception exce)
         {
-            exce.printStackTrace();
+            $Logger.error(exce);
         }
     }
     
@@ -997,7 +1000,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             }
             catch (Exception exce)
             {
-                exce.printStackTrace();
+                $Logger.error(exce);
             }
             finally
             {
@@ -1084,7 +1087,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             }
             catch (Exception exce)
             {
-                exce.printStackTrace();
+                $Logger.error(exce);
             }
         }
         
@@ -1316,7 +1319,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
      * @param i_DataSheet     数据的工作表
      * @param i_Datas         本行对应的数据
      * @param i_RTemplate     模板
-     * @param i_TemplateCell  模板单元格对象
+     * @param i_RTemplate     模板单元格对象
      * @param i_RSystemValue  系统变量信息
      */
     public void fireSheetListener(Sheet i_DataSheet ,List<?> i_Datas ,RTemplate i_RTemplate ,RSystemValue i_RSystemValue)
@@ -1329,7 +1332,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
             }
             catch (Exception exce)
             {
-                exce.printStackTrace();
+                $Logger.error(exce);
             }
         }
     }
@@ -1808,7 +1811,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表小计的开始行号（包括此行）。下标从零开始
      * 
-     * @param subtotalBeginRow
+     * @param i_SubtotalBeginRow
      */
     public void setSubtotalBeginRow(Integer i_SubtotalBeginRow)
     {
@@ -1849,7 +1852,7 @@ public class RTemplate extends SerializableDef implements Comparable<RTemplate>
     /**
      * 设置：报表小计的输出位置（top：在明细数据之前输出小计；bottom）。默认是：bottom
      * 
-     * @param subtotalPosition
+     * @param i_SubtotalPosition
      */
     public void setSubtotalPosition(String i_SubtotalPosition)
     {
