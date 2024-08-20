@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="template"        class="org.hy.common.report.bean.RTemplate" />
+    
+    
+    
+    <!-- 报表模板配置信息 -->
+    <xconfig>
+    
+        <template id="ReadNumber">
+            <name>Excel转为Java对象，对整数的处理</name>
+            <excelFileName>classpath:JU_ReadNumber_Template.xlsx</excelFileName>
+            <dataBeginRow>1</dataBeginRow>
+            <dataClass>org.hy.common.report.junit.readNumber.Data</dataClass>
+        </template>
+        
+    </xconfig>
+    
+</config>
