@@ -55,7 +55,7 @@ import org.apache.poi.xssf.usermodel.XSSFShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hy.common.Date;
-import org.hy.common.ExpireMap;
+import org.hy.common.ExpireCache;
 import org.hy.common.Help;
 import org.hy.common.PartitionMap;
 import org.hy.common.StringHelp;
@@ -97,9 +97,9 @@ public class ExcelHelp
     /** 缓存保存的时长（单位秒） */
     public  static int $CacheTimeLen = 60;
     
-    private static ExpireMap<CacheSheetInfo ,List<CellRangeAddress>> $MergedRegionsAreaCaches = new ExpireMap<CacheSheetInfo ,List<CellRangeAddress>>();
+    private static ExpireCache<CacheSheetInfo ,List<CellRangeAddress>> $MergedRegionsAreaCaches = new ExpireCache<CacheSheetInfo ,List<CellRangeAddress>>();
     
-    private static ExpireMap<CacheSheetInfo ,List<ImageAreaInfo>>    $ImageAreaCaches         = new ExpireMap<CacheSheetInfo ,List<ImageAreaInfo>>();
+    private static ExpireCache<CacheSheetInfo ,List<ImageAreaInfo>>    $ImageAreaCaches         = new ExpireCache<CacheSheetInfo ,List<ImageAreaInfo>>();
     
     /** 判定小数格式的正则 */
     private static final String $Decimal = "0\\.0+";
