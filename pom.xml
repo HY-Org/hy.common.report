@@ -6,13 +6,13 @@
 
     <groupId>cn.openapis</groupId>
     <artifactId>hy.common.report</artifactId>
-    <version>3.4.0</version>
+    <version>3.4.1</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.report</name>
     <!-- https://gitee.com/HY-ZhengWei/hy.common.report -->
     <url>https://github.com/HY-ZhengWei/hy.common.report</url>
-    <description>cn.openapis.hy.common.report</description>
+    <description>报表通用组件（Report Common Components）</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -54,14 +54,14 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.base</artifactId>
-            <version>1.0.204</version>
+            <version>1.0.205</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.file</artifactId>
-            <version>1.5.7</version>
+            <version>1.5.8</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.tpool</artifactId>
-            <version>1.4.0</version>
+            <version>1.4.1</version>
             <scope>test</scope>
         </dependency>
         
@@ -104,7 +104,7 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.xjava</artifactId>
-            <version>4.7.1</version>
+            <version>4.7.3</version>
             <scope>test</scope>
         </dependency>
         
@@ -177,9 +177,9 @@
         </dependency>
         
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>3.0-alpha-1</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
             <scope>test</scope>
         </dependency>
         
